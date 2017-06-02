@@ -207,6 +207,11 @@
                 player.x = t2p(tx);
                 player.dx = 0;
             }
+            if(tx + player.x_tiles >= MAP.tw/2){
+                player.x = t2p(tx);
+                player.dx = 0;
+
+            }
         }
         //Si va a la izquierda
         else if (player.dx < 0) {
