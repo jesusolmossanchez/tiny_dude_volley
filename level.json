@@ -19,6 +19,16 @@
                  "height":96,
                  "id":1,
                  "name":"player",
+                 "properties":
+                    {
+                     "x_tiles":3,
+                     "y_tiles":3
+                    },
+                 "propertytypes":
+                    {
+                     "x_tiles":"number",
+                     "y_tiles":"number"
+                    },
                  "rotation":0,
                  "type":"player",
                  "visible":true,
@@ -30,6 +40,16 @@
                  "height":96,
                  "id":2,
                  "name":"playerCPU",
+                 "properties":
+                    {
+                     "x_tiles":3,
+                     "y_tiles":3
+                    },
+                 "propertytypes":
+                    {
+                     "x_tiles":"number",
+                     "y_tiles":"number"
+                    },
                  "rotation":0,
                  "type":"playerCPU",
                  "visible":true,
@@ -43,11 +63,15 @@
                  "name":"ball",
                  "properties":
                     {
-                     "gravity":"50"
+                     "gravity":50,
+                     "x_tiles":2,
+                     "y_tiles":2
                     },
                  "propertytypes":
                     {
-                     "gravity":"string"
+                     "gravity":"number",
+                     "x_tiles":"number",
+                     "y_tiles":"number"
                     },
                  "rotation":0,
                  "type":"ball",
