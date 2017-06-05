@@ -47,6 +47,22 @@
                 ((y1 + h1 - 1) < y2) ||
                 ((y2 + h2 - 1) < y1));
     }
+
+    // Returns an random integer, positive or negative
+    // between the given value
+    function randInt(min, max, positive) {
+
+        var num;
+        if (positive === false) {
+            num = Math.floor(Math.random() * max) - min;
+            num *= Math.floor(Math.random() * 2) === 1 ? 1 : -1;
+        } else {
+            num = Math.floor(Math.random() * max) + min;
+        }
+
+        return num;
+
+    }
   
     //-------------------------------------------------------------------------
     // GAME CONSTANTS AND VARIABLES
@@ -77,6 +93,16 @@
             player   = {},
             ball   = {},
             cells    = [];
+
+
+
+    //TOdO: Cambiar esto para que sea relativo a la velocidad de la pelota o algo así
+    var particlesPerExplosion = 20;
+    var particlesMinSpeed     = 3;
+    var particlesMaxSpeed     = 8;
+    var particlesMinSize      = 1;
+    var particlesMaxSize      = 8;
+    var explosions            = [];
   
     var     t2p      = function(t)     { return t*TILE;                  },
             p2t      = function(p)     { return Math.floor(p/TILE);      },
@@ -119,6 +145,13 @@
 
             //La velocidad Y del jugador se reduce a la mitad
             player.dy = player.dy/F_SALTO_COLISION;
+
+            var x_explosion = ball.x + TILE*ball.x_tiles/2;
+            var y_explosion = ball.y + TILE*ball.y_tiles/2;
+
+            explosions.push(
+                new explosion(x_explosion, y_explosion)
+            );
         }
     }
 
@@ -400,6 +433,7 @@
         renderPlayer(ctx, dt);
         renderPlayerCPU(ctx, dt);
         renderBall(ctx, dt);
+        drawExplosion();
     }
 
     function renderMap(ctx) {
@@ -436,6 +470,78 @@
     
         ctx.globalAlpha = 1;
     }
+
+
+    function drawExplosion() {
+
+        if (explosions.length === 0) {
+            return;
+        }
+
+        for (var i = 0; i < explosions.length; i++) {
+
+            var explosion = explosions[i];
+            var particles = explosion.particles;
+
+            if (particles.length === 0) {
+                explosions.splice(i, 1);
+                return;
+            }
+
+            var particlesAfterRemoval = particles.slice();
+            for (var ii = 0; ii < particles.length; ii++) {
+
+                var particle = particles[ii];
+
+                // Check particle size
+                // If 0, remove
+                if (particle.size <= 0) {
+                    particlesAfterRemoval.splice(ii, 1);
+                    continue;
+                }
+
+                ctx.beginPath();
+                //ctx.arc(particle.x, particle.y, particle.size, Math.PI * 2, 0, false);
+                ctx.fillRect(particle.x, particle.y, particle.size, particle.size);
+
+                ctx.closePath();
+                ctx.fillStyle = 'rgb(' + particle.r + ',' + particle.g + ',' + particle.b + ')';
+                ctx.fill();
+
+                // Update
+                particle.x += particle.xv;
+                particle.y += particle.yv;
+                particle.size -= 0.1;
+            }
+
+            explosion.particles = particlesAfterRemoval;
+
+        }
+    }
+
+
+    function explosion(x, y) {
+
+        this.particles = [];
+
+        for (var i = 0; i < particlesPerExplosion; i++) {
+            this.particles.push(
+                new particle(x, y)
+            );
+        }
+    }
+
+    function particle(x, y) {
+        this.x    = x;
+        this.y    = y;
+        this.xv   = randInt(particlesMinSpeed, particlesMaxSpeed, false);
+        this.yv   = randInt(particlesMinSpeed/2, particlesMaxSpeed/2, false);
+        this.size = randInt(particlesMinSize, particlesMaxSize, true);
+        this.r    = '255';
+        this.g    = '255';
+        this.b    = randInt(0, 255);
+    }
+
 
     /* Hacer algo guay con la pelota
     function tweenBall(frame, duration) {
