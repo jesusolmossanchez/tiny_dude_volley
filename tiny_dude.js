@@ -78,7 +78,8 @@
             FRICTION = 0.001,     // default take 1/6 second to stop from maxdx (horizontal friction)
             IMPULSE  = 2800,    // default player jump impulse
             IMPULSO_PELOTA  = 1000,    // impulso de la pelota
-            F_ALEJA_X  = 1,    // factor que se aleja la pelota en el ejeX
+            FACTOR_REBOTE  = 0.7,    // impulso de la pelota
+            F_ALEJA_X  = 2,    // factor que se aleja la pelota en el ejeX
             F_SALTO_COLISION = 2, // factor en el que se reduce la velocidadY del jugador al colisionar con la pelota
             COLOR    = { BLACK: '#000000', YELLOW: '#ECD078', BRICK: '#D95B43', PINK: '#C02942', PURPLE: '#542437', GREY: '#333', SLATE: '#53777A', GOLD: 'gold' },
             COLORS   = [ COLOR.YELLOW, COLOR.BRICK, COLOR.PINK, COLOR.PURPLE, COLOR.GREY ],
@@ -118,6 +119,8 @@
             case KEY.LEFT:  player.left  = down; ev.preventDefault(); return false;
             case KEY.RIGHT: player.right = down; ev.preventDefault(); return false;
             case KEY.UP: player.jump  = down; ev.preventDefault(); return false;
+            case KEY.DOWN: player.down  = down; ev.preventDefault(); return false;
+            case KEY.Z: player.accion  = down; ev.preventDefault(); return false;
         }
     }
   
@@ -136,22 +139,99 @@
 
     function checkBallCollision() {
         //Si el player1 colisiona con la pelota...
-        if (overlap(player.x, player.y, TILE*player.x_tiles, TILE*player.y_tiles, ball.x, ball.y, TILE*ball.x_tiles, TILE*ball.y_tiles)){
-            //Velocidad Y de la pelota... es la velocidad que lleve menos el impulso(parriba)
-            ball.dy = ball.dy/6 - IMPULSO_PELOTA;
+        if (overlap(player.x, player.y, TILE*player.x_tiles, TILE*player.y_tiles, ball.x, ball.y, TILE*ball.x_tiles, TILE*ball.y_tiles) &&
+             timestamp() > player.no_rebota_time){
 
-            //La velocidad X de la pelota es igual a la que lleve +/- la diferencia de posicion que tienen en el eje X por un factor de alejado X
-            ball.dx = ball.dx/4 + (ball.x - player.x) * F_ALEJA_X;
 
-            //La velocidad Y del jugador se reduce a la mitad
-            player.dy = player.dy/F_SALTO_COLISION;
+            //TODO: Parametrizar con el tamaño de los tiles
+            var velocidad_lateral1 = 1600;
+            var velocidad_lateral2 = 600;
+            var velocidad_vertical1 = 1400;
+            var velocidad_vertical_mate = 1600;
+            var velocidad_lateral_mate = 2000;
+            var velocidad_vertical_dejada = -200;
+            var velocidad_vertical_arriba = -2000;
 
-            var x_explosion = ball.x + TILE*ball.x_tiles/2;
-            var y_explosion = ball.y + TILE*ball.y_tiles/2;
+            var gravedad_mate1 = METER * 80;
+            var gravedad_mate2 = METER * 70;
+            var gravedad_mate3 = METER * 70;
 
-            explosions.push(
-                new explosion(x_explosion, y_explosion)
-            );
+
+            //SI ESTÁ EN EL SUELO O NO ESTA ENFADADO
+            if(!player.jumping || (player.tiempo_enfadado < timestamp())){
+                ball.mate = false;
+                //vuelve a la gravedad por defecto
+                ball.gravity = METER * 50;
+
+                //Velocidad Y de la pelota... es la velocidad que lleve menos el impulso(parriba)
+                ball.dy = ball.dy/6 - IMPULSO_PELOTA;
+                //ball.dy = -ball.dy * FACTOR_REBOTE;
+
+                //La velocidad X de la pelota es igual a la que lleve +/- la diferencia de posicion que tienen en el eje X por un factor de alejado X
+                ball.dx = ball.dx/4 + (ball.x - player.x) * F_ALEJA_X;
+
+                //La velocidad Y del jugador se reduce a la mitad
+                player.dy = player.dy/F_SALTO_COLISION;
+
+                var x_explosion = ball.x + TILE*ball.x_tiles/2;
+                var y_explosion = ball.y + TILE*ball.y_tiles/2;
+
+                explosions.push(
+                    new explosion(x_explosion, y_explosion)
+                );
+            }
+            //SI ESTÁ EN EL AIRE Y ENFADADO
+            else{
+                ball.mate = true;
+
+                player.no_rebota_time = timestamp() + 200;
+
+                //pulsado izquierda o derecha solo
+                if ((player.right || player.left) && !player.jump && !player.down)
+                {
+                    ball.dy = -ball.dy*0.3;
+                    ball.dx = velocidad_lateral1;
+                    ball.gravity = gravedad_mate1;
+                }
+                // arriba derecha
+                else if(player.right && player.jump && !player.down )
+                {
+                    ball.dy = -velocidad_vertical1;
+                    ball.dx = velocidad_lateral1;
+                    ball.gravity = gravedad_mate2;
+                }
+                //arriba izquierda
+                else if(player.left && player.jump && !player.down)
+                {
+                    ball.dy = -velocidad_vertical1;
+                    ball.dx = -velocidad_lateral1;
+                    ball.gravity = gravedad_mate2;
+                }
+                // abajo y a un lado
+                else if((player.right || player.left) && !player.jump && player.down){
+                    ball.dy = velocidad_vertical_mate;
+                    ball.dx = velocidad_lateral_mate;
+                    ball.gravity = gravedad_mate3;
+                }
+                // abajo solo
+                else if(!player.right && !player.left && !player.jump && player.down){
+                    ball.dy = velocidad_vertical_mate;
+                    ball.dx = velocidad_lateral2;
+                    ball.gravity = gravedad_mate2;
+                }
+                //sin pulsar ningun lado
+                else if(!player.right && !player.left && !player.jump && !player.down){
+                    ball.dy = velocidad_vertical_dejada;
+                    ball.dx = velocidad_lateral2;
+                    ball.gravity = gravedad_mate2;
+                }
+                //arriba solo
+                else if(!player.right && !player.left && player.jump && !player.down){
+                    ball.dy = velocidad_vertical_arriba;
+                    ball.dx = velocidad_lateral2;
+                    ball.gravity = gravedad_mate2;
+                }
+            }
         }
     }
 
@@ -178,9 +258,16 @@
         else if (wasright)
             player.ddx = player.ddx - friction;
       
+
+        //Salto
         if (player.jump && !player.jumping) {
             player.ddy = player.ddy - player.impulse; // an instant big force impulse
             player.jumping = true;
+        }
+
+        //Si se pulsa acción
+        if(player.accion && (timestamp() > player.tiempo_enfadado + 300)){
+            player.tiempo_enfadado = timestamp()+400;
         }
 
         //Posiciones
@@ -379,7 +466,7 @@
             if ((celldown && !cell) ||
                 (celldiag && !cellright && nx)) {
       
-                ball.dy = -1000;
+                ball.dy = -ball.dy * FACTOR_REBOTE;
             
             }
         }
@@ -387,7 +474,7 @@
             if ((cell      && !celldown) ||
                 (cellright && !celldiag && nx)) {
                 ball.y      = t2p(ty + 1);
-                ball.dy     = 0;
+                ball.dy     = - ball.dy * FACTOR_REBOTE;
                 cell        = celldown;
                 cellright   = celldiag;
                 ny          = 0;
@@ -398,14 +485,14 @@
             if ((cellright && !cell) ||
                 (celldiag  && !celldown && ny)) {
                 ball.x = t2p(tx);
-                ball.dx = -ball.dx;
+                ball.dx = -ball.dx * FACTOR_REBOTE;
             }
         }
         else if (ball.dx < 0) {
             if ((cell     && !cellright) ||
                 (celldown && !celldiag && ny)) {
                 ball.x = t2p(tx + 1);
-                ball.dx = -ball.dx;
+                ball.dx = -ball.dx *FACTOR_REBOTE;
             }
         }
     }
@@ -451,7 +538,13 @@
     }
 
     function renderPlayer(ctx, dt) {
-        ctx.fillStyle = COLOR.YELLOW;
+        if(player.tiempo_enfadado > timestamp()){
+            ctx.fillStyle = COLOR.PURPLE;
+        }
+        else{
+            ctx.fillStyle = COLOR.YELLOW;
+
+        }
         ctx.fillRect(player.x + (player.dx * dt), player.y + (player.dy * dt), TILE*player.x_tiles, TILE*player.y_tiles);
     }
 
@@ -463,7 +556,12 @@
   
 
     function renderBall(ctx, frame) {
-        ctx.fillStyle   = COLOR.GOLD;
+        if(ball.mate){
+            ctx.fillStyle   = COLOR.SLATE;
+        }
+        else{
+            ctx.fillStyle   = COLOR.GOLD;
+        }
         //ctx.globalAlpha = 0.25 + tweenBall(frame, 60);
     
         ctx.fillRect(ball.x + (ball.dx * dt), ball.y + (ball.dy * dt), TILE*ball.x_tiles, TILE*ball.y_tiles);
@@ -574,25 +672,27 @@
     }
 
     function setupEntity(obj) {
-        var entity          = {};
-        entity.x            = obj.x;
-        entity.y            = obj.y;
-        entity.x_tiles      = obj.properties.x_tiles;
-        entity.y_tiles      = obj.properties.y_tiles;
-        entity.dx           = 0;
-        entity.dy           = 0;
-        entity.gravity      = METER * (obj.properties.gravity || GRAVITY);
-        entity.maxdx        = METER * (obj.properties.maxdx   || MAXDX);
-        entity.maxdy        = METER * (obj.properties.maxdy   || MAXDY);
-        entity.impulse      = METER * (obj.properties.impulse || IMPULSE);
-        entity.accel        = entity.maxdx / (obj.properties.accel    || ACCEL);
-        entity.friction     = entity.maxdx / (obj.properties.friction || FRICTION);
-        entity.player       = obj.type == "player";
-        entity.playerCPU    = obj.type == "playerCPU";
-        entity.ball         = obj.type == "ball";
-        entity.left         = obj.properties.left;
-        entity.right        = obj.properties.right;
-        entity.start        = { x: obj.x, y: obj.y };
+        var entity              = {};
+        entity.x                = obj.x;
+        entity.y                = obj.y;
+        entity.x_tiles          = obj.properties.x_tiles;
+        entity.y_tiles          = obj.properties.y_tiles;
+        entity.dx               = 0;
+        entity.dy               = 0;
+        entity.gravity          = METER * (obj.properties.gravity || GRAVITY);
+        entity.maxdx            = METER * (obj.properties.maxdx   || MAXDX);
+        entity.maxdy            = METER * (obj.properties.maxdy   || MAXDY);
+        entity.impulse          = METER * (obj.properties.impulse || IMPULSE);
+        entity.accel            = entity.maxdx / (obj.properties.accel    || ACCEL);
+        entity.friction         = entity.maxdx / (obj.properties.friction || FRICTION);
+        entity.player           = obj.type == "player";
+        entity.playerCPU        = obj.type == "playerCPU";
+        entity.ball             = obj.type == "ball";
+        entity.left             = obj.properties.left;
+        entity.right            = obj.properties.right;
+        entity.tiempo_enfadado  = timestamp();
+        entity.no_rebota_time   = timestamp();
+        entity.start            = { x: obj.x, y: obj.y };
 
         return entity;
     }
