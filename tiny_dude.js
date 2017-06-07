@@ -63,6 +63,26 @@
         return num;
 
     }
+    function calcula_rotacion(x, y) {
+
+        var centro_balon_x = ball.x + (ball.dx * dt) + TILE*ball.x_tiles/2;
+        var centro_balon_y = ball.y + (ball.dy * dt) + TILE*ball.y_tiles/2;
+
+        theta += ball.dx/10000;
+
+        //ROTACION VERTICE 1
+        var tempX = x - centro_balon_x;
+        var tempY = y - centro_balon_y;
+
+        var rotatedX = tempX*Math.cos(theta) - tempY*Math.sin(theta);
+        var rotatedY = tempX*Math.sin(theta) + tempY*Math.cos(theta);
+
+        var ret = {};
+        ret.x = rotatedX + centro_balon_x;
+        ret.y = rotatedY + centro_balon_y;
+        return ret;
+
+    }
   
     //-------------------------------------------------------------------------
     // GAME CONSTANTS AND VARIABLES
@@ -450,6 +470,7 @@
 
         //Velocidad
         ball.dy = bound(ball.dy + (dt * ball.ddy), -ball.maxdy, ball.maxdy);
+        ball.dx = ball.dx/1.0004;
   
 
         var tx        = p2t(ball.x),
@@ -554,8 +575,9 @@
         ctx.fillRect(playerCPU.x + (playerCPU.dx * dt), playerCPU.y + (playerCPU.dy * dt), TILE*playerCPU.x_tiles, TILE*playerCPU.y_tiles);
     }
   
-
+    var theta = 0;
     function renderBall(ctx, frame) {
+        
         if(ball.mate){
             ctx.fillStyle   = COLOR.SLATE;
         }
@@ -563,8 +585,27 @@
             ctx.fillStyle   = COLOR.GOLD;
         }
         //ctx.globalAlpha = 0.25 + tweenBall(frame, 60);
+
+
+
+
+        var v1 = calcula_rotacion(ball.x + (ball.dx * dt), ball.y + (ball.dy * dt));
+        var v2 = calcula_rotacion(ball.x + (ball.dx * dt) + TILE*ball.x_tiles, ball.y + (ball.dy * dt));
+        var v3 = calcula_rotacion(ball.x + (ball.dx * dt) + TILE*ball.x_tiles, ball.y + (ball.dy * dt) + TILE*ball.y_tiles);
+        var v4 = calcula_rotacion(ball.x + (ball.dx * dt), ball.y + (ball.dy * dt) + TILE*ball.y_tiles);
+       
+
+        ctx.beginPath();
+        ctx.moveTo(v1.x, v1.y);
+        ctx.lineTo(v2.x, v2.y);
+        ctx.lineTo(v3.x, v3.y);
+        ctx.lineTo(v4.x, v4.y);
+        ctx.closePath();
+        ctx.fill();
+        //ctx.fillRect(ball.x + (ball.dx * dt), ball.y + (ball.dy * dt), TILE*ball.x_tiles, TILE*ball.y_tiles);
+
+
     
-        ctx.fillRect(ball.x + (ball.dx * dt), ball.y + (ball.dy * dt), TILE*ball.x_tiles, TILE*ball.y_tiles);
     
         ctx.globalAlpha = 1;
     }
