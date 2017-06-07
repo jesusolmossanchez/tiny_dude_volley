@@ -39,7 +39,7 @@
                 {
                  "height":96,
                  "id":2,
-                 "name":"playerCPU",
+                 "name":"player2",
                  "properties":
                     {
                      "x_tiles":3,
@@ -51,7 +51,7 @@
                      "y_tiles":"number"
                     },
                  "rotation":0,
-                 "type":"playerCPU",
+                 "type":"player2",
                  "visible":true,
                  "width":96,
                  "x":1850.37602179837,
