@@ -151,17 +151,32 @@
         calculaDondeCae();
 
         updatePlayer1(dt);
-        updatePlayerCPU(dt);
+        updateplayer2(dt);
         checkBallCollision();
         updateBall(dt);
     }
 
 
     function checkBallCollision() {
-        //Si el player1 colisiona con la pelota...
-        if (overlap(player.x, player.y, TILE*player.x_tiles, TILE*player.y_tiles, ball.x, ball.y, TILE*ball.x_tiles, TILE*ball.y_tiles) &&
-             timestamp() > player.no_rebota_time){
+        
+        var rebota = false;
+        var jugador_rebota = false;
 
+        //Si el player1 colisiona con la pelota...
+        if ((overlap(player.x, player.y, TILE*player.x_tiles, TILE*player.y_tiles, ball.x, ball.y, TILE*ball.x_tiles, TILE*ball.y_tiles) &&
+             timestamp() > player.no_rebota_time)){
+                rebota = true;
+                jugador_rebota = player;
+        }
+
+        //Si el player2 colisiona con la pelota...
+        if ((overlap(player2.x, player2.y, TILE*player2.x_tiles, TILE*player2.y_tiles, ball.x, ball.y, TILE*ball.x_tiles, TILE*ball.y_tiles) &&
+             timestamp() > player2.no_rebota_time)){
+                rebota = true;
+                jugador_rebota = player2;
+        }
+
+        if(rebota){
 
             //TODO: Parametrizar con el tamaño de los tiles
             var velocidad_lateral1 = 1600;
@@ -177,8 +192,12 @@
             var gravedad_mate3 = METER * 70;
 
 
+            var x_explosion = ball.x + TILE*ball.x_tiles/2;
+            var y_explosion = ball.y + TILE*ball.y_tiles/2;
+
+
             //SI ESTÁ EN EL SUELO O NO ESTA ENFADADO
-            if(!player.jumping || (player.tiempo_enfadado < timestamp())){
+            if(!jugador_rebota.jumping || (jugador_rebota.tiempo_enfadado < timestamp())){
                 ball.mate = false;
                 //vuelve a la gravedad por defecto
                 ball.gravity = METER * 50;
@@ -188,13 +207,11 @@
                 //ball.dy = -ball.dy * FACTOR_REBOTE;
 
                 //La velocidad X de la pelota es igual a la que lleve +/- la diferencia de posicion que tienen en el eje X por un factor de alejado X
-                ball.dx = ball.dx/4 + (ball.x - player.x) * F_ALEJA_X;
+                ball.dx = ball.dx/4 + (ball.x - jugador_rebota.x) * F_ALEJA_X;
 
                 //La velocidad Y del jugador se reduce a la mitad
-                player.dy = player.dy/F_SALTO_COLISION;
+                jugador_rebota.dy = jugador_rebota.dy/F_SALTO_COLISION;
 
-                var x_explosion = ball.x + TILE*ball.x_tiles/2;
-                var y_explosion = ball.y + TILE*ball.y_tiles/2;
 
                 explosions.push(
                     new explosion(x_explosion, y_explosion, false)
@@ -204,57 +221,53 @@
             else{
                 ball.mate = true;
 
-                player.no_rebota_time = timestamp() + 200;
+                jugador_rebota.no_rebota_time = timestamp() + 200;
 
                 //pulsado izquierda o derecha solo
-                if ((player.right || player.left) && !player.jump && !player.down)
+                if ((jugador_rebota.right || jugador_rebota.left) && !jugador_rebota.jump && !jugador_rebota.down)
                 {
                     ball.dy = -ball.dy*0.3;
                     ball.dx = velocidad_lateral1;
                     ball.gravity = gravedad_mate1;
                 }
                 // arriba derecha
-                else if(player.right && player.jump && !player.down )
+                else if(jugador_rebota.right && jugador_rebota.jump && !jugador_rebota.down )
                 {
                     ball.dy = -velocidad_vertical1;
                     ball.dx = velocidad_lateral1;
                     ball.gravity = gravedad_mate2;
                 }
                 //arriba izquierda
-                else if(player.left && player.jump && !player.down)
+                else if(jugador_rebota.left && jugador_rebota.jump && !jugador_rebota.down)
                 {
                     ball.dy = -velocidad_vertical1;
                     ball.dx = -velocidad_lateral1;
                     ball.gravity = gravedad_mate2;
                 }
                 // abajo y a un lado
-                else if((player.right || player.left) && !player.jump && player.down){
+                else if((jugador_rebota.right || jugador_rebota.left) && !jugador_rebota.jump && jugador_rebota.down){
                     ball.dy = velocidad_vertical_mate;
                     ball.dx = velocidad_lateral_mate;
                     ball.gravity = gravedad_mate3;
                 }
                 // abajo solo
-                else if(!player.right && !player.left && !player.jump && player.down){
+                else if(!jugador_rebota.right && !jugador_rebota.left && !jugador_rebota.jump && jugador_rebota.down){
                     ball.dy = velocidad_vertical_mate;
                     ball.dx = velocidad_lateral2;
                     ball.gravity = gravedad_mate2;
                 }
                 //sin pulsar ningun lado
-                else if(!player.right && !player.left && !player.jump && !player.down){
+                else if(!jugador_rebota.right && !jugador_rebota.left && !jugador_rebota.jump && !jugador_rebota.down){
                     ball.dy = velocidad_vertical_dejada;
                     ball.dx = velocidad_lateral2;
                     ball.gravity = gravedad_mate2;
                 }
                 //arriba solo
-                else if(!player.right && !player.left && player.jump && !player.down){
+                else if(!jugador_rebota.right && !jugador_rebota.left && jugador_rebota.jump && !jugador_rebota.down){
                     ball.dy = velocidad_vertical_arriba;
                     ball.dx = velocidad_lateral2;
                     ball.gravity = gravedad_mate2;
                 }
-
-
-                var x_explosion = ball.x + TILE*ball.x_tiles/2;
-                var y_explosion = ball.y + TILE*ball.y_tiles/2;
 
                 explosions.push(
                     new explosion(x_explosion, y_explosion, true)
@@ -372,89 +385,89 @@
     }
 
 
-    function updatePlayerCPU(dt){
+    function updateplayer2(dt){
         //COntrol de si iba hacia la izquierda o a la derecha y friccion y aceleración... Ahora no lo uso, pero puede ser util
-        var wasleft    = playerCPU.dx  < 0,
-            wasright   = playerCPU.dx  > 0,
-            friction   = playerCPU.friction,
-            accel      = playerCPU.accel;
+        var wasleft    = player2.dx  < 0,
+            wasright   = player2.dx  > 0,
+            friction   = player2.friction,
+            accel      = player2.accel;
   
         //reseteo las aceleraciones
-        playerCPU.ddx = 0;
-        playerCPU.ddy = playerCPU.gravity;
+        player2.ddx = 0;
+        player2.ddy = player2.gravity;
   
-        if (playerCPU.left)
-            playerCPU.ddx = playerCPU.ddx - accel;
+        if (player2.left)
+            player2.ddx = player2.ddx - accel;
         else if (wasleft)
-            playerCPU.ddx = playerCPU.ddx + friction;
+            player2.ddx = player2.ddx + friction;
       
-        if (playerCPU.right)
-            playerCPU.ddx = playerCPU.ddx + accel;
+        if (player2.right)
+            player2.ddx = player2.ddx + accel;
         else if (wasright)
-            playerCPU.ddx = playerCPU.ddx - friction;
+            player2.ddx = player2.ddx - friction;
       
-        if (playerCPU.jump && !playerCPU.jumping) {
-            playerCPU.ddy = playerCPU.ddy - playerCPU.impulse; // an instant big force impulse
-            playerCPU.jumping = true;
+        if (player2.jump && !player2.jumping) {
+            player2.ddy = player2.ddy - player2.impulse; // an instant big force impulse
+            player2.jumping = true;
         }
   
-        playerCPU.x  = playerCPU.x  + (dt * playerCPU.dx);
-        playerCPU.y  = playerCPU.y  + (dt * playerCPU.dy);
+        player2.x  = player2.x  + (dt * player2.dx);
+        player2.y  = player2.y  + (dt * player2.dy);
        
-        playerCPU.dx = bound(playerCPU.dx + (dt * playerCPU.ddx), -playerCPU.maxdx, playerCPU.maxdx);
-        playerCPU.dy = bound(playerCPU.dy + (dt * playerCPU.ddy), -playerCPU.maxdy, playerCPU.maxdy);
+        player2.dx = bound(player2.dx + (dt * player2.ddx), -player2.maxdx, player2.maxdx);
+        player2.dy = bound(player2.dy + (dt * player2.ddy), -player2.maxdy, player2.maxdy);
       
-        if ((wasleft  && (playerCPU.dx > 0)) ||
-            (wasright && (playerCPU.dx < 0))) {
-            playerCPU.dx = 0; // clamp at zero to prevent friction from making us jiggle side to side
+        if ((wasleft  && (player2.dx > 0)) ||
+            (wasright && (player2.dx < 0))) {
+            player2.dx = 0; // clamp at zero to prevent friction from making us jiggle side to side
         }
   
     
 
-        var tx        = p2t(playerCPU.x),
-            ty        = p2t(playerCPU.y),
-            nx        = playerCPU.x%TILE,
-            ny        = playerCPU.y%TILE,
+        var tx        = p2t(player2.x),
+            ty        = p2t(player2.y),
+            nx        = player2.x%TILE,
+            ny        = player2.y%TILE,
             cell      = tcell(tx,     ty),
-            cellright = tcell(tx + playerCPU.x_tiles, ty),
-            celldown  = tcell(tx,     ty + playerCPU.y_tiles),
-            celldiag  = tcell(tx + playerCPU.x_tiles, ty + playerCPU.y_tiles);
+            cellright = tcell(tx + player2.x_tiles, ty),
+            celldown  = tcell(tx,     ty + player2.y_tiles),
+            celldiag  = tcell(tx + player2.x_tiles, ty + player2.y_tiles);
   
 
-        if (playerCPU.dy > 0) {
+        if (player2.dy > 0) {
             if ((celldown && !cell) ||
                 (celldiag && !cellright && nx)) {
                 
-                playerCPU.y = t2p(ty);
-                playerCPU.dy = 0;
-                playerCPU.jumping = false;
+                player2.y = t2p(ty);
+                player2.dy = 0;
+                player2.jumping = false;
                 ny = 0;
 
             }
         }
-        else if (playerCPU.dy < 0) {
+        else if (player2.dy < 0) {
             if ((cell      && !celldown) ||
                 (cellright && !celldiag && nx)) {
-                playerCPU.y = t2p(ty + 1);
-                playerCPU.dy = 0;
+                player2.y = t2p(ty + 1);
+                player2.dy = 0;
                 cell      = celldown;
                 cellright = celldiag;
                 ny        = 0;
             }
         }
   
-        if (playerCPU.dx > 0) {
+        if (player2.dx > 0) {
             if ((cellright && !cell) ||
                 (celldiag  && !celldown && ny)) {
-                playerCPU.x = t2p(tx);
-                playerCPU.dx = 0;
+                player2.x = t2p(tx);
+                player2.dx = 0;
             }
         }
-        else if (playerCPU.dx < 0) {
+        else if (player2.dx < 0) {
             if ((cell     && !cellright) ||
                 (celldown && !celldiag && ny)) {
-                playerCPU.x = t2p(tx + 1);
-                playerCPU.dx = 0;  
+                player2.x = t2p(tx + 1);
+                player2.dx = 0;  
 
             }
         }
@@ -536,7 +549,7 @@
         // Si no cae en mi campo, mover de forma aleatorea
 
         //console.log(counter);
-        //playerCPU.left = true;
+        //player2.left = true;
     }
 
     //-------------------------------------------------------------------------
@@ -547,7 +560,7 @@
         ctx.clearRect(0, 0, width, height);
         renderMap(ctx);
         renderPlayer(ctx, dt);
-        renderPlayerCPU(ctx, dt);
+        renderplayer2(ctx, dt);
         renderBall(ctx, dt);
         drawExplosion();
     }
@@ -578,9 +591,9 @@
     }
 
   
-    function renderPlayerCPU(ctx, dt) {
+    function renderplayer2(ctx, dt) {
         ctx.fillStyle = COLOR.GREY;
-        ctx.fillRect(playerCPU.x + (playerCPU.dx * dt), playerCPU.y + (playerCPU.dy * dt), TILE*playerCPU.x_tiles, TILE*playerCPU.y_tiles);
+        ctx.fillRect(player2.x + (player2.dx * dt), player2.y + (player2.dy * dt), TILE*player2.x_tiles, TILE*player2.y_tiles);
     }
   
     var theta = 0;
@@ -724,7 +737,7 @@
             switch(obj.type) {
                 case "player"   : player = entity; break;
                 case "ball"     : ball = entity; break;
-                case "playerCPU"     : playerCPU = entity; break;
+                case "player2"  : player2 = entity; break;
             }
         }
 
@@ -746,7 +759,7 @@
         entity.accel            = entity.maxdx / (obj.properties.accel    || ACCEL);
         entity.friction         = entity.maxdx / (obj.properties.friction || FRICTION);
         entity.player           = obj.type == "player";
-        entity.playerCPU        = obj.type == "playerCPU";
+        entity.player2          = obj.type == "player2";
         entity.ball             = obj.type == "ball";
         entity.left             = obj.properties.left;
         entity.right            = obj.properties.right;
