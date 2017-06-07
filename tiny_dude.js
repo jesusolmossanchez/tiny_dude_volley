@@ -118,7 +118,7 @@
 
 
     //TOdO: Cambiar esto para que sea relativo a la velocidad de la pelota o algo así
-    var particlesPerExplosion = 20;
+    var particlesPerExplosion = 15;
     var particlesMinSpeed     = 3;
     var particlesMaxSpeed     = 8;
     var particlesMinSize      = 1;
@@ -197,7 +197,7 @@
                 var y_explosion = ball.y + TILE*ball.y_tiles/2;
 
                 explosions.push(
-                    new explosion(x_explosion, y_explosion)
+                    new explosion(x_explosion, y_explosion, false)
                 );
             }
             //SI ESTÁ EN EL AIRE Y ENFADADO
@@ -251,6 +251,14 @@
                     ball.dx = velocidad_lateral2;
                     ball.gravity = gravedad_mate2;
                 }
+
+
+                var x_explosion = ball.x + TILE*ball.x_tiles/2;
+                var y_explosion = ball.y + TILE*ball.y_tiles/2;
+
+                explosions.push(
+                    new explosion(x_explosion, y_explosion, true)
+                );
             }
         }
     }
@@ -659,23 +667,34 @@
     }
 
 
-    function explosion(x, y) {
+    function explosion(x, y, supertiro) {
 
         this.particles = [];
 
-        for (var i = 0; i < particlesPerExplosion; i++) {
+        var particulas_por_explosion = particlesPerExplosion;
+        if(supertiro){
+            particulas_por_explosion = particlesPerExplosion * 3;
+        }
+
+        for (var i = 0; i < particulas_por_explosion; i++) {
             this.particles.push(
-                new particle(x, y)
+                new particle(x, y, supertiro)
             );
         }
     }
 
-    function particle(x, y) {
+    function particle(x, y, supertiro) {
+
+        var max_particulas_size = particlesMaxSize;
+        if(supertiro){
+            max_particulas_size = particlesMaxSize * 1.5;
+        }
+
         this.x    = x;
         this.y    = y;
-        this.xv   = randInt(particlesMinSpeed, particlesMaxSpeed, false);
-        this.yv   = randInt(particlesMinSpeed/2, particlesMaxSpeed/2, false);
-        this.size = randInt(particlesMinSize, particlesMaxSize, true);
+        this.xv   = randInt(particlesMinSpeed, particlesMaxSpeed, false) + ball.dx/300;
+        this.yv   = randInt(particlesMinSpeed/2, particlesMaxSpeed/2, false) + ball.dy/300;
+        this.size = randInt(particlesMinSize, max_particulas_size, true);
         this.r    = '255';
         this.g    = '255';
         this.b    = randInt(0, 255);
