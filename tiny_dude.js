@@ -542,14 +542,86 @@
     //-------------------------------------------------------------------------
     // CALCULOS
     //-------------------------------------------------------------------------
+    var dondecae = 0;
+    var movia_left = false;
     function calculaDondeCae(){
         // TODO:
         // Calcular donde cae... 
         // si cae en mi campo mover izq/der para ir a por ella
         // Si no cae en mi campo, mover de forma aleatorea
 
-        //console.log(counter);
-        //player2.left = true;
+
+        var ancho_juego = MAP.tw*TILE;
+        var alto_juego = MAP.th*TILE;
+        var x = ball.x + ball.x_tiles/2;
+        var H = (ball.y + ball.y_tiles/2 - alto_juego - TILE*4) * (-1);
+        var Vx = ball.dx;
+        var Vy = ball.dy;
+
+        //calcula donde cae
+        if (Vy<0){
+            Vy = Vy*(-1);
+            dondecae = x + (Vx)/ball.ddy * Math.sqrt((2*ball.ddy*H)+(Vx));
+            if (dondecae>ancho_juego){
+                dondecae = ancho_juego - (dondecae-ancho_juego);
+            }
+            else if(dondecae<0){
+                dondecae = - dondecae;
+            }
+        }else{
+            //solo calculo donde cae si se mueve abajo(la pelota)
+        }
+
+
+        var player2_x = player2.x + (player2.x_tiles * TILE / 2);
+
+        //si cae en mi campo
+        if(dondecae > (ancho_juego/2 - 50)){
+            
+            //si cae a mi izquierda, me muevo pallá
+            if(dondecae < (player2_x - 80) && player2_x > ancho_juego/2){
+                player2.left = true;
+                player2.right = false;
+            }
+            //si cae a mi derecha, me muevo palla
+            else{
+                player2.right = true;
+                player2.left = false;
+            }
+        }
+        else{
+            
+            var movimientos_aleatorios = counter % 50;
+            
+            if (movimientos_aleatorios > 48){
+                ale = Math.random();
+
+                if (ale>0.5 && player2_x > ancho_juego/2){
+                    player2.left = true;
+                    player2.right = false;
+                    movia_left = true;
+                }
+                else if(ale <0.5){
+                    player2.right = true;
+                    player2.left = false;
+                    movia_left = false;
+                }
+
+            }
+            else{
+                if(movia_left){
+                    player2.left = true;
+                    player2.right = false;
+                }
+                else{
+                    player2.right = true;
+                    player2.left = false;
+
+                }
+            }
+            
+        }
+
     }
 
     //-------------------------------------------------------------------------
