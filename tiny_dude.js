@@ -574,6 +574,9 @@
 
 
         var player2_x = player2.x + (player2.x_tiles * TILE / 2);
+        var player2_y = player2.y + (player2.y_tiles * TILE / 2);
+
+        var ball_y = ball.y + ball.y_tiles/2;
 
         //si cae en mi campo
         if(dondecae > (ancho_juego/2 - 50)){
@@ -588,6 +591,19 @@
                 player2.right = true;
                 player2.left = false;
             }
+
+            if(Math.abs(dondecae - player2_x) < 110 && 
+                x>ancho_juego/2 && 
+                (player2_y > alto_juego-200) && 
+                (Vx<120 && Vx>-120) && 
+                (ball_y < alto_juego - 100)){
+
+                player2.jump = true;
+            }
+            else{
+                player2.jump = false;
+            }
+
         }
         else{
             
