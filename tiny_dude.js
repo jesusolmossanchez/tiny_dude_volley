@@ -163,12 +163,21 @@
         if(overlap(net.x, net.y, net.width, net.height, ball.x, ball.y, TILE*ball.x_tiles, TILE*ball.y_tiles)){
             //Si la pelota está por encima de la red, rebota parriba
             if((ball.y + ((ball.y_tiles/2) * TILE)) < net.y && ball.dy > 0){
+            //if(ball.y < net.y && ball.dy > 0){
                 ball.dy = - ball.dy * FACTOR_REBOTE;
             }
             //Sino rebota para el lado
             else{
+                if(ball.x > MAP.tw*TILE/2){
+                    ball.x = MAP.tw*TILE/2 + TILE;
+                }
+                else{
+                    ball.x = MAP.tw*TILE/2 - ball.x_tiles * TILE;
+
+                }
                 ball.dx = - ball.dx * FACTOR_REBOTE;
             }
+            console.log(ball.dx);
         }
     }
     function checkBallCollision() {
@@ -193,18 +202,19 @@
         if(rebota){
 
             //TODO: Parametrizar con el tamaño de los tiles
-            var velocidad_lateral1 = 1600;
-            var velocidad_lateral2 = 600;
-            var velocidad_vertical1 = 1400;
-            var velocidad_vertical_mate = 1600;
+            var velocidad_lateral1 = 1800;
+            var velocidad_lateral2 = 200;
             var velocidad_lateral_mate = 2000;
-            var velocidad_vertical_dejada = -200;
-            var velocidad_vertical_arriba = -2000;
+            
+            var velocidad_vertical1 = 1600;
+            var velocidad_vertical_mate = 2000;
+            var velocidad_vertical_arriba = 2000;
+            
+            var velocidad_vertical_dejada = 200;
 
-            var gravedad_mate1 = METER * 80;
-            var gravedad_mate2 = METER * 70;
-            var gravedad_mate3 = METER * 70;
-
+            var gravedad_mate1 = 2200;
+            var gravedad_mate2 = 2500;
+            var gravedad_mate3 = 2000;
 
             var x_explosion = ball.x + TILE*ball.x_tiles/2;
             var y_explosion = ball.y + TILE*ball.y_tiles/2;
@@ -214,7 +224,7 @@
             if(!jugador_rebota.jumping || (jugador_rebota.tiempo_enfadado < timestamp())){
                 ball.mate = false;
                 //vuelve a la gravedad por defecto
-                ball.gravity = METER * 50;
+                ball.gravity = TILE * 50;
 
                 //Velocidad Y de la pelota... es la velocidad que lleve menos el impulso(parriba)
                 ball.dy = ball.dy/6 - IMPULSO_PELOTA;
@@ -272,13 +282,13 @@
                 }
                 //sin pulsar ningun lado
                 else if(!jugador_rebota.right && !jugador_rebota.left && !jugador_rebota.jump && !jugador_rebota.down){
-                    ball.dy = velocidad_vertical_dejada;
+                    ball.dy = -velocidad_vertical_dejada;
                     ball.dx = velocidad_lateral2;
                     ball.gravity = gravedad_mate2;
                 }
                 //arriba solo
                 else if(!jugador_rebota.right && !jugador_rebota.left && jugador_rebota.jump && !jugador_rebota.down){
-                    ball.dy = velocidad_vertical_arriba;
+                    ball.dy = -velocidad_vertical_arriba;
                     ball.dx = velocidad_lateral2;
                     ball.gravity = gravedad_mate2;
                 }
@@ -796,7 +806,7 @@
             }
         }
 
-        var alto_red = TILE * (MAP.th/2.5); 
+        var alto_red = TILE * (MAP.th/2.4); 
         net = { "height":alto_red, "width":TILE, "x":(MAP.tw*TILE)/2, "y":(MAP.th*TILE) - alto_red};
 
         cells = data;
