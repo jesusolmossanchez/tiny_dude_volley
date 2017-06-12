@@ -113,6 +113,7 @@
             height   = canvas.height = MAP.th * TILE,
             player   = {},
             ball   = {},
+            net   = {},
             cells    = [];
 
 
@@ -152,11 +153,24 @@
 
         updatePlayer1(dt);
         updateplayer2(dt);
+        checkBallCollisionNet();
         checkBallCollision();
         updateBall(dt);
     }
 
 
+    function checkBallCollisionNet() {
+        if(overlap(net.x, net.y, net.width, net.height, ball.x, ball.y, TILE*ball.x_tiles, TILE*ball.y_tiles)){
+            //Si la pelota está por encima de la red, rebota parriba
+            if((ball.y + ((ball.y_tiles/2) * TILE)) < net.y && ball.dy > 0){
+                ball.dy = - ball.dy * FACTOR_REBOTE;
+            }
+            //Sino rebota para el lado
+            else{
+                ball.dx = - ball.dx * FACTOR_REBOTE;
+            }
+        }
+    }
     function checkBallCollision() {
         
         var rebota = false;
@@ -325,60 +339,37 @@
           player.dx = 0; // clamp at zero to prevent friction from making us jiggle side to side
         }
 
-      
-        
-
         var tx        = p2t(player.x),
-            ty        = p2t(player.y),
-            nx        = player.x%TILE,
-            ny        = player.y%TILE,
-            cell      = tcell(tx,     ty),
-            cellright = tcell(tx + player.x_tiles, ty),
-            celldown  = tcell(tx,     ty + player.y_tiles),
-            celldiag  = tcell(tx + player.x_tiles, ty + player.y_tiles);
+            ty        = p2t(player.y);
 
 
         //SI va pabajo
-        if (player.dy > 0) {
-            if ((celldown && !cell) ||
-                (celldiag && !cellright && nx)) {
-           
-                player.y = t2p(ty);
+        if (player.dy >= 0) {
+            if(player.y + player.y_tiles * TILE > (MAP.th * TILE - TILE)){
+                player.y = MAP.th * TILE - TILE - player.y_tiles * TILE;
                 player.dy = 0;
                 player.jumping = false;
-                ny = 0;       
             }
         }
         //Si va parriba
+        /* Lo comento, porque nunca debería tocar el techo, no? ... lo dejo por si hago algo al saltar
         else if (player.dy < 0) {
-            if ((cell      && !celldown) ||
-                (cellright && !celldiag && nx)) {
-                player.y = t2p(ty + 1);
-                player.dy = 0;
-                cell      = celldown;
-                cellright = celldiag;
-                ny        = 0;
-            }
+            
         }
-      
+        */
+        
         //Si va a la derecha
         if (player.dx > 0) {
-            if ((cellright && !cell) ||
-                (celldiag  && !celldown && ny)) {
-                player.x = t2p(tx);
-                player.dx = 0;
-            }
-            if(tx + player.x_tiles >= MAP.tw/2){
-                player.x = t2p(tx);
+            if(player.x + player.x_tiles * TILE >= (MAP.tw*TILE/2)){
+                player.x = MAP.tw*TILE/2 - player.x_tiles * TILE;
                 player.dx = 0;
 
-            }
+            } 
         }
         //Si va a la izquierda
         else if (player.dx < 0) {
-            if ((cell     && !cellright) ||
-                (celldown && !celldiag && ny)) {
-                player.x = t2p(tx + 1);
+            if(player.x <= TILE){
+                player.x = TILE;
                 player.dx = 0;
             }
         }
@@ -421,66 +412,48 @@
             (wasright && (player2.dx < 0))) {
             player2.dx = 0; // clamp at zero to prevent friction from making us jiggle side to side
         }
-  
     
 
-        var tx        = p2t(player2.x),
-            ty        = p2t(player2.y),
-            nx        = player2.x%TILE,
-            ny        = player2.y%TILE,
-            cell      = tcell(tx,     ty),
-            cellright = tcell(tx + player2.x_tiles, ty),
-            celldown  = tcell(tx,     ty + player2.y_tiles),
-            celldiag  = tcell(tx + player2.x_tiles, ty + player2.y_tiles);
-  
-
-        if (player2.dy > 0) {
-            if ((celldown && !cell) ||
-                (celldiag && !cellright && nx)) {
-                
-                player2.y = t2p(ty);
+        //SI va pabajo
+        if (player2.dy >= 0) {
+            if(player2.y + player2.y_tiles * TILE > (MAP.th * TILE - TILE)){
+                player2.y = MAP.th * TILE - TILE - player2.y_tiles * TILE;
                 player2.dy = 0;
                 player2.jumping = false;
-                ny = 0;
-
             }
         }
+        /*
         else if (player2.dy < 0) {
-            if ((cell      && !celldown) ||
-                (cellright && !celldiag && nx)) {
-                player2.y = t2p(ty + 1);
-                player2.dy = 0;
-                cell      = celldown;
-                cellright = celldiag;
-                ny        = 0;
-            }
+            
         }
+        */
   
         if (player2.dx > 0) {
-            if ((cellright && !cell) ||
-                (celldiag  && !celldown && ny)) {
-                player2.x = t2p(tx);
+            if(player2.x + player2.x_tiles * TILE >= (MAP.tw*TILE - TILE)){
+                player2.x = MAP.tw*TILE - TILE - player2.x_tiles*TILE;
                 player2.dx = 0;
-            }
+
+            } 
         }
         else if (player2.dx < 0) {
-            if ((cell     && !cellright) ||
-                (celldown && !celldiag && ny)) {
-                player2.x = t2p(tx + 1);
-                player2.dx = 0;  
+            if(player2.x <= (MAP.tw*TILE/2 + TILE)){
+                player2.x = MAP.tw*TILE/2 + TILE;
+                player2.dx = 0;
 
-            }
+            } 
         }
     }
 
 
     function updateBall(dt) {
         //COntrol de si iba hacia la izquierda o a la derecha y friccion y aceleración... Ahora no lo uso, pero puede ser util
+        /*
         var wasleft    = ball.dx  < 0,
             wasright   = ball.dx  > 0,
             friction   = ball.friction,
             accel      = ball.accel;
-  
+        */
+
         //reseteo las aceleraciones
         ball.ddx = 0;
         ball.ddy = ball.gravity;
@@ -492,49 +465,34 @@
         //Velocidad
         ball.dy = bound(ball.dy + (dt * ball.ddy), -ball.maxdy, ball.maxdy);
         ball.dx = ball.dx/1.0004;
-  
 
-        var tx        = p2t(ball.x),
-            ty        = p2t(ball.y),
-            nx        = ball.x%TILE,
-            ny        = ball.y%TILE,
-            cell      = tcell(tx,     ty),
-            cellright = tcell(tx + ball.x_tiles, ty),
-            celldown  = tcell(tx,     ty + ball.y_tiles),
-            celldiag  = tcell(tx + ball.x_tiles, ty + ball.y_tiles);
-  
 
+        //pelota cayendo...
         if (ball.dy > 0) {
-            if ((celldown && !cell) ||
-                (celldiag && !cellright && nx)) {
-      
+            if((ball.y + ball.y_tiles*TILE) > (MAP.th*TILE - TILE)){
                 ball.dy = -ball.dy * FACTOR_REBOTE;
-            
             }
+
         }
+        //pelota subiendo
         else if (ball.dy < 0) {
-            if ((cell      && !celldown) ||
-                (cellright && !celldiag && nx)) {
-                ball.y      = t2p(ty + 1);
-                ball.dy     = - ball.dy * FACTOR_REBOTE;
-                cell        = celldown;
-                cellright   = celldiag;
-                ny          = 0;
+            if(ball.y < TILE){
+                ball.dy  = - ball.dy * FACTOR_REBOTE;
             }
         }
   
+        //pelota va a la derecha
         if (ball.dx > 0) {
-            if ((cellright && !cell) ||
-                (celldiag  && !celldown && ny)) {
-                ball.x = t2p(tx);
+            if((ball.x + ball.x_tiles*TILE) > (MAP.tw*TILE - TILE)){
                 ball.dx = -ball.dx * FACTOR_REBOTE;
             }
         }
+        //pelota va a la izquierda
         else if (ball.dx < 0) {
-            if ((cell     && !cellright) ||
-                (celldown && !celldiag && ny)) {
-                ball.x = t2p(tx + 1);
+
+            if(ball.x < TILE){
                 ball.dx = -ball.dx *FACTOR_REBOTE;
+
             }
         }
     }
@@ -650,6 +608,7 @@
         renderPlayer(ctx, dt);
         renderplayer2(ctx, dt);
         renderBall(ctx, dt);
+        renderNet(ctx);
         drawExplosion();
     }
 
@@ -665,6 +624,14 @@
                 }
             }
         }
+    }
+
+    function renderNet(ctx) {
+        
+        ctx.fillStyle = COLOR.BRICK;
+
+        ctx.fillRect(net.x, net.y, net.width, net.height);
+                
     }
 
     function renderPlayer(ctx, dt) {
@@ -828,6 +795,9 @@
                 case "player2"  : player2 = entity; break;
             }
         }
+
+        var alto_red = TILE * (MAP.th/2.5); 
+        net = { "height":alto_red, "width":TILE, "x":(MAP.tw*TILE)/2, "y":(MAP.th*TILE) - alto_red};
 
         cells = data;
     }
