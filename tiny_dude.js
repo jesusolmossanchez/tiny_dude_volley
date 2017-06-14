@@ -177,7 +177,6 @@
                 }
                 ball.dx = - ball.dx * FACTOR_REBOTE;
             }
-            console.log(ball.dx);
         }
     }
     function checkBallCollision() {
@@ -186,7 +185,7 @@
         var jugador_rebota = false;
 
         //Si el player1 colisiona con la pelota...
-        if(!player.jumping && player.tiempo_enfadado > timestamp()){
+        if(!player.jumping && player.haciendo_gorrino){
             if ((overlap(player.x, player.y + TILE*player.x_tiles, TILE*player.y_tiles, TILE*player.x_tiles, ball.x, ball.y, TILE*ball.x_tiles, TILE*ball.y_tiles) &&
                  timestamp() > player.no_rebota_time)){
                     rebota = true;
@@ -358,22 +357,22 @@
         if(!player.jumping && player.tiempo_enfadado > timestamp()){
             if(!player.haciendo_gorrino){
                 if(player.left){
-                    player.dx = -1200;
+                    player.dx = -1000;
                     player.haciendo_gorrino = true;
                     player.gorrino_left = true;
                 }
                 if(player.right){
-                    player.dx = 1200;
+                    player.dx = 1000;
                     player.haciendo_gorrino = true;
                     player.gorrino_left = false;
                 }
             }
             else if(player.tiempo_enfadado > timestamp() + 150){
                 if(player.gorrino_left){
-                    player.dx = -1200;
+                    player.dx = -1000;
                 }
                 else{
-                    player.dx = 1200;
+                    player.dx = 1000;
                 }
 
             }
@@ -410,11 +409,24 @@
         
         //Si va a la derecha
         if (player.dx > 0) {
-            if(player.x + player.x_tiles * TILE >= (MAP.tw*TILE/2)){
-                player.x = MAP.tw*TILE/2 - player.x_tiles * TILE;
-                player.dx = 0;
 
-            } 
+            //Choco con la red
+            if(player.haciendo_gorrino){
+                if(player.x + player.y_tiles * TILE >= (MAP.tw*TILE/2)){
+                    player.x = MAP.tw*TILE/2 - player.y_tiles * TILE;
+                    player.dx = 0;
+
+                } 
+
+            }
+            else{
+                if(player.x + player.x_tiles * TILE >= (MAP.tw*TILE/2)){
+                    player.x = MAP.tw*TILE/2 - player.x_tiles * TILE;
+                    player.dx = 0;
+
+                } 
+
+            }
         }
         //Si va a la izquierda
         else if (player.dx < 0) {
@@ -685,17 +697,18 @@
     }
 
     function renderPlayer(ctx, dt) {
-        if(player.tiempo_enfadado > timestamp()){
-            ctx.fillStyle = COLOR.PURPLE;
-            if(!player.jumping){
-                pinta_player(true);
-            }
-            else{
-                pinta_player(false);
-            }
+        if(player.haciendo_gorrino){
+            ctx.fillStyle = COLOR.PINK;
+            pinta_player(true);
+            
         }
         else{
-            ctx.fillStyle = COLOR.YELLOW;
+            if(!player.jumping){
+                ctx.fillStyle = COLOR.YELLOW;                
+            }
+            else{
+                ctx.fillStyle = COLOR.PURPLE;
+            }
             pinta_player(false);
         }
     }
