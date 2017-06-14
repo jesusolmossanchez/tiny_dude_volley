@@ -16,13 +16,13 @@
          "name":"Object Layer 1",
          "objects":[
                 {
-                 "height":96,
+                 "height":192,
                  "id":1,
                  "name":"player",
                  "properties":
                     {
                      "x_tiles":3,
-                     "y_tiles":3
+                     "y_tiles":6
                     },
                  "propertytypes":
                     {
