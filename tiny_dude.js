@@ -186,11 +186,23 @@
         var jugador_rebota = false;
 
         //Si el player1 colisiona con la pelota...
-        if ((overlap(player.x, player.y, TILE*player.x_tiles, TILE*player.y_tiles, ball.x, ball.y, TILE*ball.x_tiles, TILE*ball.y_tiles) &&
-             timestamp() > player.no_rebota_time)){
-                rebota = true;
-                jugador_rebota = player;
+        if(!player.jumping && player.tiempo_enfadado > timestamp()){
+            if ((overlap(player.x, player.y + TILE*player.x_tiles, TILE*player.y_tiles, TILE*player.x_tiles, ball.x, ball.y, TILE*ball.x_tiles, TILE*ball.y_tiles) &&
+                 timestamp() > player.no_rebota_time)){
+                    rebota = true;
+                    jugador_rebota = player;
+            }
+
         }
+        else{
+            if ((overlap(player.x, player.y, TILE*player.x_tiles, TILE*player.y_tiles, ball.x, ball.y, TILE*ball.x_tiles, TILE*ball.y_tiles) &&
+                 timestamp() > player.no_rebota_time)){
+                    rebota = true;
+                    jugador_rebota = player;
+            }
+        }
+
+        
 
         //Si el player2 colisiona con la pelota...
         if ((overlap(player2.x, player2.y, TILE*player2.x_tiles, TILE*player2.y_tiles, ball.x, ball.y, TILE*ball.x_tiles, TILE*ball.y_tiles) &&
@@ -342,6 +354,34 @@
         //velocidades
         player.dx = bound(player.dx + (dt * player.ddx), -player.maxdx, player.maxdx);
         player.dy = bound(player.dy + (dt * player.ddy), -player.maxdy, player.maxdy);
+
+        if(!player.jumping && player.tiempo_enfadado > timestamp()){
+            if(!player.haciendo_gorrino){
+                if(player.left){
+                    player.dx = -1200;
+                    player.haciendo_gorrino = true;
+                    player.gorrino_left = true;
+                }
+                if(player.right){
+                    player.dx = 1200;
+                    player.haciendo_gorrino = true;
+                    player.gorrino_left = false;
+                }
+            }
+            else if(player.tiempo_enfadado > timestamp() + 150){
+                if(player.gorrino_left){
+                    player.dx = -1200;
+                }
+                else{
+                    player.dx = 1200;
+                }
+
+            }
+        }
+
+        if(player.tiempo_enfadado < timestamp()){
+            player.haciendo_gorrino = false;
+        }
       
         
         if ((wasleft  && (player.dx > 0)) ||
@@ -647,12 +687,26 @@
     function renderPlayer(ctx, dt) {
         if(player.tiempo_enfadado > timestamp()){
             ctx.fillStyle = COLOR.PURPLE;
+            if(!player.jumping){
+                pinta_player(true);
+            }
+            else{
+                pinta_player(false);
+            }
         }
         else{
             ctx.fillStyle = COLOR.YELLOW;
-
+            pinta_player(false);
         }
-        ctx.fillRect(player.x + (player.dx * dt), player.y + (player.dy * dt), TILE*player.x_tiles, TILE*player.y_tiles);
+    }
+
+    function pinta_player(gorrino) {
+        if(!gorrino){
+            ctx.fillRect(player.x + (player.dx * dt), player.y + (player.dy * dt), TILE*player.x_tiles, TILE*player.y_tiles);
+        }
+        else{
+            ctx.fillRect(player.x + (player.dx * dt), player.y + (player.dy * dt) + TILE*player.x_tiles, TILE*player.y_tiles, TILE*player.x_tiles);
+        }
     }
 
   
