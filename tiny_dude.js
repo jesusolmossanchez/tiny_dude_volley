@@ -162,7 +162,7 @@
     function checkBallCollisionNet() {
         if(overlap(net.x, net.y, net.width, net.height, ball.x, ball.y, TILE*ball.x_tiles, TILE*ball.y_tiles)){
             //Si la pelota está por encima de la red, rebota parriba
-            if((ball.y + ((ball.y_tiles/2) * TILE)) < net.y && ball.dy > 0){
+            if((ball.y + ((ball.y_tiles) * TILE)) < net.y && ball.dy > 0){
             //if(ball.y < net.y && ball.dy > 0){
                 ball.dy = - ball.dy * FACTOR_REBOTE;
             }
@@ -186,7 +186,11 @@
 
         //Si el player1 colisiona con la pelota...
         if(!player.jumping && player.haciendo_gorrino){
-            if ((overlap(player.x, player.y + TILE*player.x_tiles, TILE*player.y_tiles, TILE*player.x_tiles, ball.x, ball.y, TILE*ball.x_tiles, TILE*ball.y_tiles) &&
+            var izq_gorrino = 0;
+            if(player.gorrino_left){
+                izq_gorrino = -1 * TILE*player.y_tiles;
+            }   
+            if ((overlap(player.x + izq_gorrino, player.y + TILE*player.x_tiles, TILE*player.y_tiles, TILE*player.x_tiles, ball.x, ball.y, TILE*ball.x_tiles, TILE*ball.y_tiles) &&
                  timestamp() > player.no_rebota_time)){
                     rebota = true;
                     jugador_rebota = player;
@@ -204,10 +208,24 @@
         
 
         //Si el player2 colisiona con la pelota...
-        if ((overlap(player2.x, player2.y, TILE*player2.x_tiles, TILE*player2.y_tiles, ball.x, ball.y, TILE*ball.x_tiles, TILE*ball.y_tiles) &&
-             timestamp() > player2.no_rebota_time)){
-                rebota = true;
-                jugador_rebota = player2;
+        if(!player2.jumping && player2.haciendo_gorrino){
+            var izq_gorrino2 = 0;
+            if(player2.gorrino_left){
+                izq_gorrino2 = -1 * TILE*player2.y_tiles;
+            }   
+            if ((overlap(player2.x + izq_gorrino2, player2.y + TILE*player2.x_tiles, TILE*player2.y_tiles, TILE*player2.x_tiles, ball.x, ball.y, TILE*ball.x_tiles, TILE*ball.y_tiles) &&
+                 timestamp() > player2.no_rebota_time)){
+                    rebota = true;
+                    jugador_rebota = player2;
+            }
+
+        }
+        else{
+            if ((overlap(player2.x, player2.y, TILE*player2.x_tiles, TILE*player2.y_tiles, ball.x, ball.y, TILE*ball.x_tiles, TILE*ball.y_tiles) &&
+                 timestamp() > player2.no_rebota_time)){
+                    rebota = true;
+                    jugador_rebota = player2;
+            }
         }
 
         if(rebota){
@@ -336,7 +354,7 @@
       
 
         //Salto
-        if (player.jump && !player.jumping) {
+        if (player.jump && !player.jumping && player.tiempo_enfadado < timestamp() + 100) {
             player.ddy = player.ddy - player.impulse; // an instant big force impulse
             player.jumping = true;
         }
@@ -419,18 +437,24 @@
                 } 
 
             }
-            else{
-                if(player.x + player.x_tiles * TILE >= (MAP.tw*TILE/2)){
-                    player.x = MAP.tw*TILE/2 - player.x_tiles * TILE;
+            else if(player.x + player.x_tiles * TILE >= (MAP.tw*TILE/2)){
+                player.x = MAP.tw*TILE/2 - player.x_tiles * TILE;
+                player.dx = 0;
+            }
+        }
+        //Si va a la izquierda
+        else if (player.dx < 0) {
+
+            //Choco con la pared
+            if(player.haciendo_gorrino){
+                if(player.x - player.y_tiles * TILE <= TILE){
+                    player.x = TILE + player.y_tiles * TILE;
                     player.dx = 0;
 
                 } 
 
             }
-        }
-        //Si va a la izquierda
-        else if (player.dx < 0) {
-            if(player.x <= TILE){
+            else if(player.x <= TILE){
                 player.x = TILE;
                 player.dx = 0;
             }
@@ -474,6 +498,26 @@
             (wasright && (player2.dx < 0))) {
             player2.dx = 0; // clamp at zero to prevent friction from making us jiggle side to side
         }
+
+
+
+        if(!player2.jumping && player2.tiempo_enfadado > timestamp()){
+            if(player2.tiempo_enfadado > timestamp() + 150){
+                if(player2.gorrino_left){
+                    player2.dx = -1000;
+                }
+                else{
+                    player2.dx = 1000;
+                }
+
+            }
+            player2.haciendo_gorrino = true;
+        }
+        else{
+            player2.haciendo_gorrino = false;
+
+        }
+
     
 
         //SI va pabajo
@@ -491,14 +535,33 @@
         */
   
         if (player2.dx > 0) {
-            if(player2.x + player2.x_tiles * TILE >= (MAP.tw*TILE - TILE)){
+
+            //Choco con la red
+            if(player2.haciendo_gorrino){
+                if(player2.x + player2.y_tiles * TILE >= (MAP.tw*TILE - TILE)){
+                    player2.x = MAP.tw*TILE - TILE - player2.y_tiles*TILE;
+                    player2.dx = 0;
+
+                } 
+
+            }
+            else if(player2.x + player2.x_tiles * TILE >= (MAP.tw*TILE - TILE)){
                 player2.x = MAP.tw*TILE - TILE - player2.x_tiles*TILE;
                 player2.dx = 0;
 
             } 
         }
         else if (player2.dx < 0) {
-            if(player2.x <= (MAP.tw*TILE/2 + TILE)){
+            //Choco con la red
+            if(player2.haciendo_gorrino){
+                if(player2.x - player2.y_tiles * TILE <= (MAP.tw*TILE/2 + TILE)){
+                    player2.x = MAP.tw*TILE/2 + player2.y_tiles*TILE + TILE;
+                    player2.dx = 0;
+
+                } 
+
+            }
+            else if(player2.x <= (MAP.tw*TILE/2 + TILE)){
                 player2.x = MAP.tw*TILE/2 + TILE;
                 player2.dx = 0;
 
@@ -574,7 +637,7 @@
         var ancho_juego = MAP.tw*TILE;
         var alto_juego = MAP.th*TILE;
         var x = ball.x + ball.x_tiles/2;
-        var H = (ball.y + ball.y_tiles/2 - alto_juego - TILE*4) * (-1);
+        var H = (ball.y + (ball.y_tiles)*TILE - alto_juego + TILE) * (-1);
         var Vx = ball.dx;
         var Vy = ball.dy;
 
@@ -599,10 +662,15 @@
         var ball_y = ball.y + ball.y_tiles/2;
 
         //si cae en mi campo
-        if(dondecae > (ancho_juego/2 - 50)){
+        if(player2.haciendo_gorrino){
+            //nada
+        }
+        else if(dondecae > (ancho_juego/2 - 50)){
             
             //si cae a mi izquierda, me muevo pallá
-            if(dondecae < (player2_x - 80) && player2_x > ancho_juego/2){
+            //TODO: revisar el valor a la derecha 'factor_derecha'
+            var factor_derecha = 60;
+            if(dondecae < (player2_x - factor_derecha) && player2_x > ancho_juego/2){
                 player2.left = true;
                 player2.right = false;
             }
@@ -616,7 +684,8 @@
                 x>ancho_juego/2 && 
                 (player2_y > alto_juego-200) && 
                 (Vx<120 && Vx>-120) && 
-                (ball_y < alto_juego - 100)){
+                (ball_y < alto_juego - 100) &&
+                player2.tiempo_enfadado < timestamp()){
 
                 player2.jump = true;
             }
@@ -657,6 +726,28 @@
             }
             
         }
+
+
+        var limite_gorrino = (MAP.th * TILE)/4;
+        if(H< limite_gorrino && !player2.jumping){
+            if(dondecae < player2_x && player2_x > MAP.tw*TILE/2){
+                if(player2_x - dondecae > 130 && x>MAP.tw*TILE/2 && !player2.haciendo_gorrino){
+                    player2.tiempo_enfadado = timestamp()+400;
+                    player2.gorrino_left = true;
+                }
+
+            }
+            else{
+                if(dondecae-player2_x > 130 && x>MAP.tw*TILE/2 && !player2.haciendo_gorrino){
+                    player2.tiempo_enfadado = timestamp()+400;
+                    player2.gorrino_left = false;
+                }
+
+            }
+        }
+        
+
+
 
     }
 
@@ -699,7 +790,8 @@
     function renderPlayer(ctx, dt) {
         if(player.haciendo_gorrino){
             ctx.fillStyle = COLOR.PINK;
-            pinta_player(true);
+
+            pinta_player(true, player.gorrino_left);
             
         }
         else{
@@ -713,19 +805,38 @@
         }
     }
 
-    function pinta_player(gorrino) {
+    function pinta_player(gorrino, gorrino_left) {
         if(!gorrino){
             ctx.fillRect(player.x + (player.dx * dt), player.y + (player.dy * dt), TILE*player.x_tiles, TILE*player.y_tiles);
         }
         else{
-            ctx.fillRect(player.x + (player.dx * dt), player.y + (player.dy * dt) + TILE*player.x_tiles, TILE*player.y_tiles, TILE*player.x_tiles);
+            var izq_gorrino = 1;
+            if(gorrino_left){
+                izq_gorrino = -1;
+            }
+            ctx.fillRect(player.x + (player.dx * dt), player.y + (player.dy * dt) + TILE*player.x_tiles, izq_gorrino * TILE*player.y_tiles, TILE*player.x_tiles);
         }
     }
 
   
     function renderplayer2(ctx, dt) {
-        ctx.fillStyle = COLOR.GREY;
-        ctx.fillRect(player2.x + (player2.dx * dt), player2.y + (player2.dy * dt), TILE*player2.x_tiles, TILE*player2.y_tiles);
+        if(player2.haciendo_gorrino){
+            ctx.fillStyle = COLOR.PINK;
+            var izq_gorrino = 1;
+            if(player2.gorrino_left){
+                izq_gorrino = -1;
+            }
+            ctx.fillRect(player2.x + (player2.dx * dt), player2.y + (player2.dy * dt) + TILE*player2.x_tiles, izq_gorrino * TILE*player2.y_tiles, TILE*player2.x_tiles);            
+        }
+        else{
+            if(!player2.jumping){
+                ctx.fillStyle = COLOR.GREY;
+            }
+            else{
+                ctx.fillStyle = COLOR.GREY;
+            }
+            ctx.fillRect(player2.x + (player2.dx * dt), player2.y + (player2.dy * dt), TILE*player2.x_tiles, TILE*player2.y_tiles);
+        }
     }
   
     var theta = 0;
