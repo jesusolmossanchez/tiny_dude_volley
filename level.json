@@ -37,13 +37,13 @@
                  "y":1107
                 }, 
                 {
-                 "height":96,
+                 "height":192,
                  "id":2,
                  "name":"player2",
                  "properties":
                     {
                      "x_tiles":3,
-                     "y_tiles":3
+                     "y_tiles":6
                     },
                  "propertytypes":
                     {

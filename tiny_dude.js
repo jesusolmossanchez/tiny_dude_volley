@@ -269,6 +269,7 @@
                 else{
                     ball.dy = bound(ball.dy/6 - IMPULSO_PELOTA, IMPULSO_PELOTA/1.3, IMPULSO_PELOTA) ;
                 }
+                ball.dy = - IMPULSO_PELOTA;
 
                 //ball.dy = -ball.dy * FACTOR_REBOTE;
 
@@ -665,7 +666,7 @@
         var Vy = ball.dy;
 
         //calcula donde cae
-        if (Vy<0){
+        if (Vy<100){
             Vy = Vy*(-1);
             //Donde cae en relación a donde estoy
             dondecae = x + (Vx)/ball.ddy * Math.sqrt((2*ball.ddy*H)+(Vx));
@@ -689,11 +690,11 @@
         if(player2.haciendo_gorrino){
             //nada
         }
-        else if(dondecae > (ancho_juego/2 - 50)){
+        else if(dondecae > (ancho_juego/2 - 50) || x > (ancho_juego/2) ){
             
             //si cae a mi izquierda, me muevo pallá
             //TODO: revisar el valor a la derecha 'factor_derecha'
-            var factor_derecha = 60;
+            var factor_derecha = 0;
             if(dondecae < (player2_x - factor_derecha) && player2_x > ancho_juego/2){
                 player2.left = true;
                 player2.right = false;
