@@ -100,7 +100,7 @@
             MAXDY    = 60,      // default max vertical speed   (60 tiles per second)
             ACCEL    = 0.001,     // default take 1/2 second to reach maxdx (horizontal acceleration)
             FRICTION = 0.001,     // default take 1/6 second to stop from maxdx (horizontal friction)
-            IMPULSE  = 2800,    // default player jump impulse
+            IMPULSE  = 2400,    // default player jump impulse
             IMPULSO_PELOTA  = 1200,    // impulso de la pelota
             FACTOR_REBOTE  = 0.7,    // impulso de la pelota
             F_ALEJA_X  = 2,    // factor que se aleja la pelota en el ejeX
@@ -237,18 +237,19 @@
         if(rebota){
 
             //TODO: Parametrizar con el tamaño de los tiles
-            var velocidad_lateral1 = 1800;
-            var velocidad_lateral2 = 800;
+            var velocidad_lateral1 = 2100;
+            var velocidad_lateral2 = 1900;
+            var velocidad_lateral3 = 600;
             var velocidad_lateral_mate = 2000;
             
-            var velocidad_vertical1 = 1400;
+            var velocidad_vertical1 = 1500;
             var velocidad_vertical_mate = 1800;
             var velocidad_vertical_arriba = 1800;
             
-            var velocidad_vertical_dejada = 200;
+            var velocidad_vertical_dejada = 150;
 
-            var gravedad_mate1 = 1800;
-            var gravedad_mate2 = 2000;
+            var gravedad_mate1 = 2500;
+            var gravedad_mate2 = 2600;
             var gravedad_mate3 = 1600;
 
             var x_explosion = ball.x + TILE*ball.x_tiles/2;
@@ -269,7 +270,6 @@
                 else{
                     ball.dy = bound(ball.dy/6 - IMPULSO_PELOTA, IMPULSO_PELOTA/1.3, IMPULSO_PELOTA) ;
                 }
-                ball.dy = - IMPULSO_PELOTA;
 
                 //ball.dy = -ball.dy * FACTOR_REBOTE;
 
@@ -295,7 +295,8 @@
                     //pulsado izquierda o derecha solo
                     if ((jugador_rebota.right || jugador_rebota.left) && !jugador_rebota.jump && !jugador_rebota.down)
                     {
-                        ball.dy = -ball.dy*0.3;
+                        ball.dy = -Math.abs(ball.dy)*0.3;
+                        ball.dy = -200;
                         ball.dx = velocidad_lateral1;
                         ball.gravity = gravedad_mate1;
                     }
@@ -303,14 +304,14 @@
                     else if(jugador_rebota.right && jugador_rebota.jump && !jugador_rebota.down )
                     {
                         ball.dy = -velocidad_vertical1;
-                        ball.dx = velocidad_lateral1;
+                        ball.dx = velocidad_lateral2;
                         ball.gravity = gravedad_mate2;
                     }
                     //arriba izquierda
                     else if(jugador_rebota.left && jugador_rebota.jump && !jugador_rebota.down)
                     {
                         ball.dy = -velocidad_vertical1;
-                        ball.dx = -velocidad_lateral1;
+                        ball.dx = -velocidad_lateral2;
                         ball.gravity = gravedad_mate2;
                     }
                     // abajo y a un lado
@@ -328,13 +329,13 @@
                     //sin pulsar ningun lado
                     else if(!jugador_rebota.right && !jugador_rebota.left && !jugador_rebota.jump && !jugador_rebota.down){
                         ball.dy = -velocidad_vertical_dejada;
-                        ball.dx = velocidad_lateral2;
+                        ball.dx = velocidad_lateral3;
                         ball.gravity = gravedad_mate2;
                     }
                     //arriba solo
                     else if(!jugador_rebota.right && !jugador_rebota.left && jugador_rebota.jump && !jugador_rebota.down){
                         ball.dy = -velocidad_vertical_arriba;
-                        ball.dx = velocidad_lateral2;
+                        ball.dx = velocidad_lateral3;
                         ball.gravity = gravedad_mate2;
                     }
                 }
@@ -666,7 +667,7 @@
         var Vy = ball.dy;
 
         //calcula donde cae
-        if (Vy<100){
+        if (Vy<0){
             Vy = Vy*(-1);
             //Donde cae en relación a donde estoy
             dondecae = x + (Vx)/ball.ddy * Math.sqrt((2*ball.ddy*H)+(Vx));
@@ -690,11 +691,11 @@
         if(player2.haciendo_gorrino){
             //nada
         }
-        else if(dondecae > (ancho_juego/2 - 50) || x > (ancho_juego/2) ){
+        else if(dondecae > (ancho_juego/2 - 50)){
             
             //si cae a mi izquierda, me muevo pallá
             //TODO: revisar el valor a la derecha 'factor_derecha'
-            var factor_derecha = 0;
+            var factor_derecha = 60;
             if(dondecae < (player2_x - factor_derecha) && player2_x > ancho_juego/2){
                 player2.left = true;
                 player2.right = false;
@@ -836,7 +837,26 @@
 
     function pinta_player(gorrino, gorrino_left) {
         if(!gorrino){
-            ctx.fillRect(player.x + (player.dx * dt), player.y + (player.dy * dt), TILE*player.x_tiles, TILE*player.y_tiles);
+
+            var x_player = player.x + (player.dx * dt);
+            var y_player = player.y + (player.dy * dt);
+            var ancho_player = TILE*player.x_tiles;
+            var alto_player = TILE*player.y_tiles;
+
+            ctx.fillRect(x_player, y_player, ancho_player, alto_player);
+
+            //ojos
+            var ojo_size = 16;
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(x_player + ancho_player/4, y_player + ancho_player/15, ojo_size, ojo_size);
+            ctx.fillRect(x_player + ancho_player - ancho_player/8, y_player + ancho_player/18, ojo_size, ojo_size);
+
+            //boca
+            var boca_largo = ancho_player/3;
+            var boca_ancho = 4;
+            ctx.fillStyle = "#ba001f";
+            ctx.fillRect(x_player + ancho_player/2, y_player + alto_player/5, boca_largo, boca_ancho);
+
         }
         else{
             var izq_gorrino = 1;
@@ -845,6 +865,10 @@
             }
             ctx.fillRect(player.x + (player.dx * dt), player.y + (player.dy * dt) + TILE*player.x_tiles, izq_gorrino * TILE*player.y_tiles, TILE*player.x_tiles);
         }
+    
+
+
+
     }
 
   
