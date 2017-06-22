@@ -271,7 +271,7 @@
                     ball.dy = bound(ball.dy/6 - IMPULSO_PELOTA, IMPULSO_PELOTA/1.3, IMPULSO_PELOTA) ;
                 }
 
-                //ball.dy = -ball.dy * FACTOR_REBOTE;
+                ball.dy = -IMPULSO_PELOTA;
 
                 //La velocidad X de la pelota es igual a la que lleve +/- la diferencia de posicion que tienen en el eje X por un factor de alejado X
                 ball.dx = ball.dx/4 + (ball.x - jugador_rebota.x) * F_ALEJA_X;
@@ -296,7 +296,7 @@
                     if ((jugador_rebota.right || jugador_rebota.left) && !jugador_rebota.jump && !jugador_rebota.down)
                     {
                         ball.dy = -Math.abs(ball.dy)*0.3;
-                        ball.dy = -200;
+                        ball.dy = -300;
                         ball.dx = velocidad_lateral1;
                         ball.gravity = gravedad_mate1;
                     }
@@ -384,7 +384,7 @@
 
         //Si se pulsa acción
         if(player.accion && (timestamp() > player.tiempo_enfadado + 300)){
-            player.tiempo_enfadado = timestamp()+400;
+            player.tiempo_enfadado = timestamp()+500;
         }
 
         //Posiciones
@@ -685,17 +685,19 @@
         var player2_x = player2.x + (player2.x_tiles * TILE / 2);
         var player2_y = player2.y + (player2.y_tiles * TILE / 2);
 
+
         var ball_y = ball.y + ball.y_tiles/2;
 
         //si cae en mi campo
         if(player2.haciendo_gorrino){
             //nada
         }
-        else if(dondecae > (ancho_juego/2 - 50)){
+        else if(dondecae > (ancho_juego/2 - 50) ||
+                (dondecae > (ancho_juego/2 - 450) && Vy < (-100))){
             
             //si cae a mi izquierda, me muevo pallá
             //TODO: revisar el valor a la derecha 'factor_derecha'
-            var factor_derecha = 60;
+            var factor_derecha = 50;
             if(dondecae < (player2_x - factor_derecha) && player2_x > ancho_juego/2){
                 player2.left = true;
                 player2.right = false;
@@ -709,16 +711,13 @@
             if(Math.abs(dondecae - player2_x) < 110 && 
                 x>ancho_juego/2 && 
                 (player2_y > alto_juego-200) && 
-                (Vx<120 && Vx>-120) && 
-                (ball_y < alto_juego - 100) &&
+                (Vx<300 && Vx>-300) && 
+                (ball_y < alto_juego - 600) &&
                 player2.tiempo_enfadado < timestamp()){
 
                 player2.jump = true;
 
-                player2.tiempo_enfadado = timestamp()+400;
-
-
-       
+                player2.tiempo_enfadado = timestamp()+500;
 
             }
             else{
@@ -762,14 +761,14 @@
         if(!player2.jumping && H < (MAP.th * TILE/3)){
             if(dondecae < player2_x && player2_x > MAP.tw*TILE/2){
                 if(player2_x - dondecae > (MAP.tw * TILE/4) && x>MAP.tw*TILE/2 && !player2.haciendo_gorrino){
-                    player2.tiempo_enfadado = timestamp()+400;
+                    player2.tiempo_enfadado = timestamp()+500;
                     player2.gorrino_left = true;
                 }
 
             }
             else{
                 if(dondecae-player2_x > 130 && x>MAP.tw*TILE/2 && !player2.haciendo_gorrino){
-                    player2.tiempo_enfadado = timestamp()+400;
+                    player2.tiempo_enfadado = timestamp()+500;
                     player2.gorrino_left = false;
                 }
 
