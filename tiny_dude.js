@@ -456,9 +456,36 @@
                     }
                 }
                 else{
-                    ball.dy = -velocidad_vertical1;
-                    ball.dx = -velocidad_lateral1;
-                    ball.gravity = gravedad_mate2;
+                    
+                    //TODO: hacer tiro de la maquina aleatorio 
+                    var ale = Math.random();
+                    if(ale < 0.4){
+                        ball.dy = -velocidad_vertical1;
+                        ball.dx = -velocidad_lateral1;
+                        ball.gravity = gravedad_mate2;
+                    }
+                    else if(ale >= 0.4 && ale < 0.8){
+                        ball.dy = -Math.abs(ball.dy)*0.3;
+                        ball.dy = -300;
+                        ball.dx = -velocidad_lateral1;
+                        ball.gravity = gravedad_mate1;
+                    }
+                    else{
+                        if(player2.x < (3/4)*TILE * MAP.tw){
+                            if(ale < 0.9){
+                                ball.dy = velocidad_vertical_mate;
+                                ball.dx = -velocidad_lateral_mate;
+                                ball.gravity = gravedad_mate3;
+                            }
+                            else{
+                                ball.dy = -velocidad_vertical_arriba;
+                                ball.dx = -velocidad_lateral3;
+                                ball.gravity = gravedad_mate2;
+                            }
+                        }
+                    }
+                    
+                    player2.tiempo_enfadado = timestamp();
                 }
 
                 explosions.push(
@@ -839,10 +866,10 @@
     function empieza(empieza1){
         
         player.x = 96;
-        player.y = 1107;
+        player.y = TILE*MAP.th - player2.y_tiles * TILE - 50;
         
         player2.x = TILE*MAP.tw - 96 - player2.x_tiles * TILE;
-        player2.y = 1107;
+        player2.y = TILE*MAP.th - player2.y_tiles * TILE - 50;
 
         if(empieza1){
             ball.x = 112;
@@ -874,7 +901,8 @@
         var alto_juego = MAP.th*TILE;
         var x = ball.x + ball.x_tiles/2;
         //donde está la pelota en altura
-        var H = alto_juego - ball.y + (ball.y_tiles/2)*TILE;
+        var H_b = alto_juego - ball.y + (ball.y_tiles/2)*TILE;
+        var H_p = alto_juego - ball.y + (ball.y_tiles/2)*TILE - (alto_juego - player2.y);
         //var H = alto_juego - ball.y;
         var Vx = ball.dx;
         var Vy = ball.dy;
@@ -884,7 +912,7 @@
         if (Vy<=10){
             Vy = Vy*(-1);
             //Donde cae en relación a donde estoy
-            dondecae = x + (Vx)/ball.ddy * Math.sqrt((2*ball.ddy*H)+(Vx));
+            dondecae = x + (Vx)/ball.ddy * Math.sqrt((2*ball.ddy*H_p)+(Vx));
             if (dondecae>ancho_juego){
                 dondecae = ancho_juego - (dondecae-ancho_juego);
             }
@@ -910,7 +938,7 @@
             
             //si cae a mi izquierda, me muevo pallá
             //TODO: revisar el valor a la derecha 'factor_derecha'
-            var factor_derecha = 50;
+            var factor_derecha = 30;
             if(dondecae < (player2_x - factor_derecha) && player2_x > ancho_juego/2){
                 player2.left = true;
                 player2.right = false;
@@ -930,7 +958,7 @@
 
                 player2.jump = true;
 
-                player2.tiempo_enfadado = timestamp()+700;
+                player2.tiempo_enfadado = timestamp()+2700;
 
             }
             else{
@@ -971,7 +999,7 @@
             
         }
 
-        if(!player2.jumping && H < (MAP.th * TILE/3)){
+        if(!player2.jumping && H_b < (MAP.th * TILE/3)){
             if(dondecae < player2_x && player2_x > MAP.tw*TILE/2){
                 if(player2_x - dondecae > (MAP.tw * TILE/4) && x>MAP.tw*TILE/2 && !player2.haciendo_gorrino){
                     player2.tiempo_enfadado = timestamp()+500;
@@ -987,6 +1015,7 @@
 
             }
         }
+        
         
   
 
