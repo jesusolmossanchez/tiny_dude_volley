@@ -16,13 +16,13 @@
          "name":"Object Layer 1",
          "objects":[
                 {
-                 "height":192,
+                 "height":256,
                  "id":1,
                  "name":"player",
                  "properties":
                     {
-                     "x_tiles":3,
-                     "y_tiles":6
+                     "x_tiles":4,
+                     "y_tiles":8
                     },
                  "propertytypes":
                     {
@@ -32,18 +32,18 @@
                  "rotation":0,
                  "type":"player",
                  "visible":true,
-                 "width":96,
-                 "x":88,
+                 "width":128,
+                 "x":96,
                  "y":1107
                 }, 
                 {
-                 "height":192,
+                 "height":256,
                  "id":2,
                  "name":"player2",
                  "properties":
                     {
-                     "x_tiles":3,
-                     "y_tiles":6
+                     "x_tiles":4,
+                     "y_tiles":8
                     },
                  "propertytypes":
                     {
@@ -53,19 +53,19 @@
                  "rotation":0,
                  "type":"player2",
                  "visible":true,
-                 "width":96,
+                 "width":128,
                  "x":1850,
                  "y":1107
                 }, 
                 {
-                 "height":64,
+                 "height":96,
                  "id":3,
                  "name":"ball",
                  "properties":
                     {
                      "gravity":50,
-                     "x_tiles":2,
-                     "y_tiles":2
+                     "x_tiles":3,
+                     "y_tiles":3
                     },
                  "propertytypes":
                     {
@@ -76,7 +76,7 @@
                  "rotation":0,
                  "type":"ball",
                  "visible":true,
-                 "width":64,
+                 "width":96,
                  "x":103,
                  "y":198
                 }],
