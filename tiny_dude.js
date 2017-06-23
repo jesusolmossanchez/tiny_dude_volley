@@ -87,6 +87,108 @@
         return ret;
 
     }
+
+    function pinta_marcador(){
+        var letras = {
+                '0': [
+                    [1, 1, 1],
+                    [1, ,  1],
+                    [1, ,  1],
+                    [1, ,  1],
+                    [1, 1, 1]
+                ],
+                '1': [
+                    [ , , 1],
+                    [ , , 1],
+                    [ , , 1],
+                    [ , , 1],
+                    [ , , 1]
+                ],
+                '2': [
+                    [ 1, 1, 1],
+                    [  ,  , 1],
+                    [ 1, 1, 1],
+                    [ 1,  ,  ],
+                    [ 1, 1, 1]
+                ],
+                '3': [
+                    [ 1, 1, 1],
+                    [  ,  , 1],
+                    [ 1, 1, 1],
+                    [  ,  , 1],
+                    [ 1, 1, 1]
+                ],
+                '4': [
+                    [ 1,  , 1],
+                    [ 1,  , 1],
+                    [ 1, 1, 1],
+                    [  ,  , 1],
+                    [  ,  , 1]
+                ],
+                '5': [
+                    [ 1, 1, 1],
+                    [ 1,  ,  ],
+                    [ 1, 1, 1],
+                    [  ,  , 1],
+                    [ 1, 1, 1]
+                ],
+                '6': [
+                    [ 1, 1, 1],
+                    [ 1,  ,  ],
+                    [ 1, 1, 1],
+                    [ 1,  , 1],
+                    [ 1, 1, 1]
+                ],
+                '7': [
+                    [ 1, 1, 1],
+                    [  ,  , 1],
+                    [  ,  , 1],
+                    [  ,  , 1],
+                    [  ,  , 1]
+                ],
+                '8': [
+                    [ 1, 1, 1],
+                    [ 1,  , 1],
+                    [ 1, 1, 1],
+                    [ 1,  , 1],
+                    [ 1, 1, 1]
+                ],
+                '9': [
+                    [ 1, 1, 1],
+                    [ 1,  , 1],
+                    [ 1, 1, 1],
+                    [  ,  , 1],
+                    [ 1, 1, 1]
+                ],
+            };
+        letra1 = letras[puntos1];
+        letra2 = letras[puntos2];
+        var size = 12;
+        pinta_numero(96, 96, letra1, size);
+        pinta_numero(TILE * MAP.tw - 96 - (size*3), 96, letra2, size);
+
+        
+    }
+
+    function pinta_numero(x, y, letra, size){
+        ctx.fillStyle = "#ffffff";
+        var size = size;
+        var currX = x;
+        var currY = y;
+        var addX = 0;
+        for (var y = 0; y < letra.length; y++) {
+            var row = letra[y];
+            for (var x = 0; x < row.length; x++) {
+                if (row[x]) {
+                    ctx.fillRect(currX + x * size, currY, size, size);
+                }
+            }
+            addX = Math.max(addX, row.length * size);
+            currY += size;
+        }
+        currX += size + addX;
+    }
+
   
     //-------------------------------------------------------------------------
     // GAME CONSTANTS AND VARIABLES
@@ -118,7 +220,13 @@
             player   = {},
             ball   = {},
             net   = {},
-            cells    = [];
+            cells    = [],
+            tiempo_punto = timestamp(),
+            hay_punto = false,
+            puntos1 = 0,
+            puntos2 = 0;
+
+
 
 
 
@@ -153,8 +261,9 @@
     // UPDATE LOOP
     //-------------------------------------------------------------------------
     function update(dt) {
-        calculaDondeCae();
 
+        procesa_punto();
+        calculaDondeCae();
         updatePlayer1(dt);
         updateplayer2(dt);
         checkBallCollisionNet();
@@ -186,6 +295,13 @@
         }
     }
     function checkBallCollision() {
+
+
+
+        if(hay_punto){
+            return;
+        }
+
         
         var rebota = false;
         var jugador_rebota = false;
@@ -350,10 +466,13 @@
                 );
             }
         }
+
+
     }
 
 
     function updatePlayer1(dt){
+
         //COntrol de si iba hacia la izquierda o a la derecha y friccion y aceleración... Ahora no lo uso, pero puede ser util
         var wasleft    = player.dx  < 0,
             wasright   = player.dx  > 0,
@@ -365,16 +484,21 @@
         player.ddy = player.gravity;
 
         //movimientos
-        if (player.left)
-            player.ddx = player.ddx - accel;
-        else if (wasleft)
-            player.ddx = player.ddx + friction;
-      
-        if (player.right)
-            player.ddx = player.ddx + accel;
-        else if (wasright)
-            player.ddx = player.ddx - friction;
-      
+        if(!hay_punto){
+            if (player.left){
+                player.ddx = player.ddx - accel;
+            }
+            else if (wasleft){
+                player.ddx = player.ddx + friction;
+            }
+          
+            if (player.right){
+                player.ddx = player.ddx + accel;
+            }
+            else if (wasright){
+                player.ddx = player.ddx - friction;
+            }
+        }
 
         //Salto
         if (player.jump && !player.jumping && player.tiempo_enfadado < timestamp() + 100) {
@@ -482,10 +606,27 @@
                 player.dx = 0;
             }
         }
+
+       
+
+
+        if(hay_punto){
+            if(player.dy > 0){
+                player.dy = player.dy - 20;
+            }
+            else{
+                player.dy = player.dy + 20;
+            }
+            player.ddy = player.ddy + 100;
+        }
     }
 
 
     function updateplayer2(dt){
+
+        if(hay_punto){
+            return;
+        }
         //COntrol de si iba hacia la izquierda o a la derecha y friccion y aceleración... Ahora no lo uso, pero puede ser util
         var wasleft    = player2.dx  < 0,
             wasright   = player2.dx  > 0,
@@ -590,6 +731,7 @@
 
             } 
         }
+
     }
 
 
@@ -619,6 +761,21 @@
         if (ball.dy > 0) {
             if((ball.y + ball.y_tiles*TILE) > (MAP.th*TILE - TILE)){
                 ball.dy = -ball.dy * FACTOR_REBOTE;
+
+                //TOCA el suelo, procesa punto
+                if(!hay_punto){
+                    tiempo_punto = timestamp() + 3000;
+                    
+                    if(ball.x < MAP.tw*TILE/2){
+                        puntos2++;
+                        empieza1 = false;
+                    }
+                    else{
+                        puntos1++;
+                        empieza1 = true;
+
+                    }
+                }
             }
 
         }
@@ -643,14 +800,70 @@
 
             }
         }
+
+
+
+
+
+        if(hay_punto){
+            if(ball.dy > 0){
+                ball.dy = ball.dy - 3;
+            }
+            else{
+                ball.dy = ball.dy + 3;
+            }
+            ball.ddy = ball.ddy + 3;
+        }
+
+
+
     }
 
     //-------------------------------------------------------------------------
     // CALCULOS
     //-------------------------------------------------------------------------
+    function procesa_punto(){
+        
+        if(tiempo_punto > timestamp()){
+            hay_punto = true;
+        }
+        else{
+            if(hay_punto){
+                empieza(empieza1);
+            }
+            hay_punto = false;
+        }
+
+    }
+
+    function empieza(empieza1){
+        
+        player.x = 96;
+        player.y = 1107;
+        
+        player2.x = TILE*MAP.tw - 96 - player2.x_tiles * TILE;
+        player2.y = 1107;
+
+        if(empieza1){
+            ball.x = 112;
+        }
+        else{
+            ball.x = TILE*MAP.tw - 112 - ball.x_tiles * TILE;
+        }
+        ball.y = 198;
+        ball.dx = 0;
+        ball.dy = 0;
+
+            hay_punto = false;
+    }
+
     var dondecae = 0;
     var movia_left = false;
     function calculaDondeCae(){
+
+        if(hay_punto){
+            return;
+        }
         // TODO:
         // Calcular donde cae... 
         // si cae en mi campo mover izq/der para ir a por ella
@@ -667,7 +880,8 @@
         var Vy = ball.dy;
 
         //calcula donde cae
-        if (Vy<0){
+     
+        if (Vy<=10){
             Vy = Vy*(-1);
             //Donde cae en relación a donde estoy
             dondecae = x + (Vx)/ball.ddy * Math.sqrt((2*ball.ddy*H)+(Vx));
@@ -680,7 +894,6 @@
         }else{
             //solo calculo donde cae si se mueve abajo(la pelota)
         }
-
 
         var player2_x = player2.x + (player2.x_tiles * TILE / 2);
         var player2_y = player2.y + (player2.y_tiles * TILE / 2);
@@ -717,7 +930,7 @@
 
                 player2.jump = true;
 
-                player2.tiempo_enfadado = timestamp()+500;
+                player2.tiempo_enfadado = timestamp()+700;
 
             }
             else{
@@ -792,6 +1005,7 @@
         renderBall(ctx, dt);
         renderNet(ctx);
         drawExplosion();
+        pinta_marcador();
     }
 
     function renderMap(ctx) {
