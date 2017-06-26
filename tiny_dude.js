@@ -1335,5 +1335,32 @@
         frame();
     });
 
+
+    var music_player = new CPlayer();
+    music_player.init(song);
+    console.log(music_player)
+     // Generate music...
+     
+  var done = false;
+  setInterval(function () {
+    if (done) {
+      return;
+    }
+
+    done = music_player.generate() >= 1;
+
+    if (done) {
+
+      // Put the generated song in an Audio element.
+      var wave = music_player.createWave();
+      var audio = document.createElement("audio");
+      audio.src = URL.createObjectURL(new Blob([wave], {type: "audio/wav"}));
+      audio.play();
+
+    }
+  }, 0);
+  
+
+
 })();
 
