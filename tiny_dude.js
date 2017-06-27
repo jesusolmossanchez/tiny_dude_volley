@@ -65,8 +65,8 @@
     }
     function calcula_rotacion(x, y, doble) {
 
-        var centro_balon_x = ball.x + (ball.dx * dt) + TILE*ball.x_tiles/2;
-        var centro_balon_y = ball.y + (ball.dy * dt) + TILE*ball.y_tiles/2;
+        var centro_balon_x = ball.x + (ball.dx * dt) + ball.ancho/2;
+        var centro_balon_y = ball.y + (ball.dy * dt) + ball.alto/2;
 
         var mas = 0;
         if(doble){
@@ -163,24 +163,23 @@
             };
         letra1 = letras[puntos1];
         letra2 = letras[puntos2];
-        var size = 12;
-        pinta_numero(96, 96, letra1, size);
-        pinta_numero(TILE * MAP.tw - 96 - (size*3), 96, letra2, size);
+        var size = 4;
+        pinta_numero(16, 16, letra1, size);
+        pinta_numero(ancho_total - 16 - (size*3), 16, letra2, size);
 
         
     }
 
     function pinta_numero(x, y, letra, size){
         ctx.fillStyle = "#ffffff";
-        var size = size;
         var currX = x;
         var currY = y;
         var addX = 0;
-        for (var y = 0; y < letra.length; y++) {
-            var row = letra[y];
-            for (var x = 0; x < row.length; x++) {
-                if (row[x]) {
-                    ctx.fillRect(currX + x * size, currY, size, size);
+        for (var i_y = 0; i_y < letra.length; i_y++) {
+            var row = letra[i_y];
+            for (var i_x = 0; i_x < row.length; i_x++) {
+                if (row[i_x]) {
+                    ctx.fillRect(currX + i_x * size, currY, size, size);
                 }
             }
             addX = Math.max(addX, row.length * size);
@@ -193,20 +192,47 @@
     //-------------------------------------------------------------------------
     // GAME CONSTANTS AND VARIABLES
     //-------------------------------------------------------------------------
+
+    //NUEVAS VARIABLES
+    var     ancho_total = 800,
+            alto_total  = 550,
+            alto_red = 190,
+            
+            ancho_jugador = 80,
+            alto_jugador = 110,
+            g_jugador = 800,
+            v_jugador = 400,
+            v_saltando_jugador = 550,
+
+            radio_pelota = 20,
+            g_pelota = 900,
+            gravedad_rebote_normal = 900,
+            velocidad_rebote_normal = -600,
+
+            velocidad_lateral1 = 800,
+            velocidad_lateral_mate = 1000,
+            velocidad_lateral3 = 300,
+        
+            velocidad_vertical1 = 700,
+            velocidad_vertical_mate = 800,
+            velocidad_vertical_dejada = -100,
+            velocidad_vertical_arriba = -1000,
+
+            gravedad_pika1 = 1500,
+            gravedad_pika2 = 1400,
+            gravedad_pika3 = 1400;
+
+
+
   
-    var     MAP      = { tw: 64, th: 40 },
-            TILE     = 32,
-            METER    = TILE,
-            GRAVITY  = 9.8 * 6, // default (exagerated) gravity
-            MAXDX    = 12,      // default max horizontal speed (15 tiles per second)
-            MAXDY    = 60,      // default max vertical speed   (60 tiles per second)
+    var     GRAVITY  = 800, // default (exagerated) gravity
             ACCEL    = 0.001,     // default take 1/2 second to reach maxdx (horizontal acceleration)
             FRICTION = 0.001,     // default take 1/6 second to stop from maxdx (horizontal friction)
             IMPULSE  = 2400,    // default player jump impulse
-            IMPULSO_PELOTA  = 1200,    // impulso de la pelota
-            FACTOR_REBOTE  = 0.7,    // impulso de la pelota
+            IMPULSO_PELOTA  = 600,    // impulso de la pelota
+            FACTOR_REBOTE  = 0.9,    // impulso de la pelota
             F_ALEJA_X  = 2,    // factor que se aleja la pelota en el ejeX
-            F_SALTO_COLISION = 2, // factor en el que se reduce la velocidadY del jugador al colisionar con la pelota
+            F_SALTO_COLISION = 1.5, // factor en el que se reduce la velocidadY del jugador al colisionar con la pelota
             COLOR    = { BLACK: '#000000', YELLOW: '#ECD078', BRICK: '#D95B43', PINK: '#C02942', PURPLE: '#542437', GREY: '#333', SLATE: '#53777A', GOLD: 'gold' },
             COLORS   = [ COLOR.YELLOW, COLOR.BRICK, COLOR.PINK, COLOR.PURPLE, COLOR.GREY ],
             KEY      = { SPACE: 32, LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40, Z: 90 };
@@ -215,12 +241,12 @@
             step     = 1/fps,
             canvas   = document.getElementById('canvas'),
             ctx      = canvas.getContext('2d'),
-            width    = canvas.width  = MAP.tw * TILE,
-            height   = canvas.height = MAP.th * TILE,
+            width    = canvas.width  = ancho_total,
+            height   = canvas.height = alto_total,
             player   = {},
+            player2   = {},
             ball   = {},
             net   = {},
-            cells    = [],
             tiempo_punto = timestamp(),
             hay_punto = false,
             puntos1 = 0,
@@ -237,11 +263,6 @@
     var particlesMinSize      = 1;
     var particlesMaxSize      = 8;
     var explosions            = [];
-  
-    var     t2p      = function(t)     { return t*TILE;                  },
-            p2t      = function(p)     { return Math.floor(p/TILE);      },
-            cell     = function(x,y)   { return tcell(p2t(x),p2t(y));    },
-            tcell    = function(tx,ty) { return cells[tx + (ty*MAP.tw)]; };
   
   
     //-------------------------------------------------------------------------
@@ -273,9 +294,9 @@
 
 
     function checkBallCollisionNet() {
-        if(overlap(net.x, net.y, net.width, net.height, ball.x, ball.y, TILE*ball.x_tiles, TILE*ball.y_tiles)){
+        if(overlap(net.x, net.y, net.width, net.height, ball.x, ball.y, ball.ancho, ball.alto)){
             //Si la pelota está por encima de la red, rebota parriba
-            //if((ball.y + ((ball.y_tiles) * TILE)) < net.y && ball.dy > 0){
+            //if((ball.y + ball.alto) < net.y && ball.dy > 0){
             if(ball.y < net.y){
                 if(ball.dy > 0){
                     ball.dy = - ball.dy * FACTOR_REBOTE;
@@ -283,11 +304,11 @@
             }
             //Sino rebota para el lado
             else{
-                if(ball.x > MAP.tw*TILE/2){
-                    ball.x = MAP.tw*TILE/2 + TILE;
+                if(ball.x > ancho_total/2){
+                    ball.x = ancho_total/2 + net.width;
                 }
                 else{
-                    ball.x = MAP.tw*TILE/2 - ball.x_tiles * TILE;
+                    ball.x = ancho_total/2 - ball.ancho;
 
                 }
                 ball.dx = - ball.dx * FACTOR_REBOTE;
@@ -308,11 +329,11 @@
 
         //Si el player1 colisiona con la pelota...
         if(!player.jumping && player.haciendo_gorrino){
-            var izq_gorrino = 0;
+            var izq_gorrino = player.alto/2;
             if(player.gorrino_left){
-                izq_gorrino = -1 * TILE*player.y_tiles;
+                izq_gorrino = -1 * player.alto/2;
             }   
-            if ((overlap(player.x + izq_gorrino, player.y + TILE*player.x_tiles, TILE*player.y_tiles, TILE*player.x_tiles, ball.x, ball.y, TILE*ball.x_tiles, TILE*ball.y_tiles) &&
+            if ((overlap(player.x + izq_gorrino, player.y + player.ancho/4, player.alto, player.ancho, ball.x, ball.y, ball.ancho, ball.alto) &&
                  timestamp() > player.no_rebota_time)){
                     rebota = true;
                     jugador_rebota = player;
@@ -320,7 +341,7 @@
 
         }
         else{
-            if ((overlap(player.x, player.y, TILE*player.x_tiles, TILE*player.y_tiles, ball.x, ball.y, TILE*ball.x_tiles, TILE*ball.y_tiles) &&
+            if ((overlap(player.x, player.y, player.ancho, player.alto, ball.x, ball.y, ball.ancho, ball.alto) &&
                  timestamp() > player.no_rebota_time)){
                     rebota = true;
                     jugador_rebota = player;
@@ -331,11 +352,11 @@
 
         //Si el player2 colisiona con la pelota...
         if(!player2.jumping && player2.haciendo_gorrino){
-            var izq_gorrino2 = 0;
+            var izq_gorrino2 = player2.alto/2;
             if(player2.gorrino_left){
-                izq_gorrino2 = -1 * TILE*player2.y_tiles;
+                izq_gorrino2 = -1 * player2.alto/2;
             }   
-            if ((overlap(player2.x + izq_gorrino2, player2.y + TILE*player2.x_tiles, TILE*player2.y_tiles, TILE*player2.x_tiles, ball.x, ball.y, TILE*ball.x_tiles, TILE*ball.y_tiles) &&
+            if ((overlap(player2.x + izq_gorrino2, player2.y + player2.ancho/4, player2.alto, player2.ancho, ball.x, ball.y, ball.ancho, ball.alto) &&
                  timestamp() > player2.no_rebota_time)){
                     rebota = true;
                     jugador_rebota = player2;
@@ -343,7 +364,7 @@
 
         }
         else{
-            if ((overlap(player2.x, player2.y, TILE*player2.x_tiles, TILE*player2.y_tiles, ball.x, ball.y, TILE*ball.x_tiles, TILE*ball.y_tiles) &&
+            if ((overlap(player2.x, player2.y, player2.ancho, player2.alto, ball.x, ball.y, ball.ancho, ball.alto) &&
                  timestamp() > player2.no_rebota_time)){
                     rebota = true;
                     jugador_rebota = player2;
@@ -353,30 +374,30 @@
         if(rebota){
 
             //TODO: Parametrizar con el tamaño de los tiles
-            var velocidad_lateral1 = 2100;
-            var velocidad_lateral2 = 1900;
-            var velocidad_lateral3 = 600;
-            var velocidad_lateral_mate = 2000;
+            var velocidad_lateral1 = 800;
+            var velocidad_lateral2 = 1000;
+            var velocidad_lateral3 = 300;
+            var velocidad_lateral_mate = 1000;
             
-            var velocidad_vertical1 = 1500;
-            var velocidad_vertical_mate = 1800;
-            var velocidad_vertical_arriba = 1800;
+            var velocidad_vertical1 = 700;
+            var velocidad_vertical_mate = 1000;
+            var velocidad_vertical_arriba = 1000;
             
-            var velocidad_vertical_dejada = 150;
+            var velocidad_vertical_dejada = 300;
 
-            var gravedad_mate1 = 2500;
-            var gravedad_mate2 = 2600;
-            var gravedad_mate3 = 1600;
+            var gravedad_mate1 = 1500;
+            var gravedad_mate2 = 1400;
+            var gravedad_mate3 = 1400;
 
-            var x_explosion = ball.x + TILE*ball.x_tiles/2;
-            var y_explosion = ball.y + TILE*ball.y_tiles/2;
+            var x_explosion = ball.x + ball.ancho/2;
+            var y_explosion = ball.y + ball.alto/2;
 
 
             //SI ESTÁ EN EL SUELO O NO ESTA ENFADADO
             if(!jugador_rebota.jumping || (jugador_rebota.tiempo_enfadado < timestamp())){
                 ball.mate = false;
                 //vuelve a la gravedad por defecto
-                ball.gravity = TILE * 50;
+                ball.gravity = 900;
 
                 //Velocidad Y de la pelota... es la velocidad que lleve menos el impulso(parriba)
                 var ball_dy = ball.dy/6 - IMPULSO_PELOTA;
@@ -471,7 +492,7 @@
                         ball.gravity = gravedad_mate1;
                     }
                     else{
-                        if(player2.x < (3/4)*TILE * MAP.tw){
+                        if(player2.x < (3/4)*ancho_total){
                             if(ale < 0.9){
                                 ball.dy = velocidad_vertical_mate;
                                 ball.dx = -velocidad_lateral_mate;
@@ -485,12 +506,18 @@
                         }
                     }
                     
-                    player2.tiempo_enfadado = timestamp();
                 }
+
+                //La velocidad Y del jugador se reduce a la mitad
+                jugador_rebota.dy = jugador_rebota.dy/F_SALTO_COLISION;
 
                 explosions.push(
                     new explosion(x_explosion, y_explosion, true)
                 );
+            }
+
+            if(jugador_rebota === player2 && jugador_rebota.jumping){
+                player2.tiempo_enfadado = timestamp();
             }
         }
 
@@ -525,17 +552,17 @@
             else if (wasright){
                 player.ddx = player.ddx - friction;
             }
-        }
 
-        //Salto
-        if (player.jump && !player.jumping && player.tiempo_enfadado < timestamp() + 100) {
-            player.ddy = player.ddy - player.impulse; // an instant big force impulse
-            player.jumping = true;
-        }
+            //Salto
+            if (player.jump && !player.jumping && player.tiempo_enfadado < timestamp() + 100) {
+                player.ddy = player.ddy - player.impulse; // an instant big force impulse
+                player.jumping = true;
+            }
 
-        //Si se pulsa acción
-        if(player.accion && (timestamp() > player.tiempo_enfadado + 300)){
-            player.tiempo_enfadado = timestamp()+500;
+            //Si se pulsa acción
+            if(player.accion && (timestamp() > player.tiempo_enfadado + 300)){
+                player.tiempo_enfadado = timestamp()+500;
+            }
         }
 
         //Posiciones
@@ -549,22 +576,22 @@
         if(!player.jumping && player.tiempo_enfadado > timestamp()){
             if(!player.haciendo_gorrino){
                 if(player.left){
-                    player.dx = -1000;
+                    player.dx = -450;
                     player.haciendo_gorrino = true;
                     player.gorrino_left = true;
                 }
                 if(player.right){
-                    player.dx = 1000;
+                    player.dx = 450;
                     player.haciendo_gorrino = true;
                     player.gorrino_left = false;
                 }
             }
             else if(player.tiempo_enfadado > timestamp() + 150){
                 if(player.gorrino_left){
-                    player.dx = -1000;
+                    player.dx = -450;
                 }
                 else{
-                    player.dx = 1000;
+                    player.dx = 450;
                 }
 
             }
@@ -580,14 +607,11 @@
           player.dx = 0; // clamp at zero to prevent friction from making us jiggle side to side
         }
 
-        var tx        = p2t(player.x),
-            ty        = p2t(player.y);
-
 
         //SI va pabajo
         if (player.dy >= 0) {
-            if(player.y + player.y_tiles * TILE > (MAP.th * TILE - TILE)){
-                player.y = MAP.th * TILE - TILE - player.y_tiles * TILE;
+            if(player.y + player.alto > alto_total){
+                player.y = alto_total - player.alto;
                 player.dy = 0;
                 player.jumping = false;
             }
@@ -604,15 +628,15 @@
 
             //Choco con la red
             if(player.haciendo_gorrino){
-                if(player.x + player.y_tiles * TILE >= (MAP.tw*TILE/2)){
-                    player.x = MAP.tw*TILE/2 - player.y_tiles * TILE;
+                if(player.x + player.alto >= (ancho_total/2) - player.ancho/2){
+                    player.x = ancho_total/2 - player.alto - player.ancho/2;
                     player.dx = 0;
 
                 } 
 
             }
-            else if(player.x + player.x_tiles * TILE >= (MAP.tw*TILE/2)){
-                player.x = MAP.tw*TILE/2 - player.x_tiles * TILE;
+            else if(player.x + player.ancho >= (ancho_total/2)){
+                player.x = ancho_total/2 - player.ancho;
                 player.dx = 0;
             }
         }
@@ -621,39 +645,24 @@
 
             //Choco con la pared
             if(player.haciendo_gorrino){
-                if(player.x - player.y_tiles * TILE <= TILE){
-                    player.x = TILE + player.y_tiles * TILE;
+                if(player.x - player.alto + player.ancho/2 <= 0){
+                    player.x = player.alto - player.ancho/2;
                     player.dx = 0;
 
                 } 
 
             }
-            else if(player.x <= TILE){
-                player.x = TILE;
+            else if(player.x <= 0){
+                player.x = 0;
                 player.dx = 0;
             }
         }
 
-       
-
-
-        if(hay_punto){
-            if(player.dy > 0){
-                player.dy = player.dy - 20;
-            }
-            else{
-                player.dy = player.dy + 20;
-            }
-            player.ddy = player.ddy + 100;
-        }
     }
 
 
     function updateplayer2(dt){
 
-        if(hay_punto){
-            return;
-        }
         //COntrol de si iba hacia la izquierda o a la derecha y friccion y aceleración... Ahora no lo uso, pero puede ser util
         var wasleft    = player2.dx  < 0,
             wasright   = player2.dx  > 0,
@@ -663,20 +672,27 @@
         //reseteo las aceleraciones
         player2.ddx = 0;
         player2.ddy = player2.gravity;
+
+        if(!hay_punto){
   
-        if (player2.left)
-            player2.ddx = player2.ddx - accel;
-        else if (wasleft)
-            player2.ddx = player2.ddx + friction;
-      
-        if (player2.right)
-            player2.ddx = player2.ddx + accel;
-        else if (wasright)
-            player2.ddx = player2.ddx - friction;
-      
-        if (player2.jump && !player2.jumping) {
-            player2.ddy = player2.ddy - player2.impulse; // an instant big force impulse
-            player2.jumping = true;
+            if (player2.left){
+                player2.ddx = player2.ddx - accel;
+            }
+            else if (wasleft){
+                player2.ddx = player2.ddx + friction;
+            }
+          
+            if (player2.right){
+                player2.ddx = player2.ddx + accel;
+            }
+            else if (wasright){
+                player2.ddx = player2.ddx - friction;
+            }
+          
+            if (player2.jump && !player2.jumping) {
+                player2.ddy = player2.ddy - player2.impulse; // an instant big force impulse
+                player2.jumping = true;
+            }
         }
   
         player2.x  = player2.x  + (dt * player2.dx);
@@ -695,10 +711,10 @@
         if(!player2.jumping && player2.tiempo_enfadado > timestamp()){
             if(player2.tiempo_enfadado > timestamp() + 150){
                 if(player2.gorrino_left){
-                    player2.dx = -1000;
+                    player2.dx = -450;
                 }
                 else{
-                    player2.dx = 1000;
+                    player2.dx = 450;
                 }
 
             }
@@ -713,8 +729,8 @@
 
         //SI va pabajo
         if (player2.dy >= 0) {
-            if(player2.y + player2.y_tiles * TILE > (MAP.th * TILE - TILE)){
-                player2.y = MAP.th * TILE - TILE - player2.y_tiles * TILE;
+            if(player2.y + player2.alto > alto_total){
+                player2.y = alto_total - player2.alto;
                 player2.dy = 0;
                 player2.jumping = false;
             }
@@ -727,17 +743,17 @@
   
         if (player2.dx > 0) {
 
-            //Choco con la red
+            //Choco con la pared
             if(player2.haciendo_gorrino){
-                if(player2.x + player2.y_tiles * TILE >= (MAP.tw*TILE - TILE)){
-                    player2.x = MAP.tw*TILE - TILE - player2.y_tiles*TILE;
+                if(player2.x + player2.alto + player.ancho/2 >= ancho_total){
+                    player2.x = ancho_total - player2.alto - player.ancho/2;
                     player2.dx = 0;
 
                 } 
 
             }
-            else if(player2.x + player2.x_tiles * TILE >= (MAP.tw*TILE - TILE)){
-                player2.x = MAP.tw*TILE - TILE - player2.x_tiles*TILE;
+            else if(player2.x + player2.ancho >= ancho_total){
+                player2.x = ancho_total - player2.ancho;
                 player2.dx = 0;
 
             } 
@@ -745,15 +761,15 @@
         else if (player2.dx < 0) {
             //Choco con la red
             if(player2.haciendo_gorrino){
-                if(player2.x - player2.y_tiles * TILE <= (MAP.tw*TILE/2 + TILE)){
-                    player2.x = MAP.tw*TILE/2 + player2.y_tiles*TILE + TILE;
+                if(player2.x - player2.alto + player.ancho/2 <= (ancho_total/2) + net.width){
+                    player2.x = ancho_total/2 + player2.alto + net.width - player.ancho/2;
                     player2.dx = 0;
 
                 } 
 
             }
-            else if(player2.x <= (MAP.tw*TILE/2 + TILE)){
-                player2.x = MAP.tw*TILE/2 + TILE;
+            else if(player2.x <= (ancho_total/2) + net.width){
+                player2.x = ancho_total/2 + net.width;
                 player2.dx = 0;
 
             } 
@@ -780,20 +796,21 @@
         ball.y  = ball.y  + (dt * ball.dy);
 
         //Velocidad
+        //TODO: Revisar velocidad de la pelota
         ball.dy = bound(ball.dy + (dt * ball.ddy), -ball.maxdy, ball.maxdy);
         ball.dx = ball.dx/1.0004;
 
 
         //pelota cayendo...
         if (ball.dy > 0) {
-            if((ball.y + ball.y_tiles*TILE) > (MAP.th*TILE - TILE)){
+            if((ball.y + ball.alto) > alto_total){
                 ball.dy = -ball.dy * FACTOR_REBOTE;
 
                 //TOCA el suelo, procesa punto
                 if(!hay_punto){
                     tiempo_punto = timestamp() + 3000;
                     
-                    if(ball.x < MAP.tw*TILE/2){
+                    if(ball.x < ancho_total/2){
                         puntos2++;
                         empieza1 = false;
                     }
@@ -808,22 +825,22 @@
         }
         //pelota subiendo
         else if (ball.dy < 0) {
-            if(ball.y < TILE){
+            if(ball.y <= 0){
                 ball.dy  = - ball.dy * FACTOR_REBOTE;
             }
         }
   
         //pelota va a la derecha
         if (ball.dx > 0) {
-            if((ball.x + ball.x_tiles*TILE) > (MAP.tw*TILE - TILE)){
+            if((ball.x + ball.ancho) > ancho_total){
                 ball.dx = -ball.dx * FACTOR_REBOTE;
             }
         }
         //pelota va a la izquierda
         else if (ball.dx < 0) {
 
-            if(ball.x < TILE){
-                ball.dx = -ball.dx *FACTOR_REBOTE;
+            if(ball.x <= 0){
+                ball.dx = -ball.dx * FACTOR_REBOTE;
 
             }
         }
@@ -866,16 +883,16 @@
     function empieza(empieza1){
         
         player.x = 96;
-        player.y = TILE*MAP.th - player2.y_tiles * TILE - 50;
+        player.y = alto_total - player2.alto - 50;
         
-        player2.x = TILE*MAP.tw - 96 - player2.x_tiles * TILE;
-        player2.y = TILE*MAP.th - player2.y_tiles * TILE - 50;
+        player2.x = ancho_total - 96 - player2.ancho;
+        player2.y = alto_total - player2.alto - 50;
 
         if(empieza1){
             ball.x = 112;
         }
         else{
-            ball.x = TILE*MAP.tw - 112 - ball.x_tiles * TILE;
+            ball.x = ancho_total - 112 - ball.ancho;
         }
         ball.y = 198;
         ball.dx = 0;
@@ -897,12 +914,12 @@
         // Si no cae en mi campo, mover de forma aleatorea
 
 
-        var ancho_juego = MAP.tw*TILE;
-        var alto_juego = MAP.th*TILE;
-        var x = ball.x + ball.x_tiles/2;
+        var ancho_juego = ancho_total;
+        var alto_juego = alto_total;
+        var x = ball.x + ball.ancho/2;
         //donde está la pelota en altura
-        var H_b = alto_juego - ball.y + (ball.y_tiles/2)*TILE;
-        var H_p = alto_juego - ball.y + (ball.y_tiles/2)*TILE - (alto_juego - player2.y);
+        var H_b = alto_juego - ball.y + ball.alto/2;
+        var H_p = alto_juego - ball.y + (ball.alto/2) - (alto_juego - player2.y);
         //var H = alto_juego - ball.y;
         var Vx = ball.dx;
         var Vy = ball.dy;
@@ -923,18 +940,18 @@
             //solo calculo donde cae si se mueve abajo(la pelota)
         }
 
-        var player2_x = player2.x + (player2.x_tiles * TILE / 2);
-        var player2_y = player2.y + (player2.y_tiles * TILE / 2);
+        var player2_x = player2.x + (player2.ancho / 2);
+        var player2_y = player2.y + (player2.alto / 2);
 
 
-        var ball_y = ball.y + ball.y_tiles/2;
+        var ball_y = ball.y + ball.alto/2;
 
         //si cae en mi campo
         if(player2.haciendo_gorrino){
             //nada
         }
         else if(dondecae > (ancho_juego/2 - 50) ||
-                (dondecae > (ancho_juego/2 - 450) && Vy < (-100))){
+                (dondecae > (ancho_juego/2 - 150) && Vy < (-100))){
             
             //si cae a mi izquierda, me muevo pallá
             //TODO: revisar el valor a la derecha 'factor_derecha'
@@ -952,13 +969,13 @@
             if(Math.abs(dondecae - player2_x) < 110 && 
                 x>ancho_juego/2 && 
                 (player2_y > alto_juego-200) && 
-                (Vx<300 && Vx>-300) && 
-                (ball_y < alto_juego - 600) &&
+                (Vx<100 && Vx>-100) && 
+                (ball_y < alto_juego - 300) &&
                 player2.tiempo_enfadado < timestamp()){
 
                 player2.jump = true;
 
-                player2.tiempo_enfadado = timestamp()+2700;
+                player2.tiempo_enfadado = timestamp()+700;
 
             }
             else{
@@ -999,16 +1016,16 @@
             
         }
 
-        if(!player2.jumping && H_b < (MAP.th * TILE/3)){
-            if(dondecae < player2_x && player2_x > MAP.tw*TILE/2){
-                if(player2_x - dondecae > (MAP.tw * TILE/4) && x>MAP.tw*TILE/2 && !player2.haciendo_gorrino){
+        if(!player2.jumping && H_b < (alto_total/3)){
+            if(dondecae < player2_x && player2_x > ancho_total/2){
+                if(player2_x - dondecae > (ancho_total/4) && x>ancho_total/2 && !player2.haciendo_gorrino){
                     player2.tiempo_enfadado = timestamp()+500;
                     player2.gorrino_left = true;
                 }
 
             }
             else{
-                if(dondecae-player2_x > 130 && x>MAP.tw*TILE/2 && !player2.haciendo_gorrino){
+                if(dondecae-player2_x > 130 && x>ancho_total/2 && !player2.haciendo_gorrino){
                     player2.tiempo_enfadado = timestamp()+500;
                     player2.gorrino_left = false;
                 }
@@ -1028,7 +1045,6 @@
   
     function render(ctx, frame, dt) {
         ctx.clearRect(0, 0, width, height);
-        renderMap(ctx);
         renderPlayer(ctx, dt);
         renderplayer2(ctx, dt);
         renderBall(ctx, dt);
@@ -1037,19 +1053,7 @@
         pinta_marcador();
     }
 
-    function renderMap(ctx) {
-        var x, y, cell;
 
-        for(y = 0 ; y < MAP.th ; y++) {
-            for(x = 0 ; x < MAP.tw ; x++) {
-                cell = tcell(x, y);
-                if (cell) {
-                    ctx.fillStyle = COLORS[cell - 1];
-                    ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
-                }
-            }
-        }
-    }
 
     function renderNet(ctx) {
         
@@ -1082,8 +1086,8 @@
 
             var x_player = player.x + (player.dx * dt);
             var y_player = player.y + (player.dy * dt);
-            var ancho_player = TILE*player.x_tiles;
-            var alto_player = TILE*player.y_tiles;
+            var ancho_player = player.ancho;
+            var alto_player = player.alto;
 
             ctx.fillRect(x_player, y_player, ancho_player, alto_player);
 
@@ -1105,7 +1109,7 @@
             if(gorrino_left){
                 izq_gorrino = -1;
             }
-            ctx.fillRect(player.x + (player.dx * dt), player.y + (player.dy * dt) + TILE*player.x_tiles, izq_gorrino * TILE*player.y_tiles, TILE*player.x_tiles);
+            ctx.fillRect(player.x + (player.dx * dt) + player.ancho/2, player.y + (player.dy * dt) + player.ancho/4, izq_gorrino * player.alto, player.ancho);
         }
     
 
@@ -1121,7 +1125,7 @@
             if(player2.gorrino_left){
                 izq_gorrino = -1;
             }
-            ctx.fillRect(player2.x + (player2.dx * dt), player2.y + (player2.dy * dt) + TILE*player2.x_tiles, izq_gorrino * TILE*player2.y_tiles, TILE*player2.x_tiles);            
+            ctx.fillRect(player2.x + (player2.dx * dt) + player.ancho/2, player2.y + (player2.dy * dt) + player2.ancho/4, izq_gorrino * player2.alto, player2.ancho);            
         }
         else{
             if(!player2.jumping){
@@ -1130,7 +1134,7 @@
             else{
                 ctx.fillStyle = COLOR.GREY;
             }
-            ctx.fillRect(player2.x + (player2.dx * dt), player2.y + (player2.dy * dt), TILE*player2.x_tiles, TILE*player2.y_tiles);
+            ctx.fillRect(player2.x + (player2.dx * dt), player2.y + (player2.dy * dt), player2.ancho, player2.alto);
         }
     }
   
@@ -1146,9 +1150,9 @@
         //ctx.globalAlpha = 0.25 + tweenBall(frame, 60);
 
         var v1 = calcula_rotacion(ball.x + (ball.dx * dt), ball.y + (ball.dy * dt));
-        var v2 = calcula_rotacion(ball.x + (ball.dx * dt) + TILE*ball.x_tiles, ball.y + (ball.dy * dt));
-        var v3 = calcula_rotacion(ball.x + (ball.dx * dt) + TILE*ball.x_tiles, ball.y + (ball.dy * dt) + TILE*ball.y_tiles);
-        var v4 = calcula_rotacion(ball.x + (ball.dx * dt), ball.y + (ball.dy * dt) + TILE*ball.y_tiles);
+        var v2 = calcula_rotacion(ball.x + (ball.dx * dt) + ball.ancho, ball.y + (ball.dy * dt));
+        var v3 = calcula_rotacion(ball.x + (ball.dx * dt) + ball.ancho, ball.y + (ball.dy * dt) + ball.alto);
+        var v4 = calcula_rotacion(ball.x + (ball.dx * dt), ball.y + (ball.dy * dt) + ball.alto);
        
 
         ctx.beginPath();
@@ -1257,63 +1261,74 @@
     // LOAD THE MAP
     //-------------------------------------------------------------------------
   
-    function setup(map) {
-        var data    = map.layers[0].data,
-            objects = map.layers[1].objects,
-            n, obj, entity;
+    function setup() {
 
-        for(n = 0 ; n < objects.length ; n++) {
-            obj = objects[n];
-            entity = setupEntity(obj);
-            switch(obj.type) {
-                case "player"   : player = entity; break;
-                case "ball"     : ball = entity; break;
-                case "player2"  : player2 = entity; break;
-            }
-        }
+        player.x                = 96;
+        player.y                = 1107;
+        player.alto             = 110;
+        player.ancho            = 80;
+        player.dx               = 0;
+        player.dy               = 0;
+        player.gravity          = 800;
+        player.maxdx            = 150;
+        player.maxdy            = 600;
+        player.impulse          = 60000;
+        player.accel            = player.maxdx / (ACCEL);
+        player.friction         = player.maxdx / (FRICTION);
+        player.player           = true;
+        player.tiempo_enfadado  = timestamp();
+        player.no_rebota_time   = timestamp();
+        player.start            = { x: player.x, y: player.y };
 
-        var alto_red = TILE * (MAP.th/2.4); 
-        net = { "height":alto_red, "width":TILE, "x":(MAP.tw*TILE)/2, "y":(MAP.th*TILE) - alto_red};
+        player2.x                = 1850;
+        player2.y                = 1107;
+        player2.alto             = 110;
+        player2.ancho            = 80;
+        player2.dx               = 0;
+        player2.dy               = 0;
+        player2.gravity          = 800;
+        player2.maxdx            = 150;
+        player2.maxdy            = 600;
+        player2.impulse          = 60000;
+        player2.accel            = player2.maxdx / (ACCEL);
+        player2.friction         = player2.maxdx / (FRICTION);
+        player2.player2          = true;
+        player2.tiempo_enfadado  = timestamp();
+        player2.no_rebota_time   = timestamp();
+        player2.start            = { x: player2.x, y: player2.y };
 
-        cells = data;
+        ball.x                = 96;
+        ball.y                = 198;
+        ball.alto             = 50;
+        ball.ancho            = 50;
+        ball.dx               = 0;
+        ball.dy               = 0;
+        ball.gravity          = 900;
+        ball.maxdx            = 1500;
+        ball.maxdy            = 1500;
+        ball.impulse          = 550;
+        ball.accel            = ball.maxdx / (ACCEL);
+        ball.friction         = ball.maxdx / (FRICTION);
+        ball.ball             = true;
+        ball.start            = { x: ball.x, y: ball.y };
+
+
+        var alto_red = alto_total/2.4; 
+        net = { "height":320, "width":12, "x":(ancho_total)/2, "y":(alto_total) - alto_red};
+
     }
 
-    function setupEntity(obj) {
-        var entity              = {};
-        entity.x                = obj.x;
-        entity.y                = obj.y;
-        entity.x_tiles          = obj.properties.x_tiles;
-        entity.y_tiles          = obj.properties.y_tiles;
-        entity.dx               = 0;
-        entity.dy               = 0;
-        entity.gravity          = METER * (obj.properties.gravity || GRAVITY);
-        entity.maxdx            = METER * (obj.properties.maxdx   || MAXDX);
-        entity.maxdy            = METER * (obj.properties.maxdy   || MAXDY);
-        entity.impulse          = METER * (obj.properties.impulse || IMPULSE);
-        entity.accel            = entity.maxdx / (obj.properties.accel    || ACCEL);
-        entity.friction         = entity.maxdx / (obj.properties.friction || FRICTION);
-        entity.player           = obj.type == "player";
-        entity.player2          = obj.type == "player2";
-        entity.ball             = obj.type == "ball";
-        entity.left             = obj.properties.left;
-        entity.right            = obj.properties.right;
-        entity.tiempo_enfadado  = timestamp();
-        entity.no_rebota_time   = timestamp();
-        entity.start            = { x: obj.x, y: obj.y };
-
-        return entity;
-    }
 
     //-------------------------------------------------------------------------
     // THE GAME LOOP
     //-------------------------------------------------------------------------
   
     var counter = 0, dt = 0, now,
-        last = timestamp(),
-        fpsmeter = new FPSMeter({ decimals: 0, graph: true, theme: 'dark', left: '5px' });
+        last = timestamp();
+        //fpsmeter = new FPSMeter({ decimals: 0, graph: true, theme: 'dark', left: '5px' });
   
     function frame() {
-        fpsmeter.tickStart();
+        //fpsmeter.tickStart();
         now = timestamp();
         dt = dt + Math.min(1, (now - last) / 1000);
         while(dt > step) {
@@ -1323,43 +1338,46 @@
         render(ctx, counter, dt);
         last = now;
         counter++;
-        fpsmeter.tick();
+        //fpsmeter.tick();
         requestAnimationFrame(frame, canvas);
     }
   
     document.addEventListener('keydown', function(ev) { return onkey(ev, ev.keyCode, true);  }, false);
     document.addEventListener('keyup',   function(ev) { return onkey(ev, ev.keyCode, false); }, false);
 
-    get("level.json", function(req) {
-        setup(JSON.parse(req.responseText));
-        frame();
-    });
+    
 
 
     var music_player = new CPlayer();
     music_player.init(song);
-    console.log(music_player)
      // Generate music...
-     
-  var done = false;
-  setInterval(function () {
-    if (done) {
-      return;
-    }
+    
+    setup();
+    
 
-    done = music_player.generate() >= 1;
+    var done = false;
+    var intervalo_cancion = setInterval(function () {
+        if (done) {
+            
+            frame();
 
-    if (done) {
+            clearInterval(intervalo_cancion);
+            return;
 
-      // Put the generated song in an Audio element.
-      var wave = music_player.createWave();
-      var audio = document.createElement("audio");
-      audio.src = URL.createObjectURL(new Blob([wave], {type: "audio/wav"}));
-      audio.loop=true;
-      audio.play();
+        }
 
-    }
-  }, 0);
+        done = music_player.generate() >= 1;
+
+        if (done) {
+          // Put the generated song in an Audio element.
+          var wave = music_player.createWave();
+          var audio = document.createElement("audio");
+          audio.src = URL.createObjectURL(new Blob([wave], {type: "audio/wav"}));
+          audio.loop=true;
+          audio.play();
+
+        }
+    }, 80);
   
 
 
