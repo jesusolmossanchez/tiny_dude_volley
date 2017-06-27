@@ -8,14 +8,15 @@
 
   <style>
     body            { background: #111; margin: 0 }
-    #tiny_dude     { margin: 0 auto; position: relative; width: 512px; height: 384px; }
-    #canvas         { display: inline-block; width: 100%; height: 100%;background-color: #565656; }
+    /*#tiny_dude     { margin: 0 auto; position: relative; width: 512px; height: 384px; }*/
+    #canvas         { display: inline-block; max-width: 100%; height: 100%;background-color: #565656; margin: auto; display: block;}
     #instructions   { font-style: italic; color: #999; font-size: 9pt; margin-left: 1em; margin-top: 0.5em; }
     #instructions b { color: #DDD; }
-    @media screen and (min-width:     0px) and (min-height:    0px) { #tiny_dude { width:  512px; height: 320px; font-size:  7pt; } } /* block = 16 */
-    @media screen and (min-width:   840px) and (min-height:  530px) { #tiny_dude { width:  640px; height: 400px; font-size:  9pt; } } /* block = 20 */
-    @media screen and (min-width:   968px) and (min-height:  626px) { #tiny_dude { width:  768px; height: 480px; font-size: 11pt; } } /* block = 24 */
-    @media screen and (min-width:  1096px) and (min-height:  722px) { #tiny_dude { width:  896px; height: 560px; font-size: 13pt; } } /* block = 28 */
+
+    /*@media screen and (min-width:     0px) and (min-height:    0px) { #tiny_dude { width:  512px; height: 320px; font-size:  7pt; } }  block = 16 *
+    @media screen and (min-width:   840px) and (min-height:  530px) { #tiny_dude { width:  640px; height: 400px; font-size:  9pt; } } /* block = 20 *
+    @media screen and (min-width:   968px) and (min-height:  626px) { #tiny_dude { width:  768px; height: 480px; font-size: 11pt; } } /* block = 24 *
+    @media screen and (min-width:  1096px) and (min-height:  722px) { #tiny_dude { width:  896px; height: 560px; font-size: 13pt; } } /* block = 28 *
     @media screen and (min-width:  1224px) and (min-height:  818px) { #tiny_dude { width: 1024px; height: 640px; font-size: 15pt; } } /* block = 32 */
   </style>
 
