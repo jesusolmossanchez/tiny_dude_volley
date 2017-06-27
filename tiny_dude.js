@@ -194,8 +194,8 @@
     //-------------------------------------------------------------------------
 
     //NUEVAS VARIABLES
-    var     ancho_total = 800,
-            alto_total  = 550,
+    var     ancho_total = 840,
+            alto_total  = 600,
             alto_red = 190,
             
             ancho_jugador = 80,
