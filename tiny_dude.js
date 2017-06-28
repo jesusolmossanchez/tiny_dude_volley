@@ -372,7 +372,7 @@
         }
 
         if(rebota){
-
+            golpe_audio2.play();
             //TODO: Parametrizar con el tamaño de los tiles
             var velocidad_lateral1 = 800;
             var velocidad_lateral2 = 1000;
@@ -579,11 +579,13 @@
                     player.dx = -450;
                     player.haciendo_gorrino = true;
                     player.gorrino_left = true;
+                    croqueta_audio.play();
                 }
                 if(player.right){
                     player.dx = 450;
                     player.haciendo_gorrino = true;
                     player.gorrino_left = false;
+                    croqueta_audio.play();
                 }
             }
             else if(player.tiempo_enfadado > timestamp() + 150){
@@ -808,6 +810,9 @@
 
                 //TOCA el suelo, procesa punto
                 if(!hay_punto){
+
+                    levelup_player.play();
+
                     tiempo_punto = timestamp() + 3000;
                     
                     if(ball.x < ancho_total/2){
@@ -1347,10 +1352,24 @@
 
     
 
-
     var music_player = new CPlayer();
+    var flag_song = false;
     music_player.init(song);
-     // Generate music...
+
+    var croqueta_player = new CPlayer();
+    croqueta_player.init(croqueta);
+    var flag_croqueta = false;
+    var croqueta_audio;
+
+    var golpe_player2 = new CPlayer();
+    golpe_player2.init(golpe);
+    var flag_golpe2 = false;
+    var golpe_audio2;
+
+    var levelup_player = new CPlayer();
+    levelup_player.init(levelup);
+    var flag_levelup = false;
+    var levelup_audio2;
     
     setup();
     
@@ -1365,8 +1384,35 @@
             return;
 
         }
+        //console.log(croqueta_player.generate());
 
-        done = music_player.generate() >= 1;
+        if(!flag_song){
+            if(music_player.generate() >= 1){
+                flag_song = true;
+            }
+        }
+
+        if(!flag_croqueta){
+            if(croqueta_player.generate() >= 1){
+                flag_croqueta = true;
+            }
+        }
+        
+        if(!flag_golpe2){
+            if(golpe_player2.generate() >= 1){
+                flag_golpe2 = true;
+            }
+        }
+        
+        if(!flag_levelup){
+            if(levelup_player.generate() >= 1){
+                flag_levelup = true;
+            }
+        }
+        
+
+        done = (flag_song && flag_croqueta && flag_golpe2);
+        //done = golpe2_player.generate() >= 1;
 
         if (done) {
           // Put the generated song in an Audio element.
@@ -1375,11 +1421,29 @@
           audio.src = URL.createObjectURL(new Blob([wave], {type: "audio/wav"}));
           audio.loop=true;
           audio.play();
+          audio.volume = 0.3;
+
+
+          var wave2 = croqueta_player.createWave();
+          croqueta_audio = document.createElement("audio");
+          croqueta_audio.src = URL.createObjectURL(new Blob([wave2], {type: "audio/wav"}));
+          
+          var wave3 = golpe_player2.createWave();
+          golpe_audio2 = document.createElement("audio");
+          golpe_audio2.src = URL.createObjectURL(new Blob([wave3], {type: "audio/wav"}));
+          
+          var wave4 = levelup_player.createWave();
+          levelup_player = document.createElement("audio");
+          levelup_player.src = URL.createObjectURL(new Blob([wave4], {type: "audio/wav"}));
+        
+
+          //
 
         }
-    }, 80);
+    }, 0);
   
 
 
 })();
+
 
