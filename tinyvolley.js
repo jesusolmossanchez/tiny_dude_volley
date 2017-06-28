@@ -1,10 +1,4 @@
-    // This music has been exported by SoundBox. You can use it with
-    // http://sb.bitsnbites.eu/player-small.js in your own product.
 
-    // See http://sb.bitsnbites.eu/demo.html for an example of how to
-    // use it in a demo.
-
-    // Song data
     var song = {
       songData: [
         { // Instrument 0
@@ -39,7 +33,7 @@
           6 // FX_DELAY_TIME
           ],
           // Patterns
-          p: [1,1,1,2,1,1,1,2,1,4,4,4,4,4,1,1,2,1,4,4,4,4],
+          p: [1,1,1,2,1,1,1,2,1,4,4,4,4,4],
           // Columns
           c: [
             {n: [140,,140,,140,140,,140,,140,,140,140,140,,,140,,140,,140,140,,140,,140,,140,140,140,,,144,,144,,144,144,,144,,144,,144,144,144,,,144,,144,,144,144,,144,,144,,144,144,144,,,147,,147,,147,147,,147,,147,,147,147,147,,,147,,147,,147,147,,147,,147,,147,147,147],
@@ -84,7 +78,7 @@
           6 // FX_DELAY_TIME
           ],
           // Patterns
-          p: [3,2,1,4,3,2,1,4,,5,6,7,,,2,1,4,,5,6,7],
+          p: [3,2,1,4,3,2,1,4,,5,6,7],
           // Columns
           c: [
             {n: [,,,,,,,,,,,,,147,157,156,156,,,,,147,157,156,157,156,154,152,156,154,152,151],
@@ -135,7 +129,7 @@
           4 // FX_DELAY_TIME
           ],
           // Patterns
-          p: [,,,,1,1,1,1,1,1,1,1,1,,1,1,1,1,1,1,1],
+          p: [,,,,1,1,1,1,1,1,1,1,1],
           // Columns
           c: [
             {n: [154,154,154,154,154,154,154,154,154,154,154,154,154,154,154,154,154,154,154,154,154,154,154,154,154,154,154,154,154,154,154,154],
@@ -174,7 +168,7 @@
           0 // FX_DELAY_TIME
           ],
           // Patterns
-          p: [,,,,,1,1,1,1,2,2,2,2,,1,1,1,1,2,2,2],
+          p: [,,,,,1,1,1,1,2,2,2,2],
           // Columns
           c: [
             {n: [152,,,,152,152,,,152,,,,152,152,,,152,,,,152,152,,,152,,,,152,152],
@@ -215,7 +209,7 @@
           1 // FX_DELAY_TIME
           ],
           // Patterns
-          p: [,,,,,1,1,3,1,2,2,2,2,,1,1,3,1,2,2,2],
+          p: [,,,,,1,1,3,1,2,2,2,2],
           // Columns
           c: [
             {n: [,,152,,,,152,,,,152,,,,152,,,,152,,,,152,,,,152,,,,152,152],
@@ -258,7 +252,7 @@
           4 // FX_DELAY_TIME
           ],
           // Patterns
-          p: [,,,,,,,,,1,1,1,1,,,,,,1,1,1,1],
+          p: [,,,,,,,,,1,1,1,1],
           // Columns
           c: [
             {n: [135,,,,,,,133,133,,,,,,,152,152,,,,,,,,,,,,,,,,138,,,,,,,137,137,,,,,,,156,156,,,,,,,,,,,,,,,,142,,,,,,,140,140,,,,,,,159,159,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,140],
@@ -336,7 +330,7 @@
           6 // FX_DELAY_TIME
           ],
           // Patterns
-          p: [,,,,1,1,1,2,1,3,3,3,4,4,1,1,2,1,3,3,3,4],
+          p: [,,,,1,1,1,2,1,3,3,3,4,4],
           // Columns
           c: [
             {n: [116,,116,,116,128,,116,,116,,116,128,116,128,116,116,,116,,116,128,,116,,116,,116,116,128,123,116],
@@ -352,5 +346,942 @@
       ],
       rowLen: 8269,   // In sample lengths
       patternLen: 32,  // Rows per pattern
-      endPattern: 23  // End pattern
+      endPattern: 15  // End pattern
+    };
+
+
+    var croqueta = {
+         // This music has been exported by SoundBox. You can use it with
+    // http://sb.bitsnbites.eu/player-small.js in your own product.
+
+    // See http://sb.bitsnbites.eu/demo.html for an example of how to
+    // use it in a demo.
+
+    // Song data
+
+      songData: [
+        { // Instrument 0
+          i: [
+          3, // OSC1_WAVEFORM
+          0, // OSC1_VOL
+          128, // OSC1_SEMI
+          1, // OSC1_XENV
+          3, // OSC2_WAVEFORM
+          151, // OSC2_VOL
+          128, // OSC2_SEMI
+          66, // OSC2_DETUNE
+          1, // OSC2_XENV
+          218, // NOISE_VOL
+          4, // ENV_ATTACK
+          4, // ENV_SUSTAIN
+          40, // ENV_RELEASE
+          0, // ARP_CHORD
+          0, // ARP_SPEED
+          1, // LFO_WAVEFORM
+          55, // LFO_AMT
+          4, // LFO_FREQ
+          1, // LFO_FX_FREQ
+          2, // FX_FILTER
+          67, // FX_FREQ
+          115, // FX_RESONANCE
+          124, // FX_DIST
+          190, // FX_DRIVE
+          67, // FX_PAN_AMT
+          6, // FX_PAN_FREQ
+          39, // FX_DELAY_AMT
+          1 // FX_DELAY_TIME
+          ],
+          // Patterns
+          p: [1],
+          // Columns
+          c: [
+            {n: [128],
+             f: []}
+          ]
+        },
+        { // Instrument 1
+          i: [
+          2, // OSC1_WAVEFORM
+          100, // OSC1_VOL
+          128, // OSC1_SEMI
+          0, // OSC1_XENV
+          3, // OSC2_WAVEFORM
+          201, // OSC2_VOL
+          128, // OSC2_SEMI
+          0, // OSC2_DETUNE
+          0, // OSC2_XENV
+          0, // NOISE_VOL
+          5, // ENV_ATTACK
+          6, // ENV_SUSTAIN
+          58, // ENV_RELEASE
+          0, // ARP_CHORD
+          0, // ARP_SPEED
+          0, // LFO_WAVEFORM
+          195, // LFO_AMT
+          6, // LFO_FREQ
+          1, // LFO_FX_FREQ
+          2, // FX_FILTER
+          135, // FX_FREQ
+          0, // FX_RESONANCE
+          0, // FX_DIST
+          32, // FX_DRIVE
+          147, // FX_PAN_AMT
+          6, // FX_PAN_FREQ
+          121, // FX_DELAY_AMT
+          6 // FX_DELAY_TIME
+          ],
+          // Patterns
+          p: [],
+          // Columns
+          c: [
+          ]
+        },
+        { // Instrument 2
+          i: [
+          2, // OSC1_WAVEFORM
+          100, // OSC1_VOL
+          128, // OSC1_SEMI
+          0, // OSC1_XENV
+          3, // OSC2_WAVEFORM
+          201, // OSC2_VOL
+          128, // OSC2_SEMI
+          0, // OSC2_DETUNE
+          0, // OSC2_XENV
+          0, // NOISE_VOL
+          5, // ENV_ATTACK
+          6, // ENV_SUSTAIN
+          58, // ENV_RELEASE
+          0, // ARP_CHORD
+          0, // ARP_SPEED
+          0, // LFO_WAVEFORM
+          195, // LFO_AMT
+          6, // LFO_FREQ
+          1, // LFO_FX_FREQ
+          2, // FX_FILTER
+          135, // FX_FREQ
+          0, // FX_RESONANCE
+          0, // FX_DIST
+          32, // FX_DRIVE
+          147, // FX_PAN_AMT
+          6, // FX_PAN_FREQ
+          121, // FX_DELAY_AMT
+          6 // FX_DELAY_TIME
+          ],
+          // Patterns
+          p: [],
+          // Columns
+          c: [
+          ]
+        },
+        { // Instrument 3
+          i: [
+          2, // OSC1_WAVEFORM
+          100, // OSC1_VOL
+          128, // OSC1_SEMI
+          0, // OSC1_XENV
+          3, // OSC2_WAVEFORM
+          201, // OSC2_VOL
+          128, // OSC2_SEMI
+          0, // OSC2_DETUNE
+          0, // OSC2_XENV
+          0, // NOISE_VOL
+          5, // ENV_ATTACK
+          6, // ENV_SUSTAIN
+          58, // ENV_RELEASE
+          0, // ARP_CHORD
+          0, // ARP_SPEED
+          0, // LFO_WAVEFORM
+          195, // LFO_AMT
+          6, // LFO_FREQ
+          1, // LFO_FX_FREQ
+          2, // FX_FILTER
+          135, // FX_FREQ
+          0, // FX_RESONANCE
+          0, // FX_DIST
+          32, // FX_DRIVE
+          147, // FX_PAN_AMT
+          6, // FX_PAN_FREQ
+          121, // FX_DELAY_AMT
+          6 // FX_DELAY_TIME
+          ],
+          // Patterns
+          p: [],
+          // Columns
+          c: [
+          ]
+        },
+        { // Instrument 4
+          i: [
+          2, // OSC1_WAVEFORM
+          100, // OSC1_VOL
+          128, // OSC1_SEMI
+          0, // OSC1_XENV
+          3, // OSC2_WAVEFORM
+          201, // OSC2_VOL
+          128, // OSC2_SEMI
+          0, // OSC2_DETUNE
+          0, // OSC2_XENV
+          0, // NOISE_VOL
+          5, // ENV_ATTACK
+          6, // ENV_SUSTAIN
+          58, // ENV_RELEASE
+          0, // ARP_CHORD
+          0, // ARP_SPEED
+          0, // LFO_WAVEFORM
+          195, // LFO_AMT
+          6, // LFO_FREQ
+          1, // LFO_FX_FREQ
+          2, // FX_FILTER
+          135, // FX_FREQ
+          0, // FX_RESONANCE
+          0, // FX_DIST
+          32, // FX_DRIVE
+          147, // FX_PAN_AMT
+          6, // FX_PAN_FREQ
+          121, // FX_DELAY_AMT
+          6 // FX_DELAY_TIME
+          ],
+          // Patterns
+          p: [],
+          // Columns
+          c: [
+          ]
+        },
+        { // Instrument 5
+          i: [
+          2, // OSC1_WAVEFORM
+          100, // OSC1_VOL
+          128, // OSC1_SEMI
+          0, // OSC1_XENV
+          3, // OSC2_WAVEFORM
+          201, // OSC2_VOL
+          128, // OSC2_SEMI
+          0, // OSC2_DETUNE
+          0, // OSC2_XENV
+          0, // NOISE_VOL
+          5, // ENV_ATTACK
+          6, // ENV_SUSTAIN
+          58, // ENV_RELEASE
+          0, // ARP_CHORD
+          0, // ARP_SPEED
+          0, // LFO_WAVEFORM
+          195, // LFO_AMT
+          6, // LFO_FREQ
+          1, // LFO_FX_FREQ
+          2, // FX_FILTER
+          135, // FX_FREQ
+          0, // FX_RESONANCE
+          0, // FX_DIST
+          32, // FX_DRIVE
+          147, // FX_PAN_AMT
+          6, // FX_PAN_FREQ
+          121, // FX_DELAY_AMT
+          6 // FX_DELAY_TIME
+          ],
+          // Patterns
+          p: [],
+          // Columns
+          c: [
+          ]
+        },
+        { // Instrument 6
+          i: [
+          2, // OSC1_WAVEFORM
+          100, // OSC1_VOL
+          128, // OSC1_SEMI
+          0, // OSC1_XENV
+          3, // OSC2_WAVEFORM
+          201, // OSC2_VOL
+          128, // OSC2_SEMI
+          0, // OSC2_DETUNE
+          0, // OSC2_XENV
+          0, // NOISE_VOL
+          5, // ENV_ATTACK
+          6, // ENV_SUSTAIN
+          58, // ENV_RELEASE
+          0, // ARP_CHORD
+          0, // ARP_SPEED
+          0, // LFO_WAVEFORM
+          195, // LFO_AMT
+          6, // LFO_FREQ
+          1, // LFO_FX_FREQ
+          2, // FX_FILTER
+          135, // FX_FREQ
+          0, // FX_RESONANCE
+          0, // FX_DIST
+          32, // FX_DRIVE
+          147, // FX_PAN_AMT
+          6, // FX_PAN_FREQ
+          121, // FX_DELAY_AMT
+          6 // FX_DELAY_TIME
+          ],
+          // Patterns
+          p: [],
+          // Columns
+          c: [
+          ]
+        },
+        { // Instrument 7
+          i: [
+          2, // OSC1_WAVEFORM
+          100, // OSC1_VOL
+          128, // OSC1_SEMI
+          0, // OSC1_XENV
+          3, // OSC2_WAVEFORM
+          201, // OSC2_VOL
+          128, // OSC2_SEMI
+          0, // OSC2_DETUNE
+          0, // OSC2_XENV
+          0, // NOISE_VOL
+          5, // ENV_ATTACK
+          6, // ENV_SUSTAIN
+          58, // ENV_RELEASE
+          0, // ARP_CHORD
+          0, // ARP_SPEED
+          0, // LFO_WAVEFORM
+          195, // LFO_AMT
+          6, // LFO_FREQ
+          1, // LFO_FX_FREQ
+          2, // FX_FILTER
+          135, // FX_FREQ
+          0, // FX_RESONANCE
+          0, // FX_DIST
+          32, // FX_DRIVE
+          147, // FX_PAN_AMT
+          6, // FX_PAN_FREQ
+          121, // FX_DELAY_AMT
+          6 // FX_DELAY_TIME
+          ],
+          // Patterns
+          p: [],
+          // Columns
+          c: [
+          ]
+        }
+      ],
+      rowLen: 113,   // In sample lengths
+      patternLen: 32,  // Rows per pattern
+      endPattern: 2  // End pattern
+    };
+
+
+
+    // This music has been exported by SoundBox. You can use it with
+    // http://sb.bitsnbites.eu/player-small.js in your own product.
+
+    // See http://sb.bitsnbites.eu/demo.html for an example of how to
+    // use it in a demo.
+
+    // Song data
+    var golpe = {
+      songData: [
+        { // Instrument 0
+          i: [
+          2, // OSC1_WAVEFORM
+          100, // OSC1_VOL
+          128, // OSC1_SEMI
+          0, // OSC1_XENV
+          0, // OSC2_WAVEFORM
+          201, // OSC2_VOL
+          128, // OSC2_SEMI
+          17, // OSC2_DETUNE
+          0, // OSC2_XENV
+          0, // NOISE_VOL
+          0, // ENV_ATTACK
+          6, // ENV_SUSTAIN
+          58, // ENV_RELEASE
+          156, // ARP_CHORD
+          7, // ARP_SPEED
+          0, // LFO_WAVEFORM
+          61, // LFO_AMT
+          7, // LFO_FREQ
+          1, // LFO_FX_FREQ
+          2, // FX_FILTER
+          135, // FX_FREQ
+          0, // FX_RESONANCE
+          0, // FX_DIST
+          32, // FX_DRIVE
+          147, // FX_PAN_AMT
+          6, // FX_PAN_FREQ
+          24, // FX_DELAY_AMT
+          2 // FX_DELAY_TIME
+          ],
+          // Patterns
+          p: [1],
+          // Columns
+          c: [
+            {n: [128],
+             f: []}
+          ]
+        },
+        { // Instrument 1
+          i: [
+          2, // OSC1_WAVEFORM
+          100, // OSC1_VOL
+          128, // OSC1_SEMI
+          0, // OSC1_XENV
+          3, // OSC2_WAVEFORM
+          201, // OSC2_VOL
+          128, // OSC2_SEMI
+          0, // OSC2_DETUNE
+          0, // OSC2_XENV
+          0, // NOISE_VOL
+          5, // ENV_ATTACK
+          6, // ENV_SUSTAIN
+          58, // ENV_RELEASE
+          0, // ARP_CHORD
+          0, // ARP_SPEED
+          0, // LFO_WAVEFORM
+          195, // LFO_AMT
+          6, // LFO_FREQ
+          1, // LFO_FX_FREQ
+          2, // FX_FILTER
+          135, // FX_FREQ
+          0, // FX_RESONANCE
+          0, // FX_DIST
+          32, // FX_DRIVE
+          147, // FX_PAN_AMT
+          6, // FX_PAN_FREQ
+          121, // FX_DELAY_AMT
+          6 // FX_DELAY_TIME
+          ],
+          // Patterns
+          p: [],
+          // Columns
+          c: [
+          ]
+        },
+        { // Instrument 2
+          i: [
+          2, // OSC1_WAVEFORM
+          100, // OSC1_VOL
+          128, // OSC1_SEMI
+          0, // OSC1_XENV
+          3, // OSC2_WAVEFORM
+          201, // OSC2_VOL
+          128, // OSC2_SEMI
+          0, // OSC2_DETUNE
+          0, // OSC2_XENV
+          0, // NOISE_VOL
+          5, // ENV_ATTACK
+          6, // ENV_SUSTAIN
+          58, // ENV_RELEASE
+          0, // ARP_CHORD
+          0, // ARP_SPEED
+          0, // LFO_WAVEFORM
+          195, // LFO_AMT
+          6, // LFO_FREQ
+          1, // LFO_FX_FREQ
+          2, // FX_FILTER
+          135, // FX_FREQ
+          0, // FX_RESONANCE
+          0, // FX_DIST
+          32, // FX_DRIVE
+          147, // FX_PAN_AMT
+          6, // FX_PAN_FREQ
+          121, // FX_DELAY_AMT
+          6 // FX_DELAY_TIME
+          ],
+          // Patterns
+          p: [],
+          // Columns
+          c: [
+          ]
+        },
+        { // Instrument 3
+          i: [
+          2, // OSC1_WAVEFORM
+          100, // OSC1_VOL
+          128, // OSC1_SEMI
+          0, // OSC1_XENV
+          3, // OSC2_WAVEFORM
+          201, // OSC2_VOL
+          128, // OSC2_SEMI
+          0, // OSC2_DETUNE
+          0, // OSC2_XENV
+          0, // NOISE_VOL
+          5, // ENV_ATTACK
+          6, // ENV_SUSTAIN
+          58, // ENV_RELEASE
+          0, // ARP_CHORD
+          0, // ARP_SPEED
+          0, // LFO_WAVEFORM
+          195, // LFO_AMT
+          6, // LFO_FREQ
+          1, // LFO_FX_FREQ
+          2, // FX_FILTER
+          135, // FX_FREQ
+          0, // FX_RESONANCE
+          0, // FX_DIST
+          32, // FX_DRIVE
+          147, // FX_PAN_AMT
+          6, // FX_PAN_FREQ
+          121, // FX_DELAY_AMT
+          6 // FX_DELAY_TIME
+          ],
+          // Patterns
+          p: [],
+          // Columns
+          c: [
+          ]
+        },
+        { // Instrument 4
+          i: [
+          2, // OSC1_WAVEFORM
+          100, // OSC1_VOL
+          128, // OSC1_SEMI
+          0, // OSC1_XENV
+          3, // OSC2_WAVEFORM
+          201, // OSC2_VOL
+          128, // OSC2_SEMI
+          0, // OSC2_DETUNE
+          0, // OSC2_XENV
+          0, // NOISE_VOL
+          5, // ENV_ATTACK
+          6, // ENV_SUSTAIN
+          58, // ENV_RELEASE
+          0, // ARP_CHORD
+          0, // ARP_SPEED
+          0, // LFO_WAVEFORM
+          195, // LFO_AMT
+          6, // LFO_FREQ
+          1, // LFO_FX_FREQ
+          2, // FX_FILTER
+          135, // FX_FREQ
+          0, // FX_RESONANCE
+          0, // FX_DIST
+          32, // FX_DRIVE
+          147, // FX_PAN_AMT
+          6, // FX_PAN_FREQ
+          121, // FX_DELAY_AMT
+          6 // FX_DELAY_TIME
+          ],
+          // Patterns
+          p: [],
+          // Columns
+          c: [
+          ]
+        },
+        { // Instrument 5
+          i: [
+          2, // OSC1_WAVEFORM
+          100, // OSC1_VOL
+          128, // OSC1_SEMI
+          0, // OSC1_XENV
+          3, // OSC2_WAVEFORM
+          201, // OSC2_VOL
+          128, // OSC2_SEMI
+          0, // OSC2_DETUNE
+          0, // OSC2_XENV
+          0, // NOISE_VOL
+          5, // ENV_ATTACK
+          6, // ENV_SUSTAIN
+          58, // ENV_RELEASE
+          0, // ARP_CHORD
+          0, // ARP_SPEED
+          0, // LFO_WAVEFORM
+          195, // LFO_AMT
+          6, // LFO_FREQ
+          1, // LFO_FX_FREQ
+          2, // FX_FILTER
+          135, // FX_FREQ
+          0, // FX_RESONANCE
+          0, // FX_DIST
+          32, // FX_DRIVE
+          147, // FX_PAN_AMT
+          6, // FX_PAN_FREQ
+          121, // FX_DELAY_AMT
+          6 // FX_DELAY_TIME
+          ],
+          // Patterns
+          p: [],
+          // Columns
+          c: [
+          ]
+        },
+        { // Instrument 6
+          i: [
+          2, // OSC1_WAVEFORM
+          100, // OSC1_VOL
+          128, // OSC1_SEMI
+          0, // OSC1_XENV
+          3, // OSC2_WAVEFORM
+          201, // OSC2_VOL
+          128, // OSC2_SEMI
+          0, // OSC2_DETUNE
+          0, // OSC2_XENV
+          0, // NOISE_VOL
+          5, // ENV_ATTACK
+          6, // ENV_SUSTAIN
+          58, // ENV_RELEASE
+          0, // ARP_CHORD
+          0, // ARP_SPEED
+          0, // LFO_WAVEFORM
+          195, // LFO_AMT
+          6, // LFO_FREQ
+          1, // LFO_FX_FREQ
+          2, // FX_FILTER
+          135, // FX_FREQ
+          0, // FX_RESONANCE
+          0, // FX_DIST
+          32, // FX_DRIVE
+          147, // FX_PAN_AMT
+          6, // FX_PAN_FREQ
+          121, // FX_DELAY_AMT
+          6 // FX_DELAY_TIME
+          ],
+          // Patterns
+          p: [],
+          // Columns
+          c: [
+          ]
+        },
+        { // Instrument 7
+          i: [
+          2, // OSC1_WAVEFORM
+          100, // OSC1_VOL
+          128, // OSC1_SEMI
+          0, // OSC1_XENV
+          3, // OSC2_WAVEFORM
+          201, // OSC2_VOL
+          128, // OSC2_SEMI
+          0, // OSC2_DETUNE
+          0, // OSC2_XENV
+          0, // NOISE_VOL
+          5, // ENV_ATTACK
+          6, // ENV_SUSTAIN
+          58, // ENV_RELEASE
+          0, // ARP_CHORD
+          0, // ARP_SPEED
+          0, // LFO_WAVEFORM
+          195, // LFO_AMT
+          6, // LFO_FREQ
+          1, // LFO_FX_FREQ
+          2, // FX_FILTER
+          135, // FX_FREQ
+          0, // FX_RESONANCE
+          0, // FX_DIST
+          32, // FX_DRIVE
+          147, // FX_PAN_AMT
+          6, // FX_PAN_FREQ
+          121, // FX_DELAY_AMT
+          6 // FX_DELAY_TIME
+          ],
+          // Patterns
+          p: [],
+          // Columns
+          c: [
+          ]
+        }
+      ],
+      rowLen: 113,   // In sample lengths
+      patternLen: 32,  // Rows per pattern
+      endPattern: 2  // End pattern
+    };
+
+
+    var levelup = {
+      songData: [
+        { // Instrument 0
+          i: [
+          1, // OSC1_WAVEFORM
+          192, // OSC1_VOL
+          128, // OSC1_SEMI
+          1, // OSC1_XENV
+          1, // OSC2_WAVEFORM
+          191, // OSC2_VOL
+          116, // OSC2_SEMI
+          9, // OSC2_DETUNE
+          1, // OSC2_XENV
+          0, // NOISE_VOL
+          68, // ENV_ATTACK
+          32, // ENV_SUSTAIN
+          34, // ENV_RELEASE
+          204, // ARP_CHORD
+          4, // ARP_SPEED
+          0, // LFO_WAVEFORM
+          69, // LFO_AMT
+          3, // LFO_FREQ
+          1, // LFO_FX_FREQ
+          1, // FX_FILTER
+          23, // FX_FREQ
+          167, // FX_RESONANCE
+          0, // FX_DIST
+          32, // FX_DRIVE
+          121, // FX_PAN_AMT
+          14, // FX_PAN_FREQ
+          25, // FX_DELAY_AMT
+          6 // FX_DELAY_TIME
+          ],
+          // Patterns
+          p: [1],
+          // Columns
+          c: [
+            {n: [147,,151,,,147,,,,151,,,,,,,159,,,,,,,,,,,,,,,,,,,,,151,,,,154,,,,,,,163,,,,,,,,,,,,,,,,,,,,,154,,,,,,,,,,,166,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,171],
+             f: []}
+          ]
+        },
+        { // Instrument 1
+          i: [
+          2, // OSC1_WAVEFORM
+          100, // OSC1_VOL
+          128, // OSC1_SEMI
+          0, // OSC1_XENV
+          3, // OSC2_WAVEFORM
+          201, // OSC2_VOL
+          128, // OSC2_SEMI
+          0, // OSC2_DETUNE
+          0, // OSC2_XENV
+          0, // NOISE_VOL
+          5, // ENV_ATTACK
+          6, // ENV_SUSTAIN
+          58, // ENV_RELEASE
+          0, // ARP_CHORD
+          0, // ARP_SPEED
+          0, // LFO_WAVEFORM
+          195, // LFO_AMT
+          6, // LFO_FREQ
+          1, // LFO_FX_FREQ
+          2, // FX_FILTER
+          135, // FX_FREQ
+          0, // FX_RESONANCE
+          0, // FX_DIST
+          32, // FX_DRIVE
+          147, // FX_PAN_AMT
+          6, // FX_PAN_FREQ
+          121, // FX_DELAY_AMT
+          6 // FX_DELAY_TIME
+          ],
+          // Patterns
+          p: [],
+          // Columns
+          c: [
+          ]
+        },
+        { // Instrument 2
+          i: [
+          2, // OSC1_WAVEFORM
+          100, // OSC1_VOL
+          128, // OSC1_SEMI
+          0, // OSC1_XENV
+          3, // OSC2_WAVEFORM
+          201, // OSC2_VOL
+          128, // OSC2_SEMI
+          0, // OSC2_DETUNE
+          0, // OSC2_XENV
+          0, // NOISE_VOL
+          5, // ENV_ATTACK
+          6, // ENV_SUSTAIN
+          58, // ENV_RELEASE
+          0, // ARP_CHORD
+          0, // ARP_SPEED
+          0, // LFO_WAVEFORM
+          195, // LFO_AMT
+          6, // LFO_FREQ
+          1, // LFO_FX_FREQ
+          2, // FX_FILTER
+          135, // FX_FREQ
+          0, // FX_RESONANCE
+          0, // FX_DIST
+          32, // FX_DRIVE
+          147, // FX_PAN_AMT
+          6, // FX_PAN_FREQ
+          121, // FX_DELAY_AMT
+          6 // FX_DELAY_TIME
+          ],
+          // Patterns
+          p: [],
+          // Columns
+          c: [
+          ]
+        },
+        { // Instrument 3
+          i: [
+          2, // OSC1_WAVEFORM
+          100, // OSC1_VOL
+          128, // OSC1_SEMI
+          0, // OSC1_XENV
+          3, // OSC2_WAVEFORM
+          201, // OSC2_VOL
+          128, // OSC2_SEMI
+          0, // OSC2_DETUNE
+          0, // OSC2_XENV
+          0, // NOISE_VOL
+          5, // ENV_ATTACK
+          6, // ENV_SUSTAIN
+          58, // ENV_RELEASE
+          0, // ARP_CHORD
+          0, // ARP_SPEED
+          0, // LFO_WAVEFORM
+          195, // LFO_AMT
+          6, // LFO_FREQ
+          1, // LFO_FX_FREQ
+          2, // FX_FILTER
+          135, // FX_FREQ
+          0, // FX_RESONANCE
+          0, // FX_DIST
+          32, // FX_DRIVE
+          147, // FX_PAN_AMT
+          6, // FX_PAN_FREQ
+          121, // FX_DELAY_AMT
+          6 // FX_DELAY_TIME
+          ],
+          // Patterns
+          p: [],
+          // Columns
+          c: [
+          ]
+        },
+        { // Instrument 4
+          i: [
+          2, // OSC1_WAVEFORM
+          100, // OSC1_VOL
+          128, // OSC1_SEMI
+          0, // OSC1_XENV
+          3, // OSC2_WAVEFORM
+          201, // OSC2_VOL
+          128, // OSC2_SEMI
+          0, // OSC2_DETUNE
+          0, // OSC2_XENV
+          0, // NOISE_VOL
+          5, // ENV_ATTACK
+          6, // ENV_SUSTAIN
+          58, // ENV_RELEASE
+          0, // ARP_CHORD
+          0, // ARP_SPEED
+          0, // LFO_WAVEFORM
+          195, // LFO_AMT
+          6, // LFO_FREQ
+          1, // LFO_FX_FREQ
+          2, // FX_FILTER
+          135, // FX_FREQ
+          0, // FX_RESONANCE
+          0, // FX_DIST
+          32, // FX_DRIVE
+          147, // FX_PAN_AMT
+          6, // FX_PAN_FREQ
+          121, // FX_DELAY_AMT
+          6 // FX_DELAY_TIME
+          ],
+          // Patterns
+          p: [],
+          // Columns
+          c: [
+          ]
+        },
+        { // Instrument 5
+          i: [
+          2, // OSC1_WAVEFORM
+          100, // OSC1_VOL
+          128, // OSC1_SEMI
+          0, // OSC1_XENV
+          3, // OSC2_WAVEFORM
+          201, // OSC2_VOL
+          128, // OSC2_SEMI
+          0, // OSC2_DETUNE
+          0, // OSC2_XENV
+          0, // NOISE_VOL
+          5, // ENV_ATTACK
+          6, // ENV_SUSTAIN
+          58, // ENV_RELEASE
+          0, // ARP_CHORD
+          0, // ARP_SPEED
+          0, // LFO_WAVEFORM
+          195, // LFO_AMT
+          6, // LFO_FREQ
+          1, // LFO_FX_FREQ
+          2, // FX_FILTER
+          135, // FX_FREQ
+          0, // FX_RESONANCE
+          0, // FX_DIST
+          32, // FX_DRIVE
+          147, // FX_PAN_AMT
+          6, // FX_PAN_FREQ
+          121, // FX_DELAY_AMT
+          6 // FX_DELAY_TIME
+          ],
+          // Patterns
+          p: [],
+          // Columns
+          c: [
+          ]
+        },
+        { // Instrument 6
+          i: [
+          2, // OSC1_WAVEFORM
+          100, // OSC1_VOL
+          128, // OSC1_SEMI
+          0, // OSC1_XENV
+          3, // OSC2_WAVEFORM
+          201, // OSC2_VOL
+          128, // OSC2_SEMI
+          0, // OSC2_DETUNE
+          0, // OSC2_XENV
+          0, // NOISE_VOL
+          5, // ENV_ATTACK
+          6, // ENV_SUSTAIN
+          58, // ENV_RELEASE
+          0, // ARP_CHORD
+          0, // ARP_SPEED
+          0, // LFO_WAVEFORM
+          195, // LFO_AMT
+          6, // LFO_FREQ
+          1, // LFO_FX_FREQ
+          2, // FX_FILTER
+          135, // FX_FREQ
+          0, // FX_RESONANCE
+          0, // FX_DIST
+          32, // FX_DRIVE
+          147, // FX_PAN_AMT
+          6, // FX_PAN_FREQ
+          121, // FX_DELAY_AMT
+          6 // FX_DELAY_TIME
+          ],
+          // Patterns
+          p: [],
+          // Columns
+          c: [
+          ]
+        },
+        { // Instrument 7
+          i: [
+          2, // OSC1_WAVEFORM
+          100, // OSC1_VOL
+          128, // OSC1_SEMI
+          0, // OSC1_XENV
+          3, // OSC2_WAVEFORM
+          201, // OSC2_VOL
+          128, // OSC2_SEMI
+          0, // OSC2_DETUNE
+          0, // OSC2_XENV
+          0, // NOISE_VOL
+          5, // ENV_ATTACK
+          6, // ENV_SUSTAIN
+          58, // ENV_RELEASE
+          0, // ARP_CHORD
+          0, // ARP_SPEED
+          0, // LFO_WAVEFORM
+          195, // LFO_AMT
+          6, // LFO_FREQ
+          1, // LFO_FX_FREQ
+          2, // FX_FILTER
+          135, // FX_FREQ
+          0, // FX_RESONANCE
+          0, // FX_DIST
+          32, // FX_DRIVE
+          147, // FX_PAN_AMT
+          6, // FX_PAN_FREQ
+          121, // FX_DELAY_AMT
+          6 // FX_DELAY_TIME
+          ],
+          // Patterns
+          p: [],
+          // Columns
+          c: [
+          ]
+        }
+      ],
+      rowLen: 5513,   // In sample lengths
+      patternLen: 32,  // Rows per pattern
+      endPattern: 2  // End pattern
     };
