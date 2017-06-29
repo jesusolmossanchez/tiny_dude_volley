@@ -1093,7 +1093,7 @@
         if(player.haciendo_gorrino){
             ctx.fillStyle = COLOR.PINK;
 
-            pinta_player(true, player.gorrino_left);
+            pinta_player(player, true, player.gorrino_left);
             
         }
         else{
@@ -1103,16 +1103,38 @@
             else{
                 ctx.fillStyle = COLOR.YELLOW;                
             }
-            pinta_player(false);
+            pinta_player(player, false);
         }
     }
 
-    function pinta_player(gorrino, gorrino_left) {
+  
+    function renderplayer2(ctx, dt) {
+        if(player2.haciendo_gorrino){
+            ctx.fillStyle = COLOR.PINK;
+            var izq_gorrino = 1;
+            if(player2.gorrino_left){
+                izq_gorrino = -1;
+            }
+            pinta_player(player2, true, player2.gorrino_left);            
+        }
+        else{
+            if(player2.tiempo_enfadado > timestamp()){
+                ctx.fillStyle = COLOR.BLACK;
+            }
+            else{
+                ctx.fillStyle = COLOR.GREY;
+            }
 
-        var x_player = player.x + (player.dx * dt);
-        var y_player = player.y + (player.dy * dt);
-        var ancho_player = player.ancho;
-        var alto_player = player.alto;
+            pinta_player(player2, false);
+        }
+    }
+
+    function pinta_player(jugador, gorrino, gorrino_left) {
+
+        var x_player = jugador.x + (jugador.dx * dt);
+        var y_player = jugador.y + (jugador.dy * dt);
+        var ancho_player = jugador.ancho;
+        var alto_player = jugador.alto;
 
 
         var alto_pies = 12;
@@ -1134,15 +1156,15 @@
             //pies
             var posicion_pie1 = 15;
             var posicion_pie2 = 50;
-            if(tweenPies(counter, 40) < 0.5 && (player.left || player.right)){
+            if(tween_frames(counter, 40) < 0.5 && (jugador.left || jugador.right)){
                 posicion_pie2 = 55;
             }
-            if(tweenPies(counter, 50) < 0.5 && (player.left || player.right)){
+            if(tween_frames(counter, 50) < 0.5 && (jugador.left || jugador.right)){
                 posicion_pie1 = 20;
             }
 
             var posicion_alto_pies = alto_pies - 1;
-            if(player.jumping){
+            if(jugador.jumping){
                 posicion_pie1 = 20;
                 posicion_pie2 = 40;
                 posicion_alto_pies = alto_pies/2;
@@ -1157,7 +1179,7 @@
             posicion_ojo1 = bound(posicion_ojo1, x_player - 5, x_player + ancho_player/4);
 
             var posicion_ojo2 = x_player + ancho_player - ancho_player/8 - diff_player_ball/15;
-            posicion_ojo2 = bound(posicion_ojo2, x_player + ancho_player/8 + 5, x_player + ancho_player - ancho_player/8);
+            posicion_ojo2 = bound(posicion_ojo2, x_player + ancho_player/2, x_player + ancho_player - ancho_player/8);
 
             ctx.fillRect(posicion_ojo1, y_player + ancho_player/15, ojo_size, ojo_size);
             ctx.fillRect(posicion_ojo2, y_player + ancho_player/18, ojo_size, ojo_size);
@@ -1167,7 +1189,7 @@
             var posicion_boca = x_player + ancho_player/2 - diff_player_ball/25;
             posicion_boca = bound(posicion_boca, x_player + ancho_player/8, x_player + ancho_player/2 );
 
-            if(player.jumping){
+            if(jugador.jumping){
                 boca_ancho = 12;
             }
 
@@ -1189,17 +1211,17 @@
             }
 
             //cuerpo
-            ctx.fillRect(x_player + player.ancho/2, y_player + player.ancho/4, izq_gorrino * player.alto, player.ancho);
+            ctx.fillRect(x_player + jugador.ancho/2, y_player + jugador.ancho/4, izq_gorrino * jugador.alto, jugador.ancho);
 
             //pies
-            ctx.fillRect(x_player + player.ancho/2 - pies_izq, y_player + player.ancho/2, alto_pies, ancho_pies);
-            ctx.fillRect(x_player + player.ancho/2 - pies_izq, y_player + player.ancho/2 + 30, alto_pies, ancho_pies);
+            ctx.fillRect(x_player + jugador.ancho/2 - pies_izq, y_player + jugador.ancho/2, alto_pies, ancho_pies);
+            ctx.fillRect(x_player + jugador.ancho/2 - pies_izq, y_player + jugador.ancho/2 + 30, alto_pies, ancho_pies);
 
 
             //ojos
             ctx.fillStyle = "#ffffff";
-            ctx.fillRect(x_player + player.ancho/2 + izq_gorrino * (alto_player - ancho_player/8) - ojos_izq, y_player + player.ancho/2 - 10, ojo_size, ojo_size);
-            ctx.fillRect(x_player + player.ancho/2 + izq_gorrino * (alto_player - ancho_player/8) - ojos_izq, y_player + player.ancho/2 + 20, ojo_size, ojo_size);
+            ctx.fillRect(x_player + jugador.ancho/2 + izq_gorrino * (alto_player - ancho_player/8) - ojos_izq, y_player + jugador.ancho/2 - 10, ojo_size, ojo_size);
+            ctx.fillRect(x_player + jugador.ancho/2 + izq_gorrino * (alto_player - ancho_player/8) - ojos_izq, y_player + jugador.ancho/2 + 20, ojo_size, ojo_size);
 
 
             //boca
@@ -1216,31 +1238,10 @@
 
     }
 
-    function tweenPies(frame, duration) {
+    function tween_frames(frame, duration) {
         var half  = duration/2,
             pulse = frame%duration;
         return pulse < half ? (pulse/half) : 1-(pulse-half)/half;
-    }
-
-  
-    function renderplayer2(ctx, dt) {
-        if(player2.haciendo_gorrino){
-            ctx.fillStyle = COLOR.PINK;
-            var izq_gorrino = 1;
-            if(player2.gorrino_left){
-                izq_gorrino = -1;
-            }
-            ctx.fillRect(player2.x + (player2.dx * dt) + player.ancho/2, player2.y + (player2.dy * dt) + player2.ancho/4, izq_gorrino * player2.alto, player2.ancho);            
-        }
-        else{
-            if(!player2.jumping){
-                ctx.fillStyle = COLOR.GREY;
-            }
-            else{
-                ctx.fillStyle = COLOR.GREY;
-            }
-            ctx.fillRect(player2.x + (player2.dx * dt), player2.y + (player2.dy * dt), player2.ancho, player2.alto);
-        }
     }
   
     var theta = 0;
