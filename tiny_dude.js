@@ -164,13 +164,13 @@
         letra1 = letras[puntos1];
         letra2 = letras[puntos2];
         var size = 4;
-        pinta_numero(16, 16, letra1, size);
-        pinta_numero(ancho_total - 16 - (size*3), 16, letra2, size);
+        pinta_filas_columnas(16, 16, letra1, size);
+        pinta_filas_columnas(ancho_total - 16 - (size*3), 16, letra2, size);
 
         
     }
 
-    function pinta_numero(x, y, letra, size){
+    function pinta_filas_columnas(x, y, letra, size){
         ctx.fillStyle = "#ffffff";
         var currX = x;
         var currY = y;
@@ -811,17 +811,28 @@
                 //TOCA el suelo, procesa punto
                 if(!hay_punto){
 
-                    levelup_player.play();
+                    //punto.play();
 
                     tiempo_punto = timestamp() + 3000;
                     
                     if(ball.x < ancho_total/2){
-                        puntos2++;
-                        empieza1 = false;
+                        if(puntos2 >= 9){
+                            game_over();
+                        }
+                        else{
+                            puntos2++;
+                            empieza1 = false;
+                            
+                        }
                     }
                     else{
-                        puntos1++;
-                        empieza1 = true;
+                        if(puntos1 >= 9){
+                            siguiente_level();
+                        }
+                        else{
+                            puntos1++;
+                            empieza1 = true;
+                        }
 
                     }
                 }
@@ -1044,6 +1055,16 @@
 
     }
 
+    function game_over() {
+        //TODO: Hacer game over
+    }
+
+    function siguiente_level() {
+        //TODO: Hacer siguiente_level
+        levelup_player.play();
+
+    }
+
     //-------------------------------------------------------------------------
     // RENDERING
     //-------------------------------------------------------------------------
@@ -1118,7 +1139,7 @@
             var boca_largo = ancho_player/3;
             var boca_ancho = 4;
             ctx.fillStyle = "#ba001f";
-            var posicion_boca = x_player + ancho_player/2 - diff_player_ball/15;
+            var posicion_boca = x_player + ancho_player/2 - diff_player_ball/25;
             posicion_boca = bound(posicion_boca, x_player + ancho_player/8, x_player + ancho_player/2 );
 
             if(player.jumping){
@@ -1395,6 +1416,37 @@
         //fpsmeter.tick();
         requestAnimationFrame(frame, canvas);
     }
+
+
+    function muestra_logo() {
+        var logo =  [
+                        [ 1, 1, 1, 1,  , 1, 1,  , 1,  ,  , 1,  , 1,  ,  , 1,  ,  , 1, 1, 1,  ,  , 1,  , 1, 1,  ,  1, 1, 1,  ,  , 1, 1, 1, 1,  ,  , 1, 1,  , 1,  , 1, 1, 1, 1,  , 1, 1,  ,  ,  , 1, 1,  ,  ,  , 1, 1, 1, 1,  , 1,  ,  , 1],
+                        [ 1, 1, 1, 1,  , 1, 1,  , 1, 1,  , 1,  ,  , 1, 1,  ,  ,  , 1, 1,  , 1,  , 1,  , 1, 1,  ,  1, 1,  , 1,  , 1, 1,  ,  ,  ,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1, 1,  ,  ,  , 1, 1,  ,  ,  , 1, 1,  ,  ,  ,  , 1, 1,  ],
+                        [  , 1, 1,  ,  , 1, 1,  , 1, 1, 1, 1,  ,  , 1, 1,  ,  ,  , 1, 1,  , 1,  , 1,  , 1, 1,  ,  1, 1,  , 1,  , 1, 1, 1,  ,  ,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1, 1,  ,  ,  , 1, 1,  ,  ,  , 1, 1, 1,  ,  ,  , 1, 1,  ],
+                        [  , 1, 1,  ,  , 1, 1,  , 1,  , 1, 1,  ,  , 1, 1,  ,  ,  , 1, 1,  , 1,  , 1,  , 1, 1,  ,  1, 1,  , 1,  , 1, 1,  ,  ,  ,  ,  , 1,  , 1,  , 1, 1,  , 1,  , 1, 1,  ,  ,  , 1, 1,  ,  ,  , 1, 1,  ,  ,  ,  , 1, 1,  ],
+                        [  , 1, 1,  ,  , 1, 1,  , 1,  ,  , 1,  ,  , 1, 1,  ,  ,  , 1, 1, 1,  ,  , 1, 1, 1, 1,  ,  1, 1, 1,  ,  , 1, 1, 1, 1,  ,  ,  ,  , 1,  ,  , 1, 1, 1, 1,  , 1, 1, 1, 1,  , 1, 1, 1, 1,  , 1, 1, 1, 1,  ,  , 1, 1,  ],
+                ];
+
+        var size_logo_px = 8;
+        var x_logo = ancho_total/2 - (size_logo_px * logo[0].length)/2;
+
+        pinta_filas_columnas(x_logo, 200, logo, size_logo_px);
+        
+    }
+
+    //muestro el logo
+    muestra_logo();
+
+
+    function muestra_menu() {
+        
+        //TODO: Aquí muestro el menu: 1 player / 2 player?
+
+
+        // Cuando está todo seleccionado, llamo al frame
+        frame();
+    }
+
   
     document.addEventListener('keydown', function(ev) { return onkey(ev, ev.keyCode, true);  }, false);
     document.addEventListener('keyup',   function(ev) { return onkey(ev, ev.keyCode, false); }, false);
@@ -1427,7 +1479,8 @@
     var intervalo_cancion = setInterval(function () {
         if (done) {
             
-            frame();
+
+            muestra_menu();
 
             clearInterval(intervalo_cancion);
             return;
@@ -1489,7 +1542,7 @@
           //
 
         }
-    }, 0);
+    }, 100);
   
 
 
