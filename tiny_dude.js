@@ -1097,59 +1097,41 @@
             
         }
         else{
-            if(!player.jumping){
-                ctx.fillStyle = COLOR.YELLOW;                
+            if(player.tiempo_enfadado > timestamp()){
+                ctx.fillStyle = COLOR.PURPLE;
             }
             else{
-                ctx.fillStyle = COLOR.PURPLE;
+                ctx.fillStyle = COLOR.YELLOW;                
             }
             pinta_player(false);
         }
     }
 
     function pinta_player(gorrino, gorrino_left) {
+
+        var x_player = player.x + (player.dx * dt);
+        var y_player = player.y + (player.dy * dt);
+        var ancho_player = player.ancho;
+        var alto_player = player.alto;
+
+
+        var alto_pies = 12;
+        var ancho_pies = 16;
+
+        var ojo_size = 16;
+
+        var boca_largo = ancho_player/3;
+        var boca_ancho = 4;
+        
+        var diff_player_ball = (x_player + ancho_player/2) - (ball.x - ball.ancho/2);
+        
         if(!gorrino){
 
-            var x_player = player.x + (player.dx * dt);
-            var y_player = player.y + (player.dy * dt);
-            var ancho_player = player.ancho;
-            var alto_player = player.alto;
-
             //cuerpo
-            var alto_pies = 12;
-            var ancho_pies = 16;
             ctx.fillRect(x_player, y_player, ancho_player, alto_player - alto_pies);
 
-            //ojos
-            var ojo_size = 16;
-            ctx.fillStyle = "#ffffff";
-
-            var diff_player_ball = (x_player + ancho_player/2) - (ball.x - ball.ancho/2);
-
-            var posicion_ojo1 = x_player + ancho_player/4 - diff_player_ball/15;
-            posicion_ojo1 = bound(posicion_ojo1, x_player - 5, x_player + ancho_player/4);
-
-            var posicion_ojo2 = x_player + ancho_player - ancho_player/8 - diff_player_ball/15;
-            posicion_ojo2 = bound(posicion_ojo2, x_player + ancho_player/8 + 5, x_player + ancho_player - ancho_player/8);
-
-            ctx.fillRect(posicion_ojo1, y_player + ancho_player/15, ojo_size, ojo_size);
-            ctx.fillRect(posicion_ojo2, y_player + ancho_player/18, ojo_size, ojo_size);
-
-            //boca
-            var boca_largo = ancho_player/3;
-            var boca_ancho = 4;
-            ctx.fillStyle = "#ba001f";
-            var posicion_boca = x_player + ancho_player/2 - diff_player_ball/25;
-            posicion_boca = bound(posicion_boca, x_player + ancho_player/8, x_player + ancho_player/2 );
-
-            if(player.jumping){
-                boca_ancho = 12;
-            }
-
-            ctx.fillRect(posicion_boca, y_player + alto_player/4, boca_largo, boca_ancho);
-
+            
             //pies
-
             var posicion_pie1 = 15;
             var posicion_pie2 = 50;
             if(tweenPies(counter, 40) < 0.5 && (player.left || player.right)){
@@ -1166,19 +1148,62 @@
                 posicion_alto_pies = alto_pies/2;
             }
 
-            ctx.fillStyle = COLOR.YELLOW;
             ctx.fillRect(x_player + posicion_pie1, y_player + alto_player - alto_pies - 1, ancho_pies, alto_pies);
             ctx.fillRect(x_player + posicion_pie2, y_player + alto_player - alto_pies - 1, ancho_pies, alto_pies);
+
+            //ojos
+            ctx.fillStyle = "#ffffff";
+            var posicion_ojo1 = x_player + ancho_player/4 - diff_player_ball/15;
+            posicion_ojo1 = bound(posicion_ojo1, x_player - 5, x_player + ancho_player/4);
+
+            var posicion_ojo2 = x_player + ancho_player - ancho_player/8 - diff_player_ball/15;
+            posicion_ojo2 = bound(posicion_ojo2, x_player + ancho_player/8 + 5, x_player + ancho_player - ancho_player/8);
+
+            ctx.fillRect(posicion_ojo1, y_player + ancho_player/15, ojo_size, ojo_size);
+            ctx.fillRect(posicion_ojo2, y_player + ancho_player/18, ojo_size, ojo_size);
+
+            //boca
+            ctx.fillStyle = "#ba001f";
+            var posicion_boca = x_player + ancho_player/2 - diff_player_ball/25;
+            posicion_boca = bound(posicion_boca, x_player + ancho_player/8, x_player + ancho_player/2 );
+
+            if(player.jumping){
+                boca_ancho = 12;
+            }
+
+            ctx.fillRect(posicion_boca, y_player + alto_player/4, boca_largo, boca_ancho);
+
 
 
 
         }
         else{
             var izq_gorrino = 1;
+            var pies_izq = alto_pies;
+            var ojos_izq = 0;
             if(gorrino_left){
                 izq_gorrino = -1;
+                pies_izq = 0;
+                ojos_izq = ojo_size;
+                
             }
-            ctx.fillRect(player.x + (player.dx * dt) + player.ancho/2, player.y + (player.dy * dt) + player.ancho/4, izq_gorrino * player.alto, player.ancho);
+
+            ctx.fillRect(x_player + player.ancho/2, y_player + player.ancho/4, izq_gorrino * player.alto, player.ancho);
+
+            //ctx.fillRect(x_player + player.ancho/2 + alto_player - ancho_player/4, y_player + player.ancho/2 + 20, ojo_size, ojo_size);
+            //ctx.fillRect(posicion_ojo2, y_player + ancho_player/18, ojo_size, ojo_size);
+
+            //pies
+            ctx.fillRect(x_player + player.ancho/2 - pies_izq, y_player + player.ancho/2, alto_pies, ancho_pies);
+            ctx.fillRect(x_player + player.ancho/2 - pies_izq, y_player + player.ancho/2 + 30, alto_pies, ancho_pies);
+
+
+            //ojos
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(x_player + player.ancho/2 + izq_gorrino * (alto_player - ancho_player/8) - ojos_izq, y_player + player.ancho/2 - 10, ojo_size, ojo_size);
+            ctx.fillRect(x_player + player.ancho/2 + izq_gorrino * (alto_player - ancho_player/8) - ojos_izq, y_player + player.ancho/2 + 20, ojo_size, ojo_size);
+
+            
         }
     
 
@@ -1438,6 +1463,17 @@
     muestra_logo();
 
 
+    function pinta_cargador($percent) {
+        var ancho_cargador = 200;
+        var alto_cargador = 80;
+        ctx.fillRect((ancho_total - ancho_cargador)/2, alto_total/2 + 50, $percent * ancho_cargador, alto_cargador);
+
+        ctx.strokeStyle="#ffffff";
+        ctx.lineWidth=10;
+        ctx.strokeRect((ancho_total - ancho_cargador)/2, alto_total/2 + 50, ancho_cargador - 5, alto_cargador);
+    }
+
+
     function muestra_menu() {
         
         //TODO: Aquí muestro el menu: 1 player / 2 player?
@@ -1489,7 +1525,9 @@
         //console.log(croqueta_player.generate());
 
         if(!flag_song){
-            if(music_player.generate() >= 1){
+            var music_percent = music_player.generate();
+            pinta_cargador(music_percent);
+            if(music_percent >= 1){
                 flag_song = true;
             }
         }
