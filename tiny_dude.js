@@ -1130,7 +1130,7 @@
             //cuerpo
             ctx.fillRect(x_player, y_player, ancho_player, alto_player - alto_pies);
 
-            
+
             //pies
             var posicion_pie1 = 15;
             var posicion_pie2 = 50;
@@ -1188,10 +1188,8 @@
                 
             }
 
+            //cuerpo
             ctx.fillRect(x_player + player.ancho/2, y_player + player.ancho/4, izq_gorrino * player.alto, player.ancho);
-
-            //ctx.fillRect(x_player + player.ancho/2 + alto_player - ancho_player/4, y_player + player.ancho/2 + 20, ojo_size, ojo_size);
-            //ctx.fillRect(posicion_ojo2, y_player + ancho_player/18, ojo_size, ojo_size);
 
             //pies
             ctx.fillRect(x_player + player.ancho/2 - pies_izq, y_player + player.ancho/2, alto_pies, ancho_pies);
@@ -1202,6 +1200,13 @@
             ctx.fillStyle = "#ffffff";
             ctx.fillRect(x_player + player.ancho/2 + izq_gorrino * (alto_player - ancho_player/8) - ojos_izq, y_player + player.ancho/2 - 10, ojo_size, ojo_size);
             ctx.fillRect(x_player + player.ancho/2 + izq_gorrino * (alto_player - ancho_player/8) - ojos_izq, y_player + player.ancho/2 + 20, ojo_size, ojo_size);
+
+
+            //boca
+            ctx.fillStyle = "#6e0808";
+            boca_ancho = 12;
+
+            ctx.fillRect(x_player + ancho_player/2 + izq_gorrino * (alto_player - ancho_player/2.5), y_player + alto_player/2.5, boca_ancho, boca_largo);
 
             
         }
