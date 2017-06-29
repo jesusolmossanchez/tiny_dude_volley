@@ -375,7 +375,7 @@
             golpe_audio2.play();
             //TODO: Parametrizar con el tamaño de los tiles
             var velocidad_lateral1 = 800;
-            var velocidad_lateral2 = 1000;
+            var velocidad_lateral2 = 800;
             var velocidad_lateral3 = 300;
             var velocidad_lateral_mate = 1000;
             
@@ -383,7 +383,7 @@
             var velocidad_vertical_mate = 1000;
             var velocidad_vertical_arriba = 1000;
             
-            var velocidad_vertical_dejada = 300;
+            var velocidad_vertical_dejada = 100;
 
             var gravedad_mate1 = 1500;
             var gravedad_mate2 = 1400;
@@ -899,7 +899,7 @@
         else{
             ball.x = ancho_total - 112 - ball.ancho;
         }
-        ball.y = 198;
+        ball.y = 20;
         ball.dx = 0;
         ball.dy = 0;
 
@@ -1094,19 +1094,62 @@
             var ancho_player = player.ancho;
             var alto_player = player.alto;
 
-            ctx.fillRect(x_player, y_player, ancho_player, alto_player);
+            //cuerpo
+            var alto_pies = 12;
+            var ancho_pies = 16;
+            ctx.fillRect(x_player, y_player, ancho_player, alto_player - alto_pies);
 
             //ojos
             var ojo_size = 16;
             ctx.fillStyle = "#ffffff";
-            ctx.fillRect(x_player + ancho_player/4, y_player + ancho_player/15, ojo_size, ojo_size);
-            ctx.fillRect(x_player + ancho_player - ancho_player/8, y_player + ancho_player/18, ojo_size, ojo_size);
+
+            var diff_player_ball = (x_player + ancho_player/2) - (ball.x - ball.ancho/2);
+
+            var posicion_ojo1 = x_player + ancho_player/4 - diff_player_ball/15;
+            posicion_ojo1 = bound(posicion_ojo1, x_player - 5, x_player + ancho_player/4);
+
+            var posicion_ojo2 = x_player + ancho_player - ancho_player/8 - diff_player_ball/15;
+            posicion_ojo2 = bound(posicion_ojo2, x_player + ancho_player/8 + 5, x_player + ancho_player - ancho_player/8);
+
+            ctx.fillRect(posicion_ojo1, y_player + ancho_player/15, ojo_size, ojo_size);
+            ctx.fillRect(posicion_ojo2, y_player + ancho_player/18, ojo_size, ojo_size);
 
             //boca
             var boca_largo = ancho_player/3;
             var boca_ancho = 4;
             ctx.fillStyle = "#ba001f";
-            ctx.fillRect(x_player + ancho_player/2, y_player + alto_player/5, boca_largo, boca_ancho);
+            var posicion_boca = x_player + ancho_player/2 - diff_player_ball/15;
+            posicion_boca = bound(posicion_boca, x_player + ancho_player/8, x_player + ancho_player/2 );
+
+            if(player.jumping){
+                boca_ancho = 12;
+            }
+
+            ctx.fillRect(posicion_boca, y_player + alto_player/4, boca_largo, boca_ancho);
+
+            //pies
+
+            var posicion_pie1 = 15;
+            var posicion_pie2 = 50;
+            if(tweenPies(counter, 40) < 0.5 && (player.left || player.right)){
+                posicion_pie2 = 55;
+            }
+            if(tweenPies(counter, 50) < 0.5 && (player.left || player.right)){
+                posicion_pie1 = 20;
+            }
+
+            var posicion_alto_pies = alto_pies - 1;
+            if(player.jumping){
+                posicion_pie1 = 20;
+                posicion_pie2 = 40;
+                posicion_alto_pies = alto_pies/2;
+            }
+
+            ctx.fillStyle = COLOR.YELLOW;
+            ctx.fillRect(x_player + posicion_pie1, y_player + alto_player - alto_pies - 1, ancho_pies, alto_pies);
+            ctx.fillRect(x_player + posicion_pie2, y_player + alto_player - alto_pies - 1, ancho_pies, alto_pies);
+
+
 
         }
         else{
@@ -1120,6 +1163,12 @@
 
 
 
+    }
+
+    function tweenPies(frame, duration) {
+        var half  = duration/2,
+            pulse = frame%duration;
+        return pulse < half ? (pulse/half) : 1-(pulse-half)/half;
     }
 
   
@@ -1318,8 +1367,8 @@
         ball.start            = { x: ball.x, y: ball.y };
 
 
-        var alto_red = alto_total/2.4; 
-        net = { "height":320, "width":12, "x":(ancho_total)/2, "y":(alto_total) - alto_red};
+        var alto_red = 220; 
+        net = { "height":alto_red, "width":12, "x":(ancho_total)/2, "y":(alto_total) - alto_red};
 
     }
 
