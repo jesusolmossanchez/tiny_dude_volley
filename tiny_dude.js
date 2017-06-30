@@ -1613,6 +1613,7 @@
 
 
     function is_touch_device() {
+        return true;
         return 'ontouchstart' in document.documentElement;
     }
 
@@ -1652,18 +1653,20 @@
 
 
         var gira_mobile=  [
-                    [  ,  , 1, 1, 1, 1,  ,  ,  ],
-                    [  , 1,  ,  ,  ,  , 1,  , 1],
-                    [  , 1,  ,  ,  ,  ,  , 1, 1],
-                    [ 1, 1, 1,  ,  ,  , 1, 1, 1],
-                    [  ,  ,  ,  ,  ,  ,  ,  ,  ],
-                    [  ,  ,  ,  ,  ,  ,  ,  ,  ],
-                    [ 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                    [ 1,  ,  ,  ,  ,  ,  , 1, 1],
-                    [ 1,  ,  ,  ,  ,  ,  , 1, 1],
-                    [ 1,  ,  ,  ,  ,  ,  , 1, 1],
-                    [ 1,  ,  ,  ,  ,  ,  , 1, 1],
-                    [ 1, 1, 1, 1, 1, 1, 1, 1, 1]
+                    [  ,  ,  , 1, 1, 1, 1,  ,  ,  ,  ],
+                    [  ,  , 1,  ,  ,  ,  , 1,  ,  ,  ],
+                    [  , 1,  ,  ,  ,  ,  ,  , 1,  , 1],
+                    [  , 1,  ,  ,  ,  ,  ,  ,  , 1, 1],
+                    [ 1, 1, 1,  ,  ,  ,  ,  , 1, 1, 1],
+                    [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                    [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                    [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                    [ 1,  ,  ,  ,  ,  ,  ,  , 1, 1, 1],
+                    [ 1,  ,  ,  ,  ,  ,  ,  , 1, 1, 1],
+                    [ 1,  ,  ,  ,  ,  ,  ,  , 1,  , 1],
+                    [ 1,  ,  ,  ,  ,  ,  ,  , 1, 1, 1],
+                    [ 1,  ,  ,  ,  ,  ,  ,  , 1, 1, 1],
+                    [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
             ];
 
         var size_gira_px = 12;
@@ -1724,21 +1727,25 @@
 
         document.getElementById('der_mobile').addEventListener('touchstart', function(e){
             player.right = true;
+            this.className = "tecla_mobile pulsada";
             e.preventDefault();
         });
 
         document.getElementById('izq_mobile').addEventListener('touchstart', function(e){ 
             player.left = true;
+            this.className = "tecla_mobile pulsada";
             e.preventDefault();
         });
 
         document.getElementById('arr_mobile').addEventListener('touchstart', function(e){ 
             player.jump = true;
+            this.className = "tecla_mobile pulsada";
             e.preventDefault();
         });
 
         document.getElementById('accion_mobile').addEventListener('touchstart', function(e){ 
             player.accion = true;
+            this.className = "tecla_mobile pulsada";
             e.preventDefault();
         });
 
@@ -1746,21 +1753,25 @@
 
         document.getElementById('der_mobile').addEventListener('touchend', function(e){
             player.right = false;
+            this.className = "tecla_mobile";
             e.preventDefault();
         });
 
         document.getElementById('izq_mobile').addEventListener('touchend', function(e){ 
             player.left = false;
+            this.className = "tecla_mobile";
             e.preventDefault();
         });
 
         document.getElementById('arr_mobile').addEventListener('touchend', function(e){ 
             player.jump = false;
+            this.className = "tecla_mobile";
             e.preventDefault();
         });
 
         document.getElementById('accion_mobile').addEventListener('touchend', function(e){ 
             player.accion = false;
+            this.className = "tecla_mobile";
             e.preventDefault();
         });
           
