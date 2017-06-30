@@ -297,7 +297,7 @@
         if(overlap(net.x, net.y, net.width, net.height, ball.center_x - ball.ancho/2, ball.center_y - ball.alto/2, ball.ancho, ball.alto)){
             //Si la pelota está por encima de la red, rebota parriba
             //if((ball.y + ball.alto) < net.y && ball.dy > 0){
-            if(ball.y < net.y){
+            if(ball.center_y < net.y){
                 if(ball.dy > 0){
                     ball.dy = - ball.dy * FACTOR_REBOTE;
                 }
@@ -823,7 +823,7 @@
 
                     tiempo_punto = timestamp() + 3000;
                     
-                    if(ball.x < ancho_total/2){
+                    if(ball.center_x < ancho_total/2){
                         if(puntos2 >= 9){
                             game_over();
                         }
@@ -856,14 +856,14 @@
   
         //pelota va a la derecha
         if (ball.dx > 0) {
-            if((ball.x + ball.ancho) > ancho_total){
+            if((ball.center_x + ball.ancho/2) > ancho_total){
                 ball.dx = -ball.dx * FACTOR_REBOTE;
             }
         }
         //pelota va a la izquierda
         else if (ball.dx < 0) {
 
-            if(ball.x <= 0){
+            if((ball.center_x - ball.ancho/2) <= 0){
                 ball.dx = -ball.dx * FACTOR_REBOTE;
 
             }
@@ -1714,7 +1714,7 @@
         var size_flecha_px = 12;
 
         pinta_filas_columnas(ctx_mobile, 20, 20, flecha_izq, size_flecha_px);
-        pinta_filas_columnas(ctx_mobile, 140, 20, flecha_der, size_flecha_px);
+        pinta_filas_columnas(ctx_mobile, 120, 20, flecha_der, size_flecha_px);
         pinta_filas_columnas(ctx_mobile, ancho_window - 180, 20, flecha_arr, size_flecha_px);
         pinta_filas_columnas(ctx_mobile, ancho_window - 80, 20, accion_boton, size_flecha_px);
 
