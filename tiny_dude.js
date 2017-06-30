@@ -1619,11 +1619,60 @@
     var canvas_mobile;
     var ctx_mobile;
     if(is_touch_device()){
-        pinta_cosas_mobile();
-        window.addEventListener('orientationchange', pinta_cosas_mobile);
+        if (window.innerHeight > window.innerWidth) {
+            pinta_cosas_mobile_gira();
+        } else {
+            pinta_cosas_mobile();
+        }
+        window.addEventListener('orientationchange', function (argument) {
+            if (window.innerHeight > window.innerWidth) {
+                pinta_cosas_mobile_gira();
+            } else {
+                pinta_cosas_mobile();
+            }
+        });
+
+    }
+  
+    function pinta_cosas_mobile_gira() {
+
+        document.getElementById('controles_mobile').style.display = "none";
+        document.getElementById('canvas_mobile').style.display = "none";
+        var ancho_window = window.innerWidth;
+        var alto_window = window.innerHeight;
+
+
+        canvas_mobile_gira   = document.getElementById('canvas_mobile_gira');
+        canvas_mobile_gira.style.display = "block";
+        ctx_mobile_gira      = canvas_mobile_gira.getContext('2d');
+        canvas_mobile_gira.width  = ancho_window;
+        canvas_mobile_gira.height = alto_window;
+
+
+        var gira_mobile=  [
+                    [  ,  , 1, 1, 1, 1,  ,  ,  ],
+                    [  , 1,  ,  ,  ,  , 1,  , 1],
+                    [  , 1,  ,  ,  ,  ,  , 1, 1],
+                    [ 1, 1, 1,  ,  ,  , 1, 1, 1],
+                    [  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                    [  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                    [ 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                    [ 1,  ,  ,  ,  ,  ,  , 1, 1],
+                    [ 1,  ,  ,  ,  ,  ,  , 1, 1],
+                    [ 1,  ,  ,  ,  ,  ,  , 1, 1],
+                    [ 1,  ,  ,  ,  ,  ,  , 1, 1],
+                    [ 1, 1, 1, 1, 1, 1, 1, 1, 1]
+            ];
+
+        var size_gira_px = 12;
+        var x_gira = ancho_window/2 - (size_gira_px * gira_mobile[0].length)/2;
+        pinta_filas_columnas(ctx_mobile_gira, x_gira, 200, gira_mobile, size_gira_px);
+          
     }
   
     function pinta_cosas_mobile() {
+        document.getElementById('canvas_mobile_gira').style.display = "none";
+
         canvas_mobile   = document.getElementById('canvas_mobile');
         ctx_mobile      = canvas_mobile.getContext('2d');
         canvas_mobile.style.display = "block";
@@ -1660,6 +1709,7 @@
                     [  , 1, 1, 1,  ],
                     [ 1,  , 1,  , 1]
             ];
+
 
         var size_flecha_px = 12;
 
