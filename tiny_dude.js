@@ -1453,10 +1453,10 @@
   
     var counter = 0, dt = 0, now,
         last = timestamp();
-        //fpsmeter = new FPSMeter({ decimals: 0, graph: true, theme: 'dark', left: '5px' });
+        fpsmeter = new FPSMeter({ decimals: 0, graph: true, theme: 'dark', left: '5px' });
   
     function frame() {
-        //fpsmeter.tickStart();
+        fpsmeter.tickStart();
         now = timestamp();
         dt = dt + Math.min(1, (now - last) / 1000);
         while(dt > step) {
@@ -1466,7 +1466,7 @@
         render(ctx, counter, dt);
         last = now;
         counter++;
-        //fpsmeter.tick();
+        fpsmeter.tick();
         requestAnimationFrame(frame, canvas);
     }
 
@@ -1613,7 +1613,6 @@
 
 
     function is_touch_device() {
-        return true;
         return 'ontouchstart' in document.documentElement;
     }
 
