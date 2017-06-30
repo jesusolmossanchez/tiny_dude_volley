@@ -65,8 +65,8 @@
     }
     function calcula_rotacion(x, y, doble) {
 
-        var centro_balon_x = ball.x + (ball.dx * dt) + ball.ancho/2;
-        var centro_balon_y = ball.y + (ball.dy * dt) + ball.alto/2;
+        ball.center_x = ball.x + (ball.dx * dt) + ball.ancho/2;
+        ball.center_y = ball.y + (ball.dy * dt) + ball.alto/2;
 
         var mas = 0;
         if(doble){
@@ -75,15 +75,15 @@
         theta += ball.dx/10000;
 
         //ROTACION VERTICE 1
-        var tempX = x - centro_balon_x;
-        var tempY = y - centro_balon_y;
+        var tempX = x - ball.center_x;
+        var tempY = y - ball.center_y;
 
         var rotatedX = tempX*Math.cos(theta + mas) - tempY*Math.sin(theta + mas);
         var rotatedY = tempX*Math.sin(theta + mas) + tempY*Math.cos(theta + mas);
 
         var ret = {};
-        ret.x = rotatedX + centro_balon_x;
-        ret.y = rotatedY + centro_balon_y;
+        ret.x = rotatedX + ball.center_x;
+        ret.y = rotatedY + ball.center_y;
         return ret;
 
     }
@@ -294,7 +294,7 @@
 
 
     function checkBallCollisionNet() {
-        if(overlap(net.x, net.y, net.width, net.height, ball.x, ball.y, ball.ancho, ball.alto)){
+        if(overlap(net.x, net.y, net.width, net.height, ball.center_x - ball.ancho/2, ball.center_y - ball.alto/2, ball.ancho, ball.alto)){
             //Si la pelota está por encima de la red, rebota parriba
             //if((ball.y + ball.alto) < net.y && ball.dy > 0){
             if(ball.y < net.y){
@@ -318,11 +318,9 @@
     function checkBallCollision() {
 
 
-
         if(hay_punto){
             return;
         }
-
         
         var rebota = false;
         var jugador_rebota = false;
@@ -333,7 +331,7 @@
             if(player.gorrino_left){
                 izq_gorrino = -1 * player.alto/2;
             }   
-            if ((overlap(player.x + izq_gorrino, player.y + player.ancho/4, player.alto, player.ancho, ball.x, ball.y, ball.ancho, ball.alto) &&
+            if ((overlap(player.x + izq_gorrino, player.y + player.ancho/4, player.alto, player.ancho, ball.center_x - ball.ancho/2, ball.center_y - ball.alto/2, ball.ancho, ball.alto) &&
                  timestamp() > player.no_rebota_time)){
                     rebota = true;
                     jugador_rebota = player;
@@ -341,7 +339,7 @@
 
         }
         else{
-            if ((overlap(player.x, player.y, player.ancho, player.alto, ball.x, ball.y, ball.ancho, ball.alto) &&
+            if ((overlap(player.x, player.y, player.ancho, player.alto, ball.center_x - ball.ancho/2, ball.center_y - ball.alto/2, ball.ancho, ball.alto) &&
                  timestamp() > player.no_rebota_time)){
                     rebota = true;
                     jugador_rebota = player;
@@ -356,7 +354,7 @@
             if(player2.gorrino_left){
                 izq_gorrino2 = -1 * player2.alto/2;
             }   
-            if ((overlap(player2.x + izq_gorrino2, player2.y + player2.ancho/4, player2.alto, player2.ancho, ball.x, ball.y, ball.ancho, ball.alto) &&
+            if ((overlap(player2.x + izq_gorrino2, player2.y + player2.ancho/4, player2.alto, player2.ancho, ball.center_x - ball.ancho/2, ball.center_y - ball.alto/2, ball.ancho, ball.alto) &&
                  timestamp() > player2.no_rebota_time)){
                     rebota = true;
                     jugador_rebota = player2;
@@ -364,7 +362,7 @@
 
         }
         else{
-            if ((overlap(player2.x, player2.y, player2.ancho, player2.alto, ball.x, ball.y, ball.ancho, ball.alto) &&
+            if ((overlap(player2.x, player2.y, player2.ancho, player2.alto, ball.center_x - ball.ancho/2, ball.center_y - ball.alto/2, ball.ancho, ball.alto) &&
                  timestamp() > player2.no_rebota_time)){
                     rebota = true;
                     jugador_rebota = player2;
@@ -425,7 +423,7 @@
             else{
                 ball.mate = true;
 
-                jugador_rebota.no_rebota_time = timestamp() + 200;
+                jugador_rebota.no_rebota_time = timestamp() + 300;
 
                 if(jugador_rebota === player){
 
@@ -504,6 +502,11 @@
                                 ball.gravity = gravedad_mate2;
                             }
                         }
+                        else{
+                            ball.dy = -IMPULSO_PELOTA;
+                            ball.dx = ball.dx/4 + (ball.x - jugador_rebota.x) * F_ALEJA_X;
+                            jugador_rebota.dy = jugador_rebota.dy/F_SALTO_COLISION;
+                        }
                     }
                     
                 }
@@ -560,8 +563,13 @@
             }
 
             //Si se pulsa acción
-            if(player.accion && (timestamp() > player.tiempo_enfadado + 300)){
-                player.tiempo_enfadado = timestamp()+500;
+            if(player.accion){
+                if (player.jumping && timestamp() > player.tiempo_enfadado + 300){
+                    player.tiempo_enfadado = timestamp()+400;
+                }
+                if(!player.jumping && timestamp() > player.tiempo_gorrino + 300){
+                    player.tiempo_gorrino = timestamp()+400;
+                }
             }
         }
 
@@ -573,7 +581,7 @@
         player.dx = bound(player.dx + (dt * player.ddx), -player.maxdx, player.maxdx);
         player.dy = bound(player.dy + (dt * player.ddy), -player.maxdy, player.maxdy);
 
-        if(!player.jumping && player.tiempo_enfadado > timestamp()){
+        if(!player.jumping && player.tiempo_gorrino > timestamp()){
             if(!player.haciendo_gorrino){
                 if(player.left){
                     player.dx = -450;
@@ -588,7 +596,7 @@
                     croqueta_audio.play();
                 }
             }
-            else if(player.tiempo_enfadado > timestamp() + 150){
+            else if(player.tiempo_gorrino > timestamp() + 150){
                 if(player.gorrino_left){
                     player.dx = -450;
                 }
@@ -599,7 +607,7 @@
             }
         }
 
-        if(player.tiempo_enfadado < timestamp()){
+        if(player.tiempo_gorrino < timestamp()){
             player.haciendo_gorrino = false;
         }
       
@@ -710,8 +718,8 @@
 
 
 
-        if(!player2.jumping && player2.tiempo_enfadado > timestamp()){
-            if(player2.tiempo_enfadado > timestamp() + 150){
+        if(!player2.jumping && player2.tiempo_gorrino > timestamp()){
+            if(player2.tiempo_gorrino > timestamp() + 150){
                 if(player2.gorrino_left){
                     player2.dx = -450;
                 }
@@ -913,8 +921,10 @@
         ball.y = 20;
         ball.dx = 0;
         ball.dy = 0;
+        ball.center_x         = ball.x + ball.ancho/2;
+        ball.center_y         = ball.y + ball.alto/2;
 
-            hay_punto = false;
+        hay_punto = false;
     }
 
     var dondecae = 0;
@@ -932,7 +942,7 @@
 
         var ancho_juego = ancho_total;
         var alto_juego = alto_total;
-        var x = ball.x + ball.ancho/2;
+        var x = ball.center_x;
         //donde está la pelota en altura
         var H_b = alto_juego - ball.y + ball.alto/2;
         var H_p = alto_juego - ball.y + (ball.alto/2) - (alto_juego - player2.y);
@@ -971,7 +981,7 @@
             
             //si cae a mi izquierda, me muevo pallá
             //TODO: revisar el valor a la derecha 'factor_derecha'
-            var factor_derecha = 30;
+            var factor_derecha = 0;
             if(dondecae < (player2_x - factor_derecha) && player2_x > ancho_juego/2){
                 player2.left = true;
                 player2.right = false;
@@ -1000,7 +1010,7 @@
 
         }
         else{
-            
+            player2.tiempo_enfadado = timestamp();
             var movimientos_aleatorios = counter % 50;
             
             if (movimientos_aleatorios > 48){
@@ -1032,17 +1042,25 @@
             
         }
 
-        if(!player2.jumping && H_b < (alto_total/3)){
+        var limite_gorrino_x = 100;
+        var limite_gorrino_y = alto_total/3;
+        if(!player2.jumping && H_b < limite_gorrino_y){
             if(dondecae < player2_x && player2_x > ancho_total/2){
-                if(player2_x - dondecae > (ancho_total/4) && x>ancho_total/2 && !player2.haciendo_gorrino){
-                    player2.tiempo_enfadado = timestamp()+500;
+                if(player2_x - dondecae > limite_gorrino_x && 
+                    x > (ancho_total/2 - 50) && 
+                    !player2.haciendo_gorrino){
+
+                    player2.tiempo_gorrino = timestamp()+400;
                     player2.gorrino_left = true;
                 }
 
             }
             else{
-                if(dondecae-player2_x > 130 && x>ancho_total/2 && !player2.haciendo_gorrino){
-                    player2.tiempo_enfadado = timestamp()+500;
+                if(dondecae - player2_x > limite_gorrino_x && 
+                    x > ancho_total/2 && 
+                    !player2.haciendo_gorrino){
+                    
+                    player2.tiempo_gorrino = timestamp()+400;
                     player2.gorrino_left = false;
                 }
 
@@ -1383,6 +1401,7 @@
         player.friction         = player.maxdx / (FRICTION);
         player.player           = true;
         player.tiempo_enfadado  = timestamp();
+        player.tiempo_gorrino   = timestamp();
         player.no_rebota_time   = timestamp();
         player.start            = { x: player.x, y: player.y };
 
@@ -1400,13 +1419,16 @@
         player2.friction         = player2.maxdx / (FRICTION);
         player2.player2          = true;
         player2.tiempo_enfadado  = timestamp();
+        player2.tiempo_gorrino   = timestamp();
         player2.no_rebota_time   = timestamp();
         player2.start            = { x: player2.x, y: player2.y };
 
         ball.x                = 96;
-        ball.y                = 198;
+        ball.y                = 0;
         ball.alto             = 50;
         ball.ancho            = 50;
+        ball.center_x         = ball.x + ball.ancho/2;
+        ball.center_y         = ball.y + ball.alto/2;
         ball.dx               = 0;
         ball.dy               = 0;
         ball.gravity          = 900;
