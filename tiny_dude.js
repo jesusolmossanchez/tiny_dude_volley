@@ -1625,11 +1625,13 @@
             pinta_cosas_mobile();
         }
         window.addEventListener('orientationchange', function (argument) {
-            if (window.innerHeight > window.innerWidth) {
-                pinta_cosas_mobile_gira();
-            } else {
-                pinta_cosas_mobile();
-            }
+            window.setTimeout(function () {
+                if (window.innerHeight > window.innerWidth) {
+                    pinta_cosas_mobile_gira();
+                } else {
+                    pinta_cosas_mobile();
+                }
+            },300);
         });
 
     }
