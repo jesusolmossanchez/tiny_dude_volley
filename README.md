@@ -12,6 +12,9 @@ para probar, aquí: https://jesusolmossanchez.github.io/tiny_dude_volley/
 - Crear marcador -> hecho
 - Pintar marcador -> hecho (revisar tamaño)
 - Hacer jugable en mobile -> hecho (revisar jugabilidad)
+- Pintar jugadores  ms bonicos -> hecho (revisar)
+- Manejas cambio de orientación en mobile -> hecho, hacer pausa vvv
+- Implementar pausa (y ponerla en orientación incorrecta, portarit)
 - Música -> añadida (revisar pistas)
 - Crear menu
 - Mas de una pantalla (playerCPU parametrizado y dificultad)
