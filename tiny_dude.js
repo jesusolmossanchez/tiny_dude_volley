@@ -164,13 +164,13 @@
         letra1 = letras[puntos1];
         letra2 = letras[puntos2];
         var size = 4;
-        pinta_filas_columnas(16, 16, letra1, size);
-        pinta_filas_columnas(ancho_total - 16 - (size*3), 16, letra2, size);
+        pinta_filas_columnas(ctx, 16, 16, letra1, size);
+        pinta_filas_columnas(ctx, ancho_total - 16 - (size*3), 16, letra2, size);
 
         
     }
 
-    function pinta_filas_columnas(x, y, letra, size){
+    function pinta_filas_columnas(ctx, x, y, letra, size){
         ctx.fillStyle = "#ffffff";
         var currX = x;
         var currY = y;
@@ -1483,7 +1483,7 @@
         var size_logo_px = 8;
         var x_logo = ancho_total/2 - (size_logo_px * logo[0].length)/2;
 
-        pinta_filas_columnas(x_logo, 200, logo, size_logo_px);
+        pinta_filas_columnas(ctx, x_logo, 200, logo, size_logo_px);
         
     }
 
@@ -1609,8 +1609,110 @@
 
         }
     }, 100);
-  
 
+
+
+    function is_touch_device() {
+        return 'ontouchstart' in document.documentElement;
+    }
+
+    var canvas_mobile;
+    var ctx_mobile;
+    if(is_touch_device()){
+        pinta_cosas_mobile();
+        window.addEventListener('orientationchange', pinta_cosas_mobile);
+    }
+  
+    function pinta_cosas_mobile() {
+        canvas_mobile   = document.getElementById('canvas_mobile');
+        ctx_mobile      = canvas_mobile.getContext('2d');
+        canvas_mobile.style.display = "block";
+        var ancho_window = window.innerWidth
+        canvas_mobile.width  = ancho_total;
+        canvas_mobile.height = 100;
+
+
+        var flecha_der =  [
+                    [  , 1,  ,  ],
+                    [  , 1, 1,  ],
+                    [ 1, 1, 1, 1],
+                    [  , 1, 1,  ],
+                    [  , 1,  ,  ]
+            ];
+        var flecha_izq =  [
+                    [  ,  , 1,  ],
+                    [  , 1, 1,  ],
+                    [ 1, 1, 1, 1],
+                    [  , 1, 1,  ],
+                    [  ,  , 1,  ]
+            ];
+        var flecha_arr=  [
+                    [  ,  , 1,  ,  ],
+                    [  , 1, 1, 1,  ],
+                    [ 1, 1, 1, 1, 1],
+                    [  , 1, 1, 1,  ],
+                    [  , 1, 1, 1,  ]
+            ];
+        var accion_boton=  [
+                    [ 1,  , 1,  , 1],
+                    [  , 1, 1, 1,  ],
+                    [ 1, 1, 1, 1, 1],
+                    [  , 1, 1, 1,  ],
+                    [ 1,  , 1,  , 1]
+            ];
+
+        var size_flecha_px = 12;
+
+        pinta_filas_columnas(ctx_mobile, 20, 20, flecha_izq, size_flecha_px);
+        pinta_filas_columnas(ctx_mobile, 140, 20, flecha_der, size_flecha_px);
+        pinta_filas_columnas(ctx_mobile, ancho_window - 180, 20, flecha_arr, size_flecha_px);
+        pinta_filas_columnas(ctx_mobile, ancho_window - 80, 20, accion_boton, size_flecha_px);
+
+        document.getElementById('controles_mobile').style.display = "block";
+
+        document.getElementById('der_mobile').addEventListener('touchstart', function(e){
+            player.right = true;
+            e.preventDefault();
+        });
+
+        document.getElementById('izq_mobile').addEventListener('touchstart', function(e){ 
+            player.left = true;
+            e.preventDefault();
+        });
+
+        document.getElementById('arr_mobile').addEventListener('touchstart', function(e){ 
+            player.jump = true;
+            e.preventDefault();
+        });
+
+        document.getElementById('accion_mobile').addEventListener('touchstart', function(e){ 
+            player.accion = true;
+            e.preventDefault();
+        });
+
+
+
+        document.getElementById('der_mobile').addEventListener('touchend', function(e){
+            player.right = false;
+            e.preventDefault();
+        });
+
+        document.getElementById('izq_mobile').addEventListener('touchend', function(e){ 
+            player.left = false;
+            e.preventDefault();
+        });
+
+        document.getElementById('arr_mobile').addEventListener('touchend', function(e){ 
+            player.jump = false;
+            e.preventDefault();
+        });
+
+        document.getElementById('accion_mobile').addEventListener('touchend', function(e){ 
+            player.accion = false;
+            e.preventDefault();
+        });
+          
+    }
 
 })();
 
