@@ -29,17 +29,6 @@
         return Math.max(min, Math.min(max, x));
     }
 
-    //pilla por get cosas
-    function get(url, onsuccess) {
-        var request = new XMLHttpRequest();
-        request.onreadystatechange = function() {
-        if ((request.readyState == 4) && (request.status == 200))
-            onsuccess(request);
-        };
-        request.open("GET", url, true);
-        request.send();
-    }
-
     //comprueba si algo está dentro de algo
     function overlap(x1, y1, w1, h1, x2, y2, w2, h2) {
         return !(((x1 + w1 - 1) < x2) ||
@@ -821,6 +810,13 @@
 
                     //punto.play();
 
+                    var x_explosion = ball.center_x;
+                    var y_explosion = ball.center_y + ball.alto;
+                    
+                    explosions.push(
+                        new explosion(x_explosion, y_explosion, true, true)
+                    );
+
                     tiempo_punto = timestamp() + 3000;
                     
                     if(ball.center_x < ancho_total/2){
@@ -1199,8 +1195,13 @@
             var posicion_ojo2 = x_player + ancho_player - ancho_player/8 - diff_player_ball/15;
             posicion_ojo2 = bound(posicion_ojo2, x_player + ancho_player/2, x_player + ancho_player - ancho_player/8);
 
-            ctx.fillRect(posicion_ojo1, y_player + ancho_player/15, ojo_size, ojo_size);
-            ctx.fillRect(posicion_ojo2, y_player + ancho_player/18, ojo_size, ojo_size);
+            var ojos_jumping = 0;
+            if(jugador.jumping){
+                ojos_jumping = 5;
+
+            }
+            ctx.fillRect(posicion_ojo1, y_player + ancho_player/15 - ojos_jumping, ojo_size, ojo_size);
+            ctx.fillRect(posicion_ojo2, y_player + ancho_player/18 - ojos_jumping, ojo_size, ojo_size);
 
             //boca
             ctx.fillStyle = "#ba001f";
@@ -1339,7 +1340,7 @@
     }
 
 
-    function explosion(x, y, supertiro) {
+    function explosion(x, y, supertiro, punto) {
 
         this.particles = [];
 
@@ -1350,16 +1351,33 @@
 
         for (var i = 0; i < particulas_por_explosion; i++) {
             this.particles.push(
-                new particle(x, y, supertiro)
+                new particle(x, y, supertiro, punto)
             );
         }
     }
 
-    function particle(x, y, supertiro) {
+    function particle(x, y, supertiro, punto) {
 
         var max_particulas_size = particlesMaxSize;
         if(supertiro){
             max_particulas_size = particlesMaxSize * 1.5;
+        }
+        console.log(punto)
+
+        if(punto){
+            this.r    = randInt(0, 255);
+            this.g    = '0';
+            this.b    = '0';
+        }
+        else if(supertiro){
+            this.r    = randInt(0, 255);
+            this.g    = '255';
+            this.b    = randInt(0, 255);
+        }
+        else{
+            this.r    = '255';
+            this.g    = '255';
+            this.b    = randInt(0, 255);
         }
 
         this.x    = x;
@@ -1367,9 +1385,7 @@
         this.xv   = randInt(particlesMinSpeed, particlesMaxSpeed, false) + ball.dx/300;
         this.yv   = randInt(particlesMinSpeed/2, particlesMaxSpeed/2, false) + ball.dy/300;
         this.size = randInt(particlesMinSize, max_particulas_size, true);
-        this.r    = '255';
-        this.g    = '255';
-        this.b    = randInt(0, 255);
+        
     }
 
 
