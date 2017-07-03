@@ -5,23 +5,6 @@
 **************************************************/
 var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
 
-      var   ancho_total = 840,
-            alto_total  = 600,
-            hay_punto = false;
-    this.timestamp = function() {
-        return window.performance && window.performance.now ? window.performance.now() : new Date().getTime();
-    };
-     //Limite entre dos máximos
-    this.bound = function (x, min, max) {
-        return Math.max(min, Math.min(max, x));
-    };
-    var alto_red = 220; 
-    var net = { "height":alto_red, "width":12, "x":(ancho_total)/2, "y":(alto_total) - alto_red};
-
-    var     GRAVITY  = 800, // default (exagerated) gravity
-            ACCEL    = 0.001,     // default take 1/2 second to reach maxdx (horizontal acceleration)
-            FRICTION = 0.001;     // default take 1/6 second to stop from maxdx (horizontal friction)
-
     this.x                = x;
     this.y                = 1107;
     this.alto             = 110;
@@ -34,22 +17,22 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
     this.maxdx            = 150;
     this.maxdy            = 600;
     this.impulse          = 60000;
-    this.accel            = this.maxdx / (ACCEL);
-    this.friction         = this.maxdx / (FRICTION);
+    this.accel            = this.maxdx / (juego.ACCEL);
+    this.friction         = this.maxdx / (juego.FRICTION);
     this.player           = true;
-    this.tiempo_enfadado  = this.timestamp();
-    this.tiempo_gorrino   = this.timestamp();
-    this.no_rebota_time   = this.timestamp();
+    this.tiempo_enfadado  = juego.timestamp();
+    this.tiempo_gorrino   = juego.timestamp();
+    this.no_rebota_time   = juego.timestamp();
     this.start            = { x: this.x, y: this.y };
 
     if(posicion == 1){
-        this.limite_derecha    = ancho_total/2;
+        this.limite_derecha    = juego.ancho_total/2;
         this.limite_izquierda  = 0; 
         this.CPU = false;    
     }
     else{
-        this.limite_derecha    = ancho_total;
-        this.limite_izquierda  = ancho_total/2+net.width;     
+        this.limite_derecha    = juego.ancho_total;
+        this.limite_izquierda  = juego.ancho_total/2+juego.net.width;     
         this.CPU = true;    
 
     }
@@ -64,7 +47,7 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
         this.ddy = this.gravity;
 
         //movimientos
-        if(!hay_punto){
+        if(!juego.hay_punto){
             if (this.left){
                 this.ddx = this.ddx - this.accel;
             }
@@ -81,7 +64,7 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
 
             //Salto
             if (this.jump && !this.jumping){
-                if(this.tiempo_gorrino < this.timestamp() - 50 || this.CPU) {
+                if(this.tiempo_gorrino < juego.timestamp() - 50 || this.CPU) {
                     this.ddy = this.ddy - this.impulse; // an instant big force impulse
                     this.jumping = true;
                 }
@@ -91,11 +74,11 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
 
             //Si se pulsa acción
             if(this.accion){
-                if (this.jumping && this.timestamp() > this.tiempo_enfadado + 300){
-                    this.tiempo_enfadado = this.timestamp()+400;
+                if (this.jumping && juego.timestamp() > this.tiempo_enfadado + 300){
+                    this.tiempo_enfadado = juego.timestamp()+400;
                 }
-                if(!this.jumping && this.timestamp() > this.tiempo_gorrino + 300){
-                    this.tiempo_gorrino = this.timestamp()+400;
+                if(!this.jumping && juego.timestamp() > this.tiempo_gorrino + 300){
+                    this.tiempo_gorrino = juego.timestamp()+400;
                 }
             }
         }
@@ -105,10 +88,10 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
         this.y  = this.y  + (dt * this.dy);
 
         //velocidades
-        this.dx = this.bound(this.dx + (dt * this.ddx), -this.maxdx, this.maxdx);
-        this.dy = this.bound(this.dy + (dt * this.ddy), -this.maxdy, this.maxdy);
+        this.dx = juego.bound(this.dx + (dt * this.ddx), -this.maxdx, this.maxdx);
+        this.dy = juego.bound(this.dy + (dt * this.ddy), -this.maxdy, this.maxdy);
 
-        if(!this.jumping && this.tiempo_gorrino > this.timestamp()){
+        if(!this.jumping && this.tiempo_gorrino > juego.timestamp()){
             if(!this.haciendo_gorrino){
                 if(this.left){
                     this.dx = -450;
@@ -123,7 +106,7 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
                     //croqueta_audio.play();
                 }
             }
-            else if(this.tiempo_gorrino > this.timestamp() + 150){
+            else if(this.tiempo_gorrino > juego.timestamp() + 150){
                 if(this.gorrino_left){
                     this.dx = -450;
                 }
@@ -134,7 +117,7 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
             }
         }
 
-        if(this.tiempo_gorrino < this.timestamp()){
+        if(this.tiempo_gorrino < juego.timestamp()){
             this.haciendo_gorrino = false;
         }
       
@@ -147,8 +130,8 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
 
         //SI va pabajo
         if (this.dy >= 0) {
-            if(this.y + this.alto > alto_total){
-                this.y = alto_total - this.alto;
+            if(this.y + this.alto > juego.alto_total){
+                this.y = juego.alto_total - this.alto;
                 this.dy = 0;
                 this.jumping = false;
             }
@@ -241,10 +224,10 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
             //ojos
             ctx.fillStyle = "#ffffff";
             var posicion_ojo1 = x_player + ancho_player/4 - diff_player_ball/15;
-            posicion_ojo1 = this.bound(posicion_ojo1, x_player - 5, x_player + ancho_player/4);
+            posicion_ojo1 = juego.bound(posicion_ojo1, x_player - 5, x_player + ancho_player/4);
 
             var posicion_ojo2 = x_player + ancho_player - ancho_player/8 - diff_player_ball/15;
-            posicion_ojo2 = this.bound(posicion_ojo2, x_player + ancho_player/2, x_player + ancho_player - ancho_player/8);
+            posicion_ojo2 = juego.bound(posicion_ojo2, x_player + ancho_player/2, x_player + ancho_player - ancho_player/8);
 
             var ojos_jumping = 0;
             if(this.jumping){
@@ -257,7 +240,7 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
             //boca
             ctx.fillStyle = "#ba001f";
             var posicion_boca = x_player + ancho_player/2 - diff_player_ball/25;
-            posicion_boca = this.bound(posicion_boca, x_player + ancho_player/8, x_player + ancho_player/2 );
+            posicion_boca = juego.bound(posicion_boca, x_player + ancho_player/8, x_player + ancho_player/2 );
 
             if(this.jumping){
                 boca_ancho = 12;
