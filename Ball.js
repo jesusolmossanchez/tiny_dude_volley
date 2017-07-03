@@ -5,31 +5,6 @@
 **************************************************/
 var Ball = function(juego, x, y, gravedad, impulso) {
 
-	var   ancho_total = 840,
-            alto_total  = 600,
-            hay_punto = false;
-    this.timestamp = function() {
-        return window.performance && window.performance.now ? window.performance.now() : new Date().getTime();
-    };
-     //Limite entre dos máximos
-    this.bound = function (x, min, max) {
-        return Math.max(min, Math.min(max, x));
-    };
-    var alto_red = 220; 
-    var net = { "height":alto_red, "width":12, "x":(ancho_total)/2, "y":(alto_total) - alto_red};
- 
- 	var     GRAVITY  = 800, // default (exagerated) gravity
-            ACCEL    = 0.001,     // default take 1/2 second to reach maxdx (horizontal acceleration)
-            FRICTION = 0.001,     // default take 1/6 second to stop from maxdx (horizontal friction)
-            IMPULSE  = 2400,    // default player jump impulse
-            IMPULSO_PELOTA  = 600,    // impulso de la pelota
-            FACTOR_REBOTE  = 0.9,    // impulso de la pelota
-            F_ALEJA_X  = 2,    // factor que se aleja la pelota en el ejeX
-            F_SALTO_COLISION = 1.5, // factor en el que se reduce la velocidadY del jugador al colisionar con la pelota
-            COLOR    = { BLACK: '#000000', YELLOW: '#ECD078', BRICK: '#D95B43', PINK: '#C02942', PURPLE: '#542437', GREY: '#333', SLATE: '#53777A', GOLD: 'gold' },
-            COLORS   = [ COLOR.YELLOW, COLOR.BRICK, COLOR.PINK, COLOR.PURPLE, COLOR.GREY ],
-            KEY      = { SPACE: 32, LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40, Z: 90 };
-
 	this.x                = 96;
     this.y                = 0;
     this.alto             = 50;
@@ -42,15 +17,12 @@ var Ball = function(juego, x, y, gravedad, impulso) {
     this.maxdx            = 1500;
     this.maxdy            = 1500;
     this.impulse          = 550;
-    this.accel            = this.maxdx / (ACCEL);
-    this.friction         = this.maxdx / (FRICTION);
+    this.accel            = this.maxdx / (juego.ACCEL);
+    this.friction         = this.maxdx / (juego.FRICTION);
     this.ball             = true;
     this.start            = { x: this.x, y: this.y };
     this.theta = 0;
 
-    this.timestamp = function() {
-        return window.performance && window.performance.now ? window.performance.now() : new Date().getTime();
-    };
 
 
     this.update = function(dt){
@@ -67,51 +39,50 @@ var Ball = function(juego, x, y, gravedad, impulso) {
 
         //Velocidad
         //TODO: Revisar velocidad de la pelota
-        this.dy = this.bound(this.dy + (dt * this.ddy), -this.maxdy, this.maxdy);
+        this.dy = juego.bound(this.dy + (dt * this.ddy), -this.maxdy, this.maxdy);
         this.dx = this.dx/1.0004;
 
 
         //pelota cayendo...
         if (this.dy > 0) {
-            if((this.y + this.alto) > alto_total){
-                this.dy = -this.dy * FACTOR_REBOTE;
+            if((this.y + this.alto) > juego.alto_total){
+                this.dy = -this.dy * juego.FACTOR_REBOTE;
 
                 //TOCA el suelo, procesa punto
-                if(!hay_punto){
+                if(!juego.hay_punto){
 
                     //punto.play();
 
-                    /* TODO: PROCESAR PUNTO
+                    /* TODO: PROCESAR PUNTO*/
                     var x_explosion = this.center_x;
                     var y_explosion = this.center_y + this.alto;
                     
-                    explosions.push(
-                        new explosion(x_explosion, y_explosion, true, true)
+                    juego.explosions.push(
+                        new Explosion(x_explosion, y_explosion, true, true, this)
                     );
 
-                    tiempo_punto = this.timestamp() + 3000;
+                    juego.tiempo_punto = juego.timestamp() + 3000;
                     
-                    if(this.center_x < ancho_total/2){
-                        if(puntos2 >= 9){
-                            game_over();
+                    if(this.center_x < juego.ancho_total/2){
+                        if(juego.puntos2 >= 9){
+                            juego.game_over();
                         }
                         else{
-                            puntos2++;
-                            empieza1 = false;
+                            juego.puntos2++;
+                            juego.empieza1 = false;
                             
                         }
                     }
                     else{
-                        if(puntos1 >= 9){
-                            siguiente_level();
+                        if(juego.puntos1 >= 9){
+                            juego.siguiente_level();
                         }
                         else{
-                            puntos1++;
-                            empieza1 = true;
+                            juego.puntos1++;
+                            juego.empieza1 = true;
                         }
 
                     }
-                    */
                 }
             }
 
@@ -119,21 +90,21 @@ var Ball = function(juego, x, y, gravedad, impulso) {
         //pelota subiendo
         else if (this.dy < 0) {
             if(this.y <= 0){
-                this.dy  = - this.dy * FACTOR_REBOTE;
+                this.dy  = - this.dy * juego.FACTOR_REBOTE;
             }
         }
   
         //pelota va a la derecha
         if (this.dx > 0) {
-            if((this.center_x + this.ancho/2) > ancho_total){
-                this.dx = -this.dx * FACTOR_REBOTE;
+            if((this.center_x + this.ancho/2) > juego.ancho_total){
+                this.dx = -this.dx * juego.FACTOR_REBOTE;
             }
         }
         //pelota va a la izquierda
         else if (this.dx < 0) {
 
             if((this.center_x - this.ancho/2) <= 0){
-                this.dx = -this.dx * FACTOR_REBOTE;
+                this.dx = -this.dx * juego.FACTOR_REBOTE;
 
             }
         }
@@ -142,15 +113,12 @@ var Ball = function(juego, x, y, gravedad, impulso) {
 
 
 
-        if(hay_punto){
-            if(this.dy > 0){
-                this.dy = this.dy - 3;
-            }
-            else{
-                this.dy = this.dy + 3;
-            }
-            this.ddy = this.ddy + 3;
+        if(juego.hay_punto){
+	        this.dy = juego.bound(this.dy/1.05, -500, 500);
+	        this.dx = juego.bound(this.dx/1.05, -600, 600);
+	        //this.ddy = juego.bound(this.ddy/1.05, -100, 100);
         }
+
 
     };
 
@@ -184,10 +152,10 @@ var Ball = function(juego, x, y, gravedad, impulso) {
     };
     this.render = function (ctx, dt) {
         if(this.mate){
-            ctx.fillStyle   = COLOR.SLATE;
+            ctx.fillStyle   = juego.COLOR.SLATE;
         }
         else{
-            ctx.fillStyle   = COLOR.GOLD;
+            ctx.fillStyle   = juego.COLOR.GOLD;
         }
 
         var v1 = this.calcula_rotacion(this.x + (this.dx * dt), this.y + (this.dy * dt),false, dt);
