@@ -55,7 +55,7 @@ var Ball = function(juego, x, y, gravedad, impulso) {
 
     this.update = function(dt){
 
-    	this.calcula_centro(dt);
+    	//this.calcula_centro(dt);
 
     	//reseteo las aceleraciones
         this.ddx = 0;
@@ -162,7 +162,7 @@ var Ball = function(juego, x, y, gravedad, impulso) {
     };
 
     this.calcula_rotacion = function (x, y, doble, dt) {
-
+    	this.calcula_centro(dt);
         var mas = 0;
         if(doble){
             mas = Math.PI/4;
