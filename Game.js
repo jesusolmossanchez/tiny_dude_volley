@@ -101,10 +101,10 @@ var Game = function() {
     };
 
     this.checkBallCollisionNet = function() {
-        if(this.overlap(net.x, net.y, net.width, net.height, ball.center_x - ball.ancho/2, ball.center_y - ball.alto/2, ball.ancho, ball.alto)){
+        if(this.overlap(this.net.x, this.net.y, this.net.width, this.net.height, ball.center_x - ball.ancho/2, ball.center_y - ball.alto/2, ball.ancho, ball.alto)){
             //Si la pelota está por encima de la red, rebota parriba
-            //if((ball.y + ball.alto) < net.y && ball.dy > 0){
-            if(ball.center_y < net.y){
+            //if((ball.y + ball.alto) < this.net.y && ball.dy > 0){
+            if(ball.center_y < this.net.y){
                 if(ball.dy > 0){
                     ball.dy = - ball.dy * this.FACTOR_REBOTE;
                 }
@@ -112,7 +112,7 @@ var Game = function() {
             //Sino rebota para el lado
             else{
                 if(ball.x > this.ancho_total/2){
-                    ball.x = this.ancho_total/2 + net.width;
+                    ball.x = this.ancho_total/2 + this.net.width;
                 }
                 else{
                     ball.x = this.ancho_total/2 - ball.ancho;
@@ -549,7 +549,7 @@ var Game = function() {
 
     this.renderNet = function(ctx) {
         ctx.fillStyle = this.COLOR.BRICK;
-        ctx.fillRect(net.x, net.y, net.width, net.height);
+        ctx.fillRect(this.net.x, this.net.y, this.net.width, this.net.height);
     };
 
     this.renderPlayer = function(ctx, dt) {
@@ -694,12 +694,12 @@ var Game = function() {
 
     this.setup = function() {
 
+        var alto_red = 220; 
+        this.net = { "height":alto_red, "width":12, "x":(this.ancho_total)/2, "y":(this.alto_total) - alto_red};
         player = new Player(this, 96, false, false, false, 1, false);
         player2 = new Player(this, 1850, false, false, false, 2, false);
         ball = new Ball(this);
 
-        var alto_red = 220; 
-        net = { "height":alto_red, "width":12, "x":(this.ancho_total)/2, "y":(this.alto_total) - alto_red};
 
 
     }
