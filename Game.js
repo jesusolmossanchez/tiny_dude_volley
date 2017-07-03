@@ -345,7 +345,7 @@ var Game = function() {
         }
         else{
             if(this.hay_punto){
-                this.empieza(empieza1);
+                this.empieza(this.empieza1);
             }
             this.hay_punto = false;
         }
@@ -364,7 +364,7 @@ var Game = function() {
         player2.x = this.ancho_total - 96 - player2.ancho;
         player2.y = this.alto_total - player2.alto - 50;
 
-        if(empieza1){
+        if(this.empieza1){
             ball.x = 112;
         }
         else{
@@ -694,9 +694,9 @@ var Game = function() {
 
     this.setup = function() {
 
-        player = new Player(false, 96, false, false, false, 1, false);
-        player2 = new Player(false, 1850, false, false, false, 2, false);
-        ball = new Ball();
+        player = new Player(this, 96, false, false, false, 1, false);
+        player2 = new Player(this, 1850, false, false, false, 2, false);
+        ball = new Ball(this);
 
         var alto_red = 220; 
         net = { "height":alto_red, "width":12, "x":(this.ancho_total)/2, "y":(this.alto_total) - alto_red};
