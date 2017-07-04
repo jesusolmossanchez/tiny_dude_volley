@@ -766,11 +766,10 @@ var Game = function() {
     this.muestra_menu = function(ctx) {
     	//TODO mobile
     	if(this.is_touch_device()){
-    		//this.setup();
-    		//this.empieza(true);
-    		//this.empezado = true;
-
-    		//return
+    		this.setup();
+    		this.empieza(true);
+    		this.empezado = true;
+    		return
     	}
 
         
