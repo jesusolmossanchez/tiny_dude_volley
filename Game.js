@@ -324,14 +324,18 @@ var Game = function() {
 
                 jugador_rebota.no_rebota_time = this.timestamp() + 300;
 
-                if(jugador_rebota === player){
+                if(jugador_rebota === player || this.modo === 2){
 
+                	var nega_player = 1;
+                	if(jugador_rebota === player2){
+                		nega_player = -1;
+                	}
                     //pulsado izquierda o derecha solo
                     if ((jugador_rebota.right || jugador_rebota.left) && !jugador_rebota.jump && !jugador_rebota.down)
                     {
                         ball.dy = -Math.abs(ball.dy)*0.3;
                         ball.dy = -300;
-                        ball.dx = velocidad_lateral1;
+                        ball.dx = nega_player * velocidad_lateral1;
                         ball.gravity = gravedad_mate1;
                     }
                     // arriba derecha
@@ -351,25 +355,25 @@ var Game = function() {
                     // abajo y a un lado
                     else if((jugador_rebota.right || jugador_rebota.left) && !jugador_rebota.jump && jugador_rebota.down){
                         ball.dy = velocidad_vertical_mate;
-                        ball.dx = velocidad_lateral_mate;
+                        ball.dx = nega_player * velocidad_lateral_mate;
                         ball.gravity = gravedad_mate3;
                     }
                     // abajo solo
                     else if(!jugador_rebota.right && !jugador_rebota.left && !jugador_rebota.jump && jugador_rebota.down){
                         ball.dy = velocidad_vertical_mate;
-                        ball.dx = velocidad_lateral2;
+                        ball.dx = nega_player * velocidad_lateral2;
                         ball.gravity = gravedad_mate2;
                     }
                     //sin pulsar ningun lado
                     else if(!jugador_rebota.right && !jugador_rebota.left && !jugador_rebota.jump && !jugador_rebota.down){
                         ball.dy = -velocidad_vertical_dejada;
-                        ball.dx = velocidad_lateral3;
+                        ball.dx = nega_player * velocidad_lateral3;
                         ball.gravity = gravedad_mate2;
                     }
                     //arriba solo
                     else if(!jugador_rebota.right && !jugador_rebota.left && jugador_rebota.jump && !jugador_rebota.down){
                         ball.dy = -velocidad_vertical_arriba;
-                        ball.dx = velocidad_lateral3;
+                        ball.dx = nega_player * velocidad_lateral3;
                         ball.gravity = gravedad_mate2;
                     }
                 }
