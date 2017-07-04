@@ -331,7 +331,8 @@ var Game = function() {
                 		nega_player = -1;
                 	}
                     //pulsado izquierda o derecha solo
-                    if ((jugador_rebota.right || jugador_rebota.left) && !jugador_rebota.jump && !jugador_rebota.down)
+                    if (((jugador_rebota.right || jugador_rebota.left) && !jugador_rebota.jump && !jugador_rebota.down) ||
+                    	this.is_touch_device())
                     {
                         ball.dy = -Math.abs(ball.dy)*0.3;
                         ball.dy = -300;
@@ -835,8 +836,7 @@ var Game = function() {
 
     this.setup = function() {
 
-        var alto_red = 220; 
-        this.net = { "height":alto_red, "width":12, "x":(this.ancho_total)/2, "y":(this.alto_total) - alto_red};
+        this.net = { "height":this.alto_red, "width":12, "x":(this.ancho_total)/2, "y":(this.alto_total) - this.alto_red};
         player = new Player(this, 96, 1107, 800, 60000, 1, false);
         var cpu = true;
         if(this.modo == 2){
@@ -844,8 +844,6 @@ var Game = function() {
         }
         player2 = new Player(this, 1850, 1107, 800, 60000, 2, cpu);
         ball = new Ball(this);
-
-
 
     };
 
@@ -865,7 +863,7 @@ var Game = function() {
 
     this.ancho_total = 840,
     this.alto_total  = 600,
-    this.alto_red = 190,
+    this.alto_red = 220,
             
     this.ancho_jugador = 80,
     this.alto_jugador = 110,
@@ -1158,6 +1156,7 @@ var Game = function() {
 
     var canvas_mobile;
     var ctx_mobile;
+    var self = this;
     if(this.is_touch_device()){
         if (window.innerHeight > window.innerWidth) {
             this.pinta_cosas_mobile_gira();
@@ -1167,9 +1166,9 @@ var Game = function() {
         window.addEventListener('orientationchange', function (argument) {
             window.setTimeout(function () {
                 if (window.innerHeight > window.innerWidth) {
-                    this.pinta_cosas_mobile_gira();
+                    self.pinta_cosas_mobile_gira();
                 } else {
-                    this.pinta_cosas_mobile();
+                    self.pinta_cosas_mobile();
                 }
             },300);
         });
