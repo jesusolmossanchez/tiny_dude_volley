@@ -16,11 +16,99 @@ var Game = function() {
 
     this.onkey = function(ev, key, down) {
         switch(key) {
-            case this.KEY.LEFT:  player.left  = down; ev.preventDefault(); return false;
-            case this.KEY.RIGHT: player.right = down; ev.preventDefault(); return false;
-            case this.KEY.UP: player.jump  = down; ev.preventDefault(); return false;
-            case this.KEY.DOWN: player.down  = down; ev.preventDefault(); return false;
-            case this.KEY.Z: player.accion  = down; ev.preventDefault(); return false;
+            case this.KEY.LEFT:  
+            	ev.preventDefault(); 
+            	if(this.modo === 1){
+            		player.left  = down; 
+            	}
+            	else{
+            		player2.left  = down; 
+            	}
+            	return false;
+            case this.KEY.RIGHT: 
+            	ev.preventDefault(); 
+            	if(this.modo === 1){
+            		player.right  = down; 
+            	}
+            	else{
+            		player2.right  = down; 
+            	} 
+            	return false;
+            case this.KEY.UP: 
+            	ev.preventDefault(); 
+            	if(!this.empezado){
+            		this.mueve_menu(false);
+            	}
+            	else{
+	            	if(this.modo === 1){
+	            		player.jump  = down; 
+	            	}
+	            	else{
+	            		player2.jump  = down; 
+	            	} 
+            	}
+            	return false;
+            case this.KEY.DOWN: 
+            	ev.preventDefault(); 
+            	if(!this.empezado){
+            		this.mueve_menu(true);
+            	}
+            	else{
+	            	if(this.modo === 1){
+	            		player.down  = down; 
+	            	}
+	            	else{
+	            		player2.down  = down; 
+	            	}
+            	}
+            	return false;
+            case this.KEY.Z: 
+            	ev.preventDefault(); 
+            	if(!this.empezado){
+            		this.selecciona_menu();
+            	}
+            	else{
+            		player.accion  = down; 
+            	}
+            	return false;
+            case this.KEY.ENTER: 
+            	ev.preventDefault(); 
+            	if(!this.empezado){
+            		this.selecciona_menu();
+            	}
+            	else{
+            		if(this.modo === 1){
+	            		player.accion  = down; 
+	            	}
+	            	else{
+            			player2.accion  = down; 
+	            	}
+            	}
+            	return false;
+            case this.KEY.R: 
+            	ev.preventDefault(); 
+            	if(this.modo === 2){
+            		player.jump  = down; 
+            	}
+            	return false;
+            case this.KEY.D: 
+            	ev.preventDefault(); 
+            	if(this.modo === 2){
+            		player.left  = down; 
+            	}
+            	return false;
+            case this.KEY.F: 
+            	ev.preventDefault();
+            	if(this.modo === 2){
+            		player.down  = down; 
+            	}
+            	return false;
+            case this.KEY.G: 
+            	ev.preventDefault(); 
+            	if(this.modo === 2){
+            		player.right  = down; 
+            	}
+            	return false;
         }
     };
 
@@ -364,7 +452,7 @@ var Game = function() {
         player2.x = this.ancho_total - 96 - player2.ancho;
         player2.y = this.alto_total - player2.alto - 50;
 
-        if(this.empieza1){
+        if(empieza1){
             ball.x = 112;
         }
         else{
@@ -384,7 +472,7 @@ var Game = function() {
     var movia_left = false;
     this.calculaDondeCae = function(){
 
-        if(this.hay_punto){
+        if(this.hay_punto || this.modo === 2){
             return;
         }
 
@@ -670,25 +758,74 @@ var Game = function() {
     };
 
 
-    this.muestra_menu = function() {
+    this.muestra_menu = function(ctx) {
+    	//TODO mobile
+    	if(this.is_touch_device()){
+    		//this.setup();
+    		//this.empieza(true);
+    		//this.empezado = true;
+
+    		//return
+    	}
+
         
         //TODO: Aquí muestro el menu: 1 player / 2 player?
-
+        var menu =  [
+                        [  , 1, 1,  ,  , 1, 1, 1, 1,  , 1, 1,  ,  ,  , 1, 1, 1, 1,  , 1,  ,  , 1,  , 1, 1, 1, 1,  , 1, 1, 1, 1,  ,  ,  ,  ,  ],
+                        [ 1, 1, 1,  ,  , 1, 1,  , 1,  , 1, 1,  ,  ,  , 1, 1,  , 1,  ,  , 1, 1,  ,  , 1, 1,  ,  ,  , 1, 1,  , 1,  ,  ,  ,  ,  ],
+                        [  , 1, 1,  ,  , 1, 1, 1, 1,  , 1, 1,  ,  ,  , 1, 1, 1, 1,  ,  , 1, 1,  ,  , 1, 1, 1,  ,  , 1, 1,  , 1,  ,  ,  ,  ,  ],
+                        [  , 1, 1,  ,  , 1, 1,  ,  ,  , 1, 1,  ,  ,  , 1, 1,  , 1,  ,  , 1, 1,  ,  , 1, 1,  ,  ,  , 1, 1, 1,  ,  ,  ,  ,  ,  ],
+                        [  , 1, 1,  ,  , 1, 1,  ,  ,  , 1, 1, 1, 1,  , 1, 1,  , 1,  ,  , 1, 1,  ,  , 1, 1, 1, 1,  , 1, 1,  , 1,  ,  ,  ,  ,  ],
+                        [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                        [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                        [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                        [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                        [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                        [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                        [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                        [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                        [ 1, 1, 1,  ,  , 1, 1, 1, 1,  , 1, 1,  ,  ,  , 1, 1, 1, 1,  , 1,  ,  , 1,  , 1, 1, 1, 1,  , 1, 1, 1, 1,  , 1, 1, 1, 1],
+                        [  ,  , 1,  ,  , 1, 1,  , 1,  , 1, 1,  ,  ,  , 1, 1,  , 1,  ,  , 1, 1,  ,  , 1, 1,  ,  ,  , 1, 1,  , 1,  , 1, 1,  ,  ],
+                        [ 1, 1, 1,  ,  , 1, 1, 1, 1,  , 1, 1,  ,  ,  , 1, 1, 1, 1,  ,  , 1, 1,  ,  , 1, 1, 1,  ,  , 1, 1,  , 1,  , 1, 1, 1, 1],
+                        [ 1,  ,  ,  ,  , 1, 1,  ,  ,  , 1, 1,  ,  ,  , 1, 1,  , 1,  ,  , 1, 1,  ,  , 1, 1,  ,  ,  , 1, 1, 1,  ,  ,  ,  ,  , 1],
+                        [ 1, 1, 1,  ,  , 1, 1,  ,  ,  , 1, 1, 1, 1,  , 1, 1,  , 1,  ,  , 1, 1,  ,  , 1, 1, 1, 1,  , 1, 1,  , 1,  , 1, 1, 1, 1]
+                ];
 
         // Cuando está todo seleccionado, cambio el empieza y debería rular
-        
+        var size_menu_px = 8;
+        var largo_menu = size_menu_px * menu[0].length;
+        var largo_menu = size_menu_px * menu[0].length;
+        var x_menu = this.ancho_total/2 - largo_menu/2;
+        var y_menu = 200;
 
-		this.empieza(true);
-		var self = this;
+        ctx.clearRect(0, 0, this.ancho_total, this.alto_total);
 
-		//TODO: Hacer que empiece con el menu
-        window.setTimeout(function(){
-        	self.empezado = true;
-        },100);
+        var y_select = y_menu - (size_menu_px * 4);
+        if(this.modo == 2){
+        	y_select = y_select + size_menu_px * 14;
+        }
+
+        ctx.strokeRect(x_menu - (size_menu_px * 4), y_select, largo_menu + (size_menu_px * 8), 12 * size_menu_px);
+        this.pinta_filas_columnas(ctx, x_menu, y_menu, menu, size_menu_px);
+
 
     };
 
+    this.mueve_menu = function (abajo) {
+    	if(abajo){
+    		this.modo = 2;
+    	}
+    	else{
+    		this.modo = 1;
+    	}
+    	this.muestra_menu(this.ctx);
+    }
 
+    this.selecciona_menu = function () {
+    	this.setup();
+		this.empieza(true);
+    	this.empezado = true;
+    }
     
 
 
@@ -696,13 +833,17 @@ var Game = function() {
 
         var alto_red = 220; 
         this.net = { "height":alto_red, "width":12, "x":(this.ancho_total)/2, "y":(this.alto_total) - alto_red};
-        player = new Player(this, 96, false, false, false, 1, false);
-        player2 = new Player(this, 1850, false, false, false, 2, false);
+        player = new Player(this, 96, 1107, 800, 60000, 1, false);
+        var cpu = true;
+        if(this.modo == 2){
+        	cpu = false;
+        }
+        player2 = new Player(this, 1850, 1107, 800, 60000, 2, cpu);
         ball = new Ball(this);
 
 
 
-    }
+    };
 
 
 
@@ -715,6 +856,7 @@ var Game = function() {
     /***** LANZAAAAA ****/
     //muestro el logo
 
+    this.modo = 1 // modo=1 -> 1player + modo=2 -> 2 players
     this.empezado = false;
 
     this.ancho_total = 840,
@@ -758,7 +900,7 @@ var Game = function() {
     this.F_SALTO_COLISION = 1.5, // factor en el que se reduce la velocidadY del jugador al colisionar con la pelota
     this.COLOR    = { BLACK: '#000000', YELLOW: '#ECD078', BRICK: '#D95B43', PINK: '#C02942', PURPLE: '#542437', GREY: '#333', SLATE: '#53777A', GOLD: 'gold' },
     this.COLORS   = [ this.COLOR.YELLOW, this.COLOR.BRICK, this.COLOR.PINK, this.COLOR.PURPLE, this.COLOR.GREY ],
-    this.KEY      = { SPACE: 32, LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40, Z: 90 },
+    this.KEY      = { ENTER: 13, SPACE: 32, LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40, Z: 90, R: 82, D: 68, F: 70, G: 71 },
       
     this.fps      		= 60,
 	this.step     		= 1/this.fps,
@@ -861,21 +1003,6 @@ var Game = function() {
 
 
     
-    this.setup();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
      /*******************/
     /*******************/
@@ -1110,7 +1237,7 @@ var Game = function() {
     var done = false;
     var intervalo_cancion = setInterval(function () {
         if (done) {
-            juego.muestra_menu();
+            juego.muestra_menu(juego.ctx);
             frame();
             clearInterval(intervalo_cancion);
             return;
