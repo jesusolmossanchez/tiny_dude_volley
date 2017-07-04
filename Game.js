@@ -1047,7 +1047,7 @@ var Game = function() {
 
         var size_gira_px = 12;
         var x_gira = ancho_window/2 - (size_gira_px * gira_mobile[0].length)/2;
-        pinta_filas_columnas(ctx_mobile_gira, x_gira, 200, gira_mobile, size_gira_px);
+        this.pinta_filas_columnas(ctx_mobile_gira, x_gira, 200, gira_mobile, size_gira_px);
           
     }
   
@@ -1159,9 +1159,9 @@ var Game = function() {
     var self = this;
     if(this.is_touch_device()){
         if (window.innerHeight > window.innerWidth) {
-            this.pinta_cosas_mobile_gira();
+            self.pinta_cosas_mobile_gira();
         } else {
-            this.pinta_cosas_mobile();
+            self.pinta_cosas_mobile();
         }
         window.addEventListener('orientationchange', function (argument) {
             window.setTimeout(function () {
