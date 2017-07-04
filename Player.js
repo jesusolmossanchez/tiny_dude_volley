@@ -6,17 +6,17 @@
 var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
 
     this.x                = x;
-    this.y                = 1107;
+    this.y                = y;
     this.alto             = 110;
     this.ancho            = 80;
     this.dx               = 0;
     this.dy               = 0;
     this.wasleft          = false;
     this.wasright         = false;
-    this.gravity          = 800;
+    this.gravity          = gravedad;
     this.maxdx            = 150;
     this.maxdy            = 600;
-    this.impulse          = 60000;
+    this.impulse          = impulso;
     this.accel            = this.maxdx / (juego.ACCEL);
     this.friction         = this.maxdx / (juego.FRICTION);
     this.player           = true;
@@ -24,18 +24,16 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
     this.tiempo_gorrino   = juego.timestamp();
     this.no_rebota_time   = juego.timestamp();
     this.start            = { x: this.x, y: this.y };
+    this.CPU = cpu;    
 
     if(posicion == 1){
         this.limite_derecha    = juego.ancho_total/2;
         this.limite_izquierda  = 0; 
-        this.CPU = false;    
     }
     else{
         this.limite_derecha    = juego.ancho_total;
-        this.limite_izquierda  = juego.ancho_total/2+juego.net.width;     
-        this.CPU = true;    
-
-    }
+        this.limite_izquierda  = juego.ancho_total/2 + juego.net.width;   
+    } 
 
     this.update = function(dt) {
         //Control de si iba hacia la izquierda o a la derecha y friccion y aceleración... Ahora no lo uso, pero puede ser util
