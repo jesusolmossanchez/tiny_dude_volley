@@ -65,7 +65,7 @@ var Ball = function(juego, x, y, gravedad, impulso) {
                     
                     if(this.center_x < juego.ancho_total/2){
                         if(juego.puntos2 >= 9){
-                            juego.game_over();
+                            juego.game_over(juego.ctx);
                         }
                         else{
                             juego.puntos2++;
