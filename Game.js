@@ -186,6 +186,7 @@ var Game = function() {
         
     };
 
+
     this.pinta_filas_columnas = function(ctx, x, y, letra, size){
         ctx.fillStyle = "#ffffff";
         var currX = x;
@@ -209,6 +210,9 @@ var Game = function() {
 
     /***UPDATE***/
     this.update = function(dt) {
+        if(this.is_game_over){
+            return;
+        }
         this.procesa_punto();
         this.calcula_donde_cae();
         player.update(dt);
@@ -446,10 +450,16 @@ var Game = function() {
                         }
                     }
 
+                    //FACTOR DE FUERZA PARA NIVELES
                     var level_factor_x = 0.75 + this.level/40;
                     var level_factor_y = 0.5 + this.level/20;
                     ball.dx = ball.dx * level_factor_x;
-                    ball.dy = ball.dy * level_factor_y;
+                    if(ball.dy < -600){
+                        ball.dy = ball.dy * level_factor_y;
+                    }
+                    else{
+                        ball.dy = ball.dy / level_factor_y;
+                    }
                     ball.gravity = ball.gravity * level_factor_y;
                     
                 }
@@ -671,9 +681,11 @@ var Game = function() {
                         [ 1, 1, 1, 1,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1, 1, 1, 1,  ,  ,  ,  1, 1, 1, 1,  ,  ,  , 1,  ,  , 1, 1, 1, 1,  ,  1, 1,  , 1,   ]
                     ];
 
+        var self = this;
         
-        this.pinta_filas_columnas(ctx, this.ancho_total/2 - 300, 250, game_over, this.marcador_size * 4);
-        this.empezado = false;
+        self.pinta_filas_columnas(ctx, this.ancho_total/2 - 330, 250, game_over, this.marcador_size * 4);
+        
+        this.is_game_over = true;
 
     };
 
@@ -694,6 +706,11 @@ var Game = function() {
     //-------------------------------------------------------------------------
   
     this.render = function(ctx, frame, dt) {
+
+        if(this.is_game_over){
+            this.drawExplosion(ctx);
+            return;
+        }
         ctx.clearRect(0, 0, this.ancho_total, this.alto_total);
         this.renderPlayer(ctx, dt);
         this.renderplayer2(ctx, dt);
@@ -929,6 +946,7 @@ var Game = function() {
     this.modo = 1; // modo=1 -> 1player + modo=2 -> 2 players
     this.level = 1;
     this.empezado = false;
+    this.is_game_over = false;
 
     this.ancho_total = 840,
     this.alto_total  = 600,
