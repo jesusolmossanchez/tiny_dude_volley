@@ -51,7 +51,7 @@ var Ball = function(juego, x, y, gravedad, impulso) {
                 //TOCA el suelo, procesa punto
                 if(!juego.hay_punto){
 
-                    //punto.play();
+                    //window.punto_audio.play();
 
                     /* TODO: PROCESAR PUNTO*/
                     var x_explosion = this.center_x;
@@ -65,6 +65,7 @@ var Ball = function(juego, x, y, gravedad, impulso) {
                     
                     if(this.center_x < juego.ancho_total/2){
                         if(juego.puntos2 >= 9){
+                            juego.ganador = 2;
                             juego.game_over(juego.ctx);
                         }
                         else{
@@ -74,6 +75,10 @@ var Ball = function(juego, x, y, gravedad, impulso) {
                         }
                     }
                     else{
+                        if(juego.puntos1 >= 9){
+                            juego.ganador = 1;
+                            juego.game_over(juego.ctx);
+                        }
                         if(juego.puntos1 >= 4){
                             juego.siguiente_level();
                         }
