@@ -302,7 +302,7 @@ var Game = function() {
 
         if(rebota){
             //TODO SONIDOS
-            //golpe_audio2.play();
+            golpe_audio2.play();
 
             //TODO: Parametrizar con el tamaño de los tiles
             var velocidad_lateral1 = 800;
@@ -697,7 +697,7 @@ var Game = function() {
         this.puntos2 = 0;
         
         //TODO: sonidos
-        //levelup_player.play();
+        window.levelup_audio2.play();
 
     };
 
@@ -890,10 +890,122 @@ var Game = function() {
 
         ctx.clearRect(0, 0, this.ancho_total, this.alto_total);
 
+        var usa_keys  =  [
+                    [  1, 1,  , 1,  ,  1, 1, 1,  , 1,  , 1,  , 1, 1, 1,  ,  ],
+                    [  1, 1, 1,  ,  ,  1, 1,  ,  ,  , 1,  ,  , 1,  ,  ,  , 1],
+                    [  1, 1,  ,  ,  ,  1, 1, 1,  ,  , 1,  ,  , 1, 1, 1,  ,  ],
+                    [  1, 1, 1,  ,  ,  1, 1,  ,  ,  , 1,  ,  ,  ,  , 1,  , 1],
+                    [  1, 1,  , 1,  ,  1, 1, 1,  ,  , 1,  ,  , 1, 1, 1,  ,  ], 
+            ];
+
+        var flecha_der =  [
+                    [  , 1,  ,  ],
+                    [  , 1, 1,  ],
+                    [ 1, 1, 1, 1],
+                    [  , 1, 1,  ],
+                    [  , 1,  ,  ]
+            ];
+        var flecha_izq =  [
+                    [  ,  , 1,  ],
+                    [  , 1, 1,  ],
+                    [ 1, 1, 1, 1],
+                    [  , 1, 1,  ],
+                    [  ,  , 1,  ]
+            ];
+        var flecha_arr=  [
+                    [  ,  , 1,  ,  ],
+                    [  , 1, 1, 1,  ],
+                    [ 1, 1, 1, 1, 1],
+                    [  ,  , 1,  ,  ]
+            ];
+        var flecha_abj=  [
+                    [  ,  , 1,  ,  ],
+                    [ 1, 1, 1, 1, 1],
+                    [  , 1, 1, 1,  ],
+                    [  ,  , 1,  ,  ]
+            ];
+        var zeta=  [
+                    [ 1, 1, 1, 1, ],
+                    [  ,  ,  , 1, ],
+                    [  ,  , 1,  , ],
+                    [  , 1,  ,  , ],
+                    [ 1,  ,  ,  , ],
+                    [ 1, 1, 1, 1, ]
+            ];
+        var erre=  [
+                    [ 1, 1, 1, 1, ],
+                    [ 1,  ,  , 1, ],
+                    [ 1,  , 1,  , ],
+                    [ 1, 1, 1,  , ],
+                    [ 1,  , 1,  , ],
+                    [ 1,  ,  , 1, ]
+            ];
+        var de=  [
+                    [ 1, 1, 1, 1, ],
+                    [ 1,  ,  , 1, ],
+                    [ 1,  ,  , 1, ],
+                    [ 1,  ,  , 1, ],
+                    [ 1,  ,  , 1, ],
+                    [ 1, 1, 1,  , ]
+            ];
+        var efe=  [
+                    [ 1, 1, 1, 1, ],
+                    [ 1,  ,  ,  , ],
+                    [ 1,  ,  ,  , ],
+                    [ 1, 1, 1,  , ],
+                    [ 1,  ,  ,  , ],
+                    [ 1,  ,  ,  , ]
+            ];
+        var ge=  [
+                    [ 1, 1, 1, 1, ],
+                    [ 1,  ,  ,  , ],
+                    [ 1,  ,  ,  , ],
+                    [ 1,  , 1, 1, ],
+                    [ 1,  ,  , 1, ],
+                    [ 1, 1, 1, 1, ]
+            ];
+        var enter_key=  [
+                    [  ,  ,  , 1, ],
+                    [  ,  ,  , 1, ],
+                    [  , 1,  , 1, ],
+                    [ 1, 1, 1, 1, ],
+                    [  , 1,  ,  , ]
+            ];
+
+
+        var size_flecha_px = 5;
+
+
+        this.pinta_filas_columnas(ctx, 50, this.alto_total - 130, usa_keys, 3);
         var y_select = y_menu - (size_menu_px * 4);
         if(this.modo == 2){
-        	y_select = y_select + size_menu_px * 14;
+            y_select = y_select + size_menu_px * 14;
+
+
+            size_flecha_px = size_flecha_px/1.8;
+            this.pinta_filas_columnas(ctx, 50, this.alto_total - 50, de, size_flecha_px);
+            this.pinta_filas_columnas(ctx, 105, this.alto_total - 50, ge, size_flecha_px);
+            this.pinta_filas_columnas(ctx, 80, this.alto_total - 75, erre, size_flecha_px);
+            this.pinta_filas_columnas(ctx, 80, this.alto_total - 50, efe, size_flecha_px);
+            this.pinta_filas_columnas(ctx, 160, this.alto_total - 50, zeta, size_flecha_px);
+
+
+            this.pinta_filas_columnas(ctx, this.ancho_total - 170, this.alto_total - 50, flecha_izq, size_flecha_px*1.4);
+            this.pinta_filas_columnas(ctx, this.ancho_total - 105, this.alto_total - 50, flecha_der, size_flecha_px*1.4);
+            this.pinta_filas_columnas(ctx, this.ancho_total - 140, this.alto_total - 70, flecha_arr, size_flecha_px*1.4);
+            this.pinta_filas_columnas(ctx, this.ancho_total - 140, this.alto_total - 45, flecha_abj, size_flecha_px*1.4);
+            this.pinta_filas_columnas(ctx, this.ancho_total - 60, this.alto_total - 60, enter_key, size_flecha_px*1.5);
         }
+        else{
+
+            this.pinta_filas_columnas(ctx, this.ancho_total/2 - 90, this.alto_total - 50, flecha_izq, size_flecha_px);
+            this.pinta_filas_columnas(ctx, this.ancho_total/2 + 5, this.alto_total - 50, flecha_der, size_flecha_px);
+            this.pinta_filas_columnas(ctx, this.ancho_total/2 - 45, this.alto_total - 80, flecha_arr, size_flecha_px);
+            this.pinta_filas_columnas(ctx, this.ancho_total/2 - 45, this.alto_total - 45, flecha_abj, size_flecha_px);
+            this.pinta_filas_columnas(ctx, this.ancho_total/2 + 75, this.alto_total - 50, zeta, size_flecha_px/1.5);
+
+        }
+
 
         ctx.strokeRect(x_menu - (size_menu_px * 4), y_select, largo_menu + (size_menu_px * 8), 12 * size_menu_px);
         this.pinta_filas_columnas(ctx, x_menu, y_menu, menu, size_menu_px);
@@ -1325,17 +1437,24 @@ var Game = function() {
     var croqueta_player = new CPlayer();
     croqueta_player.init(croqueta);
     var flag_croqueta = false;
-    var croqueta_audio;
+    window.croqueta_audio;
 
     var golpe_player2 = new CPlayer();
     golpe_player2.init(golpe);
     var flag_golpe2 = false;
-    var golpe_audio2;
+    window.golpe_audio2;
+
+    /*
+    var punto_player = new CPlayer();
+    punto_player.init(punto);
+    var flag_punto = false;
+    window.punto_audio;
+    */
 
     var levelup_player = new CPlayer();
     levelup_player.init(levelup);
     var flag_levelup = false;
-    var levelup_audio2;
+    window.levelup_audio2;
 
 
     var done = false;
@@ -1388,16 +1507,16 @@ var Game = function() {
 
 
           var wave2 = croqueta_player.createWave();
-          croqueta_audio = document.createElement("audio");
-          croqueta_audio.src = URL.createObjectURL(new Blob([wave2], {type: "audio/wav"}));
+          window.croqueta_audio = document.createElement("audio");
+          window.croqueta_audio.src = URL.createObjectURL(new Blob([wave2], {type: "audio/wav"}));
           
           var wave3 = golpe_player2.createWave();
-          golpe_audio2 = document.createElement("audio");
-          golpe_audio2.src = URL.createObjectURL(new Blob([wave3], {type: "audio/wav"}));
+          window.golpe_audio2 = document.createElement("audio");
+          window.golpe_audio2.src = URL.createObjectURL(new Blob([wave3], {type: "audio/wav"}));
           
           var wave4 = levelup_player.createWave();
-          levelup_player = document.createElement("audio");
-          levelup_player.src = URL.createObjectURL(new Blob([wave4], {type: "audio/wav"}));
+          window.levelup_audio2 = document.createElement("audio");
+          window.levelup_audio2.src = URL.createObjectURL(new Blob([wave4], {type: "audio/wav"}));
         
         }
     }, 100);
