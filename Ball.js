@@ -74,7 +74,7 @@ var Ball = function(juego, x, y, gravedad, impulso) {
                         }
                     }
                     else{
-                        if(juego.puntos1 >= 9){
+                        if(juego.puntos1 >= 4){
                             juego.siguiente_level();
                         }
                         else{
