@@ -660,7 +660,7 @@ var Game = function() {
 
     };
 
-    this.game_over = function() {
+    this.game_over = function(ctx) {
         //TODO: Hacer game over
 
         var game_over =  [
@@ -1227,22 +1227,24 @@ var Game = function() {
     var canvas_mobile;
     var ctx_mobile;
     var self = this;
-    if(this.is_touch_device()){
-        if (window.innerHeight > window.innerWidth) {
-            self.pinta_cosas_mobile_gira();
-        } else {
-            self.pinta_cosas_mobile();
+    this.controla_orientacion = function(){
+        if(this.is_touch_device()){
+            if (window.innerHeight > window.innerWidth) {
+                self.pinta_cosas_mobile_gira();
+            } else {
+                self.pinta_cosas_mobile();
+            }
+            window.addEventListener('orientationchange', function (argument) {
+                window.setTimeout(function () {
+                    if (window.innerHeight > window.innerWidth) {
+                        self.pinta_cosas_mobile_gira();
+                    } else {
+                        self.pinta_cosas_mobile();
+                    }
+                },300);
+            });
         }
-        window.addEventListener('orientationchange', function (argument) {
-            window.setTimeout(function () {
-                if (window.innerHeight > window.innerWidth) {
-                    self.pinta_cosas_mobile_gira();
-                } else {
-                    self.pinta_cosas_mobile();
-                }
-            },300);
-        });
-    }
+    };
 
 
     /*******************/
@@ -1287,6 +1289,17 @@ var Game = function() {
     document.addEventListener('keydown', function(ev) { return juego.onkey(ev, ev.keyCode, true);  }, false);
     document.addEventListener('keyup',   function(ev) { return juego.onkey(ev, ev.keyCode, false); }, false);
 
+    function handleVisibilityChange() {
+        if (document.hidden) {
+            juego.empezado = false;
+        } else  {
+            juego.empezado = true;
+            juego.controla_orientacion();
+        }
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityChange, false);
+
     var music_player = new CPlayer();
     var flag_song = false;
     music_player.init(song);
@@ -1310,6 +1323,7 @@ var Game = function() {
     var done = false;
     var intervalo_cancion = setInterval(function () {
         if (done) {
+            juego.controla_orientacion();
             juego.muestra_menu(juego.ctx);
             frame();
             clearInterval(intervalo_cancion);
