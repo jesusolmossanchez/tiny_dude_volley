@@ -147,11 +147,41 @@ var Game = function() {
 
     this.pinta_marcador = function(ctx){
         
-        marcador_1 = this.letras[this.puntos1];
-        marcador_2 = this.letras[this.puntos2];
+        marcador_1 = this.numeros[this.puntos1];
+        marcador_2 = this.numeros[this.puntos2];
 
-        this.pinta_filas_columnas(ctx, 16, 16, marcador_1, this.marcado_size);
-        this.pinta_filas_columnas(ctx, this.ancho_total - 16 - (this.marcado_size*3), 16, marcador_2, this.marcado_size);
+        this.pinta_filas_columnas(ctx, 16, 16, marcador_1, this.marcador_size);
+        this.pinta_filas_columnas(ctx, this.ancho_total - 16 - (this.marcador_size*3), 16, marcador_2, this.marcador_size);
+
+        
+    };
+
+    this.pinta_level = function(ctx){
+        
+        var level_logo =  [
+                        [ 1, 1,  ,  ,  , 1, 1, 1, 1,  , 1, 1,  , 1,  , 1, 1, 1, 1,  ,  1, 1,  ,  ],
+                        [ 1, 1,  ,  ,  , 1, 1,  ,  ,  , 1, 1,  , 1,  , 1, 1,  ,  ,  ,  1, 1,  ,  ],
+                        [ 1, 1,  ,  ,  , 1, 1, 1,  ,  , 1, 1,  , 1,  , 1, 1, 1,  ,  ,  1, 1,  ,  ],
+                        [ 1, 1,  ,  ,  , 1, 1,  ,  ,  ,  , 1,  , 1,  , 1, 1,  ,  ,  ,  1, 1,  ,  ],
+                        [ 1, 1, 1, 1,  , 1, 1, 1, 1,  ,  ,  , 1,  ,  , 1, 1, 1, 1,  ,  1, 1, 1, 1]
+                    ];
+
+        this.pinta_filas_columnas(ctx, this.ancho_total/2 - 50, 16, level_logo, this.marcador_size);
+        this.pinta_filas_columnas(ctx, this.ancho_total/2 + 50, 16, this.numeros[this.level], this.marcador_size);
+
+
+
+        var level_up =  [
+                        [ 1, 1,  ,  ,  , 1, 1, 1, 1,  , 1, 1,  , 1,  , 1, 1, 1, 1,  ,  1, 1,  ,  ,  ,  , 1, 1,  , 1,  , 1, 1, 1, 1,  ,  1,  , 1 ],
+                        [ 1, 1,  ,  ,  , 1, 1,  ,  ,  , 1, 1,  , 1,  , 1, 1,  ,  ,  ,  1, 1,  ,  ,  ,  , 1, 1,  , 1,  , 1, 1,  , 1,  ,  1,  , 1 ],
+                        [ 1, 1,  ,  ,  , 1, 1, 1,  ,  , 1, 1,  , 1,  , 1, 1, 1,  ,  ,  1, 1,  ,  ,  ,  , 1, 1,  , 1,  , 1, 1, 1, 1,  ,  1,  , 1 ],
+                        [ 1, 1,  ,  ,  , 1, 1,  ,  ,  ,  , 1,  , 1,  , 1, 1,  ,  ,  ,  1, 1,  ,  ,  ,  , 1, 1,  , 1,  , 1, 1,  ,  ,  ,   ,  ,   ],
+                        [ 1, 1, 1, 1,  , 1, 1, 1, 1,  ,  ,  , 1,  ,  , 1, 1, 1, 1,  ,  1, 1, 1, 1,  ,  , 1, 1, 1, 1,  , 1, 1,  ,  ,  ,  1,  , 1 ]
+                    ];
+
+        if(this.timestamp() < this.tiempo_level_up){
+            this.pinta_filas_columnas(ctx, this.ancho_total/2 - 300, 250, level_up, this.marcador_size * 4);
+        }
 
         
     };
@@ -180,7 +210,7 @@ var Game = function() {
     /***UPDATE***/
     this.update = function(dt) {
         this.procesa_punto();
-        this.calculaDondeCae();
+        this.calcula_donde_cae();
         player.update(dt);
         player2.update(dt);
         this.checkBallCollisionNet();
@@ -381,6 +411,9 @@ var Game = function() {
                 else{
                     
                     //TODO: hacer tiro de la maquina aleatorio 
+
+
+
                     var ale = Math.random();
                     if(ale < 0.4){
                         ball.dy = -velocidad_vertical1;
@@ -412,6 +445,12 @@ var Game = function() {
                             jugador_rebota.dy = jugador_rebota.dy/this.F_SALTO_COLISION;
                         }
                     }
+
+                    var level_factor_x = 0.75 + this.level/40;
+                    var level_factor_y = 0.5 + this.level/20;
+                    ball.dx = ball.dx * level_factor_x;
+                    ball.dy = ball.dy * level_factor_y;
+                    ball.gravity = ball.gravity * level_factor_y;
                     
                 }
 
@@ -475,7 +514,7 @@ var Game = function() {
     //TODO: ver donde pongo esta funcion y que hago con estas variables sueltas
     var dondecae = 0;
     var movia_left = false;
-    this.calculaDondeCae = function(){
+    this.calcula_donde_cae = function(){
 
         if(this.hay_punto || this.modo === 2){
             return;
@@ -512,6 +551,10 @@ var Game = function() {
 
         var ball_y = ball.y + ball.alto/2;
 
+
+        //TODO: revisar factor de tontuna
+        var factor_tontuna = Math.floor((10 - this.level)/4) + 1;
+
         //si cae en mi campo
         if(player2.haciendo_gorrino){
             //nada
@@ -521,7 +564,7 @@ var Game = function() {
             
             //si cae a mi izquierda, me muevo pallá
             //TODO: revisar el valor a la derecha 'factor_derecha'
-            var factor_derecha = 0;
+            var factor_derecha = 20;
             if(dondecae < (player2_x - factor_derecha) && player2_x > this.ancho_total/2){
                 player2.left = true;
                 player2.right = false;
@@ -530,6 +573,14 @@ var Game = function() {
             else{
                 player2.right = true;
                 player2.left = false;
+            }
+
+
+            //TODO: revisar factor de tontuna
+            if (this.counter % factor_tontuna === 0){
+                player2.right = false;
+                player2.left = false;
+
             }
 
             if(Math.abs(dondecae - player2_x) < 110 && 
@@ -611,10 +662,27 @@ var Game = function() {
 
     this.game_over = function() {
         //TODO: Hacer game over
+
+        var game_over =  [
+                        [ 1, 1, 1, 1,  , 1, 1, 1, 1,  , 1, 1,  , 1,  , 1, 1, 1, 1,  ,  ,  ,  1, 1, 1, 1,  , 1, 1,  , 1,  , 1, 1, 1, 1,  ,  1, 1, 1, 1,   ],
+                        [ 1, 1,  ,  ,  , 1, 1,  , 1,  , 1, 1, 1, 1,  , 1, 1,  ,  ,  ,  ,  ,  1, 1,  , 1,  , 1, 1,  , 1,  , 1, 1,  ,  ,  ,  1, 1,  , 1,   ],
+                        [ 1, 1,  ,  ,  , 1, 1, 1, 1,  , 1, 1,  , 1,  , 1, 1, 1,  ,  ,  ,  ,  1, 1,  , 1,  , 1, 1,  , 1,  , 1, 1, 1, 1,  ,  1, 1, 1, 1,   ],
+                        [ 1, 1,  , 1,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1, 1,  ,  ,  ,  ,  ,  1, 1,  , 1,  ,  , 1,  , 1,  , 1, 1,  ,  ,  ,  1, 1, 1,  ,   ],
+                        [ 1, 1, 1, 1,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1, 1, 1, 1,  ,  ,  ,  1, 1, 1, 1,  ,  ,  , 1,  ,  , 1, 1, 1, 1,  ,  1, 1,  , 1,   ]
+                    ];
+
+        
+        this.pinta_filas_columnas(ctx, this.ancho_total/2 - 300, 250, game_over, this.marcador_size * 4);
+        this.empezado = false;
+
     };
 
     this.siguiente_level = function() {
         //TODO: Hacer siguiente_level
+        this.level++;
+        this.tiempo_level_up = this.timestamp() + 4000;
+        this.puntos1 = 0;
+        this.puntos2 = 0;
         
         //TODO: sonidos
         //levelup_player.play();
@@ -634,6 +702,7 @@ var Game = function() {
         this.renderNet(ctx);
         this.drawExplosion(ctx);
         this.pinta_marcador(ctx);
+        this.pinta_level(ctx);
     };
 
 
@@ -857,7 +926,8 @@ var Game = function() {
     /***** LANZAAAAA ****/
     //muestro el logo
 
-    this.modo = 1 // modo=1 -> 1player + modo=2 -> 2 players
+    this.modo = 1; // modo=1 -> 1player + modo=2 -> 2 players
+    this.level = 1;
     this.empezado = false;
 
     this.ancho_total = 840,
@@ -913,7 +983,8 @@ var Game = function() {
 	this.player2  		= {},
 	this.ball     		= {},
 	this.net   	  		= {},
-	this.tiempo_punto 	= this.timestamp(),
+    this.tiempo_punto   = this.timestamp(),
+	this.tiempo_level_up 	= this.timestamp(),
 	this.hay_punto 		= false,
 	this.puntos1 		= 0,
 	this.puntos2 		= 0,
@@ -921,9 +992,9 @@ var Game = function() {
     this.explosions            = [],
 
 
-    this.marcado_size = 4,
+    this.marcador_size = 4,
 
-    this.letras = {
+    this.numeros = {
                 '0': [
                     [1, 1, 1],
                     [1, ,  1],
