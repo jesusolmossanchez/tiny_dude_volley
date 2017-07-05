@@ -105,13 +105,13 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
                     this.dx = -this.velocidad_gorrino;
                     this.haciendo_gorrino = true;
                     this.gorrino_left = true;
-                    //croqueta_audio.play();
+                    window.croqueta_audio.play();
                 }
                 if(this.right){
                     this.dx = this.velocidad_gorrino;
                     this.haciendo_gorrino = true;
                     this.gorrino_left = false;
-                    //croqueta_audio.play();
+                    window.croqueta_audio.play();
                 }
             }
             else if(this.tiempo_gorrino > juego.timestamp() + 150){
