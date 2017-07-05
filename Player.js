@@ -5,25 +5,26 @@
 **************************************************/
 var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
 
-    this.x                = x;
-    this.y                = y;
-    this.alto             = 110;
-    this.ancho            = 80;
-    this.dx               = 0;
-    this.dy               = 0;
-    this.wasleft          = false;
-    this.wasright         = false;
-    this.gravity          = gravedad;
-    this.maxdx            = 150;
-    this.maxdy            = 600;
-    this.impulse          = impulso;
-    this.accel            = this.maxdx / (juego.ACCEL);
-    this.friction         = this.maxdx / (juego.FRICTION);
-    this.player           = true;
-    this.tiempo_enfadado  = juego.timestamp();
-    this.tiempo_gorrino   = juego.timestamp();
-    this.no_rebota_time   = juego.timestamp();
-    this.start            = { x: this.x, y: this.y };
+    this.x                 = x;
+    this.y                 = y;
+    this.alto              = 110;
+    this.ancho             = 80;
+    this.dx                = 0;
+    this.dy                = 0;
+    this.wasleft           = false;
+    this.wasright          = false;
+    this.gravity           = gravedad;
+    this.maxdx             = 150;
+    this.maxdy             = 600;
+    this.impulse           = impulso;
+    this.accel             = this.maxdx / (juego.ACCEL);
+    this.friction          = this.maxdx / (juego.FRICTION);
+    this.player            = true;
+    this.tiempo_enfadado   = juego.timestamp();
+    this.tiempo_gorrino    = juego.timestamp();
+    this.no_rebota_time    = juego.timestamp();
+    this.start             = { x: this.x, y: this.y };
+    this.velocidad_gorrino = 450;
     this.CPU = cpu;    
 
     if(posicion == 1){
@@ -89,16 +90,25 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
         this.dx = juego.bound(this.dx + (dt * this.ddx), -this.maxdx, this.maxdx);
         this.dy = juego.bound(this.dy + (dt * this.ddy), -this.maxdy, this.maxdy);
 
+        //Cambiando la velocidad con el level, andando
+        var multiplica = -1;
+        if(this.CPU){
+            if(this.dx > 0){
+                multiplica = 1;
+            }
+            this.dx = this.dx - (10 - juego.level) * 7 * multiplica;
+        }
+
         if(!this.jumping && this.tiempo_gorrino > juego.timestamp()){
             if(!this.haciendo_gorrino){
                 if(this.left){
-                    this.dx = -450;
+                    this.dx = -this.velocidad_gorrino;
                     this.haciendo_gorrino = true;
                     this.gorrino_left = true;
                     //croqueta_audio.play();
                 }
                 if(this.right){
-                    this.dx = 450;
+                    this.dx = this.velocidad_gorrino;
                     this.haciendo_gorrino = true;
                     this.gorrino_left = false;
                     //croqueta_audio.play();
@@ -106,13 +116,19 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
             }
             else if(this.tiempo_gorrino > juego.timestamp() + 150){
                 if(this.gorrino_left){
-                    this.dx = -450;
+                    this.dx = -this.velocidad_gorrino;
                 }
                 else{
-                    this.dx = 450;
+                    this.dx = this.velocidad_gorrino;
                 }
 
             }
+
+            //Cambiando la velocidad con el level, gorrino
+            if(this.CPU){
+                this.dx = this.dx - (10 - juego.level) * 25 * multiplica;
+            }
+
         }
 
         if(this.tiempo_gorrino < juego.timestamp()){
