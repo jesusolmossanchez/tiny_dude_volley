@@ -303,8 +303,6 @@ var Game = function() {
         }
 
         if(rebota){
-            //TODO SONIDOS
-            golpe_audio2.play();
 
             //TODO: Parametrizar con el tamaño de los tiles
             var velocidad_lateral1 = 800;
@@ -328,6 +326,11 @@ var Game = function() {
 
             //SI ESTÁ EN EL SUELO O NO ESTA ENFADADO
             if(!jugador_rebota.jumping || (jugador_rebota.tiempo_enfadado < this.timestamp())){
+
+                //TODO SONIDOS
+                window.golpe_audio.play();
+
+
                 ball.mate = false;
                 //vuelve a la gravedad por defecto
                 ball.gravity = 900;
@@ -356,6 +359,10 @@ var Game = function() {
             }
             //SI ESTÁ EN EL AIRE Y ENFADADO
             else{
+
+
+                //TODO SONIDOS
+                window.golpe_audio2.play();
                 ball.mate = true;
 
                 jugador_rebota.no_rebota_time = this.timestamp() + 300;
@@ -1465,17 +1472,20 @@ var Game = function() {
     var flag_croqueta = false;
     window.croqueta_audio;
 
+    var golpe_player = new CPlayer();
+    golpe_player.init(golpe);
+    var flag_golpe = false;
+    window.golpe_audio;
+
     var golpe_player2 = new CPlayer();
-    golpe_player2.init(golpe);
+    golpe_player2.init(golpe2);
     var flag_golpe2 = false;
     window.golpe_audio2;
 
-    /*
     var punto_player = new CPlayer();
     punto_player.init(punto);
     var flag_punto = false;
     window.punto_audio;
-    */
 
     var levelup_player = new CPlayer();
     levelup_player.init(levelup);
@@ -1507,6 +1517,12 @@ var Game = function() {
             }
         }
         
+        if(!flag_golpe){
+            if(golpe_player.generate() >= 1){
+                flag_golpe = true;
+            }
+        }
+        
         if(!flag_golpe2){
             if(golpe_player2.generate() >= 1){
                 flag_golpe2 = true;
@@ -1519,8 +1535,14 @@ var Game = function() {
             }
         }
         
+        if(!flag_punto){
+            if(punto_player.generate() >= 1){
+                flag_punto = true;
+            }
+        }
+        
 
-        done = (flag_song && flag_croqueta && flag_golpe2);
+        done = (flag_song && flag_croqueta && flag_golpe && flag_golpe2);
 
         if (done) {
           // Put the generated song in an Audio element.
@@ -1536,13 +1558,21 @@ var Game = function() {
           window.croqueta_audio = document.createElement("audio");
           window.croqueta_audio.src = URL.createObjectURL(new Blob([wave2], {type: "audio/wav"}));
           
-          var wave3 = golpe_player2.createWave();
-          window.golpe_audio2 = document.createElement("audio");
-          window.golpe_audio2.src = URL.createObjectURL(new Blob([wave3], {type: "audio/wav"}));
+          var wave3 = golpe_player.createWave();
+          window.golpe_audio = document.createElement("audio");
+          window.golpe_audio.src = URL.createObjectURL(new Blob([wave3], {type: "audio/wav"}));
           
-          var wave4 = levelup_player.createWave();
+          var wave4 = golpe_player2.createWave();
+          window.golpe_audio2 = document.createElement("audio");
+          window.golpe_audio2.src = URL.createObjectURL(new Blob([wave4], {type: "audio/wav"}));
+          
+          var wave5 = levelup_player.createWave();
           window.levelup_audio2 = document.createElement("audio");
-          window.levelup_audio2.src = URL.createObjectURL(new Blob([wave4], {type: "audio/wav"}));
+          window.levelup_audio2.src = URL.createObjectURL(new Blob([wave5], {type: "audio/wav"}));
+          
+          var wave6 = punto_player.createWave();
+          window.punto_audio = document.createElement("audio");
+          window.punto_audio.src = URL.createObjectURL(new Blob([wave6], {type: "audio/wav"}));
         
         }
     }, 100);
