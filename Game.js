@@ -157,7 +157,9 @@ var Game = function() {
     };
 
     this.pinta_level = function(ctx){
-        
+        if(this.modo === 2){
+            return;
+        }
         var level_logo =  [
                         [ 1, 1,  ,  ,  , 1, 1, 1, 1,  , 1, 1,  , 1,  , 1, 1, 1, 1,  ,  1, 1,  ,  ],
                         [ 1, 1,  ,  ,  , 1, 1,  ,  ,  , 1, 1,  , 1,  , 1, 1,  ,  ,  ,  1, 1,  ,  ],
@@ -692,6 +694,10 @@ var Game = function() {
     this.siguiente_level = function() {
         //TODO: Hacer siguiente_level
         this.level++;
+        if(this.level >= 9){
+            player2.ancho = player2.ancho*1.2;
+            player2.alto = player2.alto*1.2;
+        }
         this.tiempo_level_up = this.timestamp() + 4000;
         this.puntos1 = 0;
         this.puntos2 = 0;
@@ -743,7 +749,7 @@ var Game = function() {
                 ctx.fillStyle = this.COLOR.PURPLE;
             }
             else{
-                ctx.fillStyle = this.COLOR.YELLOW;                
+                ctx.fillStyle = this.COLOR.YELLOW;          
             }
             player.pinta_player(false, dt, ball, ctx, this.counter);
         }
@@ -764,7 +770,8 @@ var Game = function() {
                 ctx.fillStyle = this.COLOR.BLACK;
             }
             else{
-                ctx.fillStyle = this.COLOR.GREY;
+                //ctx.fillStyle = this.COLOR.GREY;
+                ctx.fillStyle = this.LEVEL_COLORS[this.level]; 
             }
             player2.pinta_player(false, dt, ball, ctx, this.counter);  
         }
@@ -1099,8 +1106,25 @@ var Game = function() {
     this.FACTOR_REBOTE  = 0.9,    // impulso de la pelota
     this.F_ALEJA_X  = 2,    // factor que se aleja la pelota en el ejeX
     this.F_SALTO_COLISION = 1.5, // factor en el que se reduce la velocidadY del jugador al colisionar con la pelota
-    this.COLOR    = { BLACK: '#000000', YELLOW: '#ECD078', BRICK: '#D95B43', PINK: '#C02942', PURPLE: '#542437', GREY: '#333', SLATE: '#53777A', GOLD: 'gold' },
-    this.COLORS   = [ this.COLOR.YELLOW, this.COLOR.BRICK, this.COLOR.PINK, this.COLOR.PURPLE, this.COLOR.GREY ],
+    this.COLOR    = { BLACK: '#000000', 
+                      YELLOW: '#ECD078', 
+                      BRICK: '#D95B43', 
+                      PINK: '#C02942', 
+                      PURPLE: '#542437', 
+                      GREY: '#333', 
+                      SLATE: '#53777A', 
+                      GOLD: 'gold'
+                  },
+    this.LEVEL_COLORS = [],
+    this.LEVEL_COLORS[1] = '#f4a693',
+    this.LEVEL_COLORS[2] = '#e5775c',
+    this.LEVEL_COLORS[3] = '#d03d3d',
+    this.LEVEL_COLORS[4] = '#72210c',
+    this.LEVEL_COLORS[5] = '#3e1212',
+    this.LEVEL_COLORS[6] = '#3e1212',
+    this.LEVEL_COLORS[7] = '#3e1212',
+    this.LEVEL_COLORS[8] = '#3e1212',
+    this.LEVEL_COLORS[9] = '#3e1212',
     this.KEY      = { ENTER: 13, SPACE: 32, LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40, Z: 90, R: 82, D: 68, F: 70, G: 71 },
       
     this.fps      		= 60,
@@ -1390,6 +1414,8 @@ var Game = function() {
 
 (function() { // module pattern
 	var juego = new Game();
+
+    juego.controla_orientacion();
 	juego.counter = 0; 
 
     var 	dt = 0, 
