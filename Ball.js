@@ -50,8 +50,8 @@ var Ball = function(juego, x, y, gravedad, impulso) {
 
                 //TOCA el suelo, procesa punto
                 if(!juego.hay_punto){
-
-                    //window.punto_audio.play();
+     
+                    window.punto_audio.play();
 
                     /* TODO: PROCESAR PUNTO*/
                     var x_explosion = this.center_x;
