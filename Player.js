@@ -90,7 +90,7 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
         this.dx = juego.bound(this.dx + (dt * this.ddx), -this.maxdx, this.maxdx);
         this.dy = juego.bound(this.dy + (dt * this.ddy), -this.maxdy, this.maxdy);
 
-        //Cambiando la velocidad con el level, andando
+        //CAMBIANDO LA VELOCIDAD CON EL NIVEL, ANDANDO
         var multiplica = -1;
         if(this.CPU){
             if(this.dx > 0){
@@ -124,7 +124,7 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
 
             }
 
-            //Cambiando la velocidad con el level, gorrino
+            //CAMBIANDO LA VELOCIDAD CON EL NIVEL, GORRINO
             if(this.CPU){
                 this.dx = this.dx - (10 - juego.level) * 25 * multiplica;
             }
