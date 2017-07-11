@@ -53,7 +53,6 @@ var Ball = function(juego, x, y, gravedad, impulso) {
      
                     window.punto_audio.play();
 
-                    /* TODO: PROCESAR PUNTO*/
                     var x_explosion = this.center_x;
                     var y_explosion = this.center_y + this.alto;
                     
@@ -79,7 +78,7 @@ var Ball = function(juego, x, y, gravedad, impulso) {
                             juego.ganador = 1;
                             juego.game_over(juego.ctx);
                         }
-                        if(juego.puntos1 >= 4){
+                        if(juego.puntos1 >= 4 && juego.level < 9){
                             juego.siguiente_level();
                         }
                         else{
