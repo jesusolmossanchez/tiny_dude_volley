@@ -17,98 +17,98 @@ var Game = function() {
     this.onkey = function(ev, key, down) {
         switch(key) {
             case this.KEY.LEFT:  
-            	ev.preventDefault(); 
-            	if(this.modo === 1){
-            		player.left  = down; 
-            	}
-            	else{
-            		player2.left  = down; 
-            	}
-            	return false;
+                ev.preventDefault(); 
+                if(this.modo === 1){
+                    player.left  = down; 
+                }
+                else{
+                    player2.left  = down; 
+                }
+                return false;
             case this.KEY.RIGHT: 
-            	ev.preventDefault(); 
-            	if(this.modo === 1){
-            		player.right  = down; 
-            	}
-            	else{
-            		player2.right  = down; 
-            	} 
-            	return false;
+                ev.preventDefault(); 
+                if(this.modo === 1){
+                    player.right  = down; 
+                }
+                else{
+                    player2.right  = down; 
+                } 
+                return false;
             case this.KEY.UP: 
-            	ev.preventDefault(); 
-            	if(!this.empezado){
-            		this.mueve_menu(false);
-            	}
-            	else{
-	            	if(this.modo === 1){
-	            		player.jump  = down; 
-	            	}
-	            	else{
-	            		player2.jump  = down; 
-	            	} 
-            	}
-            	return false;
+                ev.preventDefault(); 
+                if(!this.empezado){
+                    this.mueve_menu(false);
+                }
+                else{
+                    if(this.modo === 1){
+                        player.jump  = down; 
+                    }
+                    else{
+                        player2.jump  = down; 
+                    } 
+                }
+                return false;
             case this.KEY.DOWN: 
-            	ev.preventDefault(); 
-            	if(!this.empezado){
-            		this.mueve_menu(true);
-            	}
-            	else{
-	            	if(this.modo === 1){
-	            		player.down  = down; 
-	            	}
-	            	else{
-	            		player2.down  = down; 
-	            	}
-            	}
-            	return false;
+                ev.preventDefault(); 
+                if(!this.empezado){
+                    this.mueve_menu(true);
+                }
+                else{
+                    if(this.modo === 1){
+                        player.down  = down; 
+                    }
+                    else{
+                        player2.down  = down; 
+                    }
+                }
+                return false;
             case this.KEY.Z: 
-            	ev.preventDefault(); 
-            	if(!this.empezado){
-            		this.selecciona_menu();
-            	}
-            	else{
-            		player.accion  = down; 
-            	}
-            	return false;
+                ev.preventDefault(); 
+                if(!this.empezado){
+                    this.selecciona_menu();
+                }
+                else{
+                    player.accion  = down; 
+                }
+                return false;
             case this.KEY.ENTER: 
-            	ev.preventDefault(); 
-            	if(!this.empezado){
-            		this.selecciona_menu();
-            	}
-            	else{
-            		if(this.modo === 1){
-	            		player.accion  = down; 
-	            	}
-	            	else{
-            			player2.accion  = down; 
-	            	}
-            	}
-            	return false;
+                ev.preventDefault(); 
+                if(!this.empezado){
+                    this.selecciona_menu();
+                }
+                else{
+                    if(this.modo === 1){
+                        player.accion  = down; 
+                    }
+                    else{
+                        player2.accion  = down; 
+                    }
+                }
+                return false;
             case this.KEY.R: 
-            	ev.preventDefault(); 
-            	if(this.modo === 2){
-            		player.jump  = down; 
-            	}
-            	return false;
+                ev.preventDefault(); 
+                if(this.modo === 2){
+                    player.jump  = down; 
+                }
+                return false;
             case this.KEY.D: 
-            	ev.preventDefault(); 
-            	if(this.modo === 2){
-            		player.left  = down; 
-            	}
-            	return false;
+                ev.preventDefault(); 
+                if(this.modo === 2){
+                    player.left  = down; 
+                }
+                return false;
             case this.KEY.F: 
-            	ev.preventDefault();
-            	if(this.modo === 2){
-            		player.down  = down; 
-            	}
-            	return false;
+                ev.preventDefault();
+                if(this.modo === 2){
+                    player.down  = down; 
+                }
+                return false;
             case this.KEY.G: 
-            	ev.preventDefault(); 
-            	if(this.modo === 2){
-            		player.right  = down; 
-            	}
-            	return false;
+                ev.preventDefault(); 
+                if(this.modo === 2){
+                    player.right  = down; 
+                }
+                return false;
         }
     };
 
@@ -369,13 +369,13 @@ var Game = function() {
 
                 if(jugador_rebota === player || this.modo === 2){
 
-                	var nega_player = 1;
-                	if(jugador_rebota === player2){
-                		nega_player = -1;
-                	}
+                    var nega_player = 1;
+                    if(jugador_rebota === player2){
+                        nega_player = -1;
+                    }
                     //pulsado izquierda o derecha solo
                     if (((jugador_rebota.right || jugador_rebota.left) && !jugador_rebota.jump && !jugador_rebota.down) ||
-                    	this.is_touch_device())
+                        this.is_touch_device())
                     {
                         ball.dy = -Math.abs(ball.dy)*0.3;
                         ball.dy = -300;
@@ -425,8 +425,6 @@ var Game = function() {
                     
                     //TODO: hacer tiro de la maquina aleatorio 
 
-
-
                     var ale = Math.random();
                     if(ale < 0.4){
                         ball.dy = -velocidad_vertical1;
@@ -460,8 +458,8 @@ var Game = function() {
                     }
 
                     //FACTOR DE FUERZA PARA NIVELES
-                    var level_factor_x = 0.75 + this.level/40;
-                    var level_factor_y = 0.5 + this.level/20;
+                    var level_factor_x = 0.5 + this.level/15;
+                    var level_factor_y = 0.5 + this.level/15;
                     ball.dx = ball.dx * level_factor_x;
                     if(ball.dy < -600){
                         ball.dy = ball.dy * level_factor_y;
@@ -507,7 +505,7 @@ var Game = function() {
 
     this.empieza = function(empieza1){
         
-    	//TODO: parametrizar donde empiezan los jugadores
+        //TODO: parametrizar donde empiezan los jugadores
 
         player.x = 96;
         player.y = this.alto_total - player2.alto - 50;
@@ -571,7 +569,7 @@ var Game = function() {
         var ball_y = ball.y + ball.alto/2;
 
 
-        //TODO: revisar factor de tontuna
+        //TODO: REVISAR FACTOR DE TONTUNA--NIVEL
         var factor_tontuna = Math.floor((10 - this.level)/4) + 1;
 
         //si cae en mi campo
@@ -579,7 +577,7 @@ var Game = function() {
             //nada
         }
         else if(dondecae > (this.ancho_total/2 - 50) ||
-                (dondecae > (this.ancho_total/2 - 150) && Vy < (-100))){
+                (dondecae > (this.ancho_total/2 - 350) && Vy < (-100))){
             
             //si cae a mi izquierda, me muevo pallá
             //TODO: revisar el valor a la derecha 'factor_derecha'
@@ -595,19 +593,22 @@ var Game = function() {
             }
 
 
-            //TODO: revisar factor de tontuna
-            if (this.counter % factor_tontuna === 0){
+            //TODO: revisar factor de tontuna NIVEL
+            /*
+            if (this.counter % factor_tontuna !== 0){
                 player2.right = false;
                 player2.left = false;
 
             }
+            */
 
             if(Math.abs(dondecae - player2_x) < 110 && 
                 x>this.ancho_total/2 && 
                 (player2_y > this.alto_total-200) && 
                 (Vx<100 && Vx>-100) && 
                 (ball_y < this.alto_total - 300) &&
-                player2.tiempo_enfadado < this.timestamp()){
+                player2.tiempo_enfadado < this.timestamp() &&
+                this.counter % factor_tontuna === 0){
 
                 player2.jump = true;
 
@@ -658,7 +659,8 @@ var Game = function() {
             if(dondecae < player2_x && player2_x > this.ancho_total/2){
                 if(player2_x - dondecae > limite_gorrino_x && 
                     x > (this.ancho_total/2 - 50) && 
-                    !player2.haciendo_gorrino){
+                    !player2.haciendo_gorrino &&
+                    this.counter % factor_tontuna === 0){
 
                     player2.tiempo_gorrino = this.timestamp()+400;
                     player2.gorrino_left = true;
@@ -668,7 +670,8 @@ var Game = function() {
             else{
                 if(dondecae - player2_x > limite_gorrino_x && 
                     x > this.ancho_total/2 && 
-                    !player2.haciendo_gorrino){
+                    !player2.haciendo_gorrino &&
+                    this.counter % factor_tontuna === 0){
                     
                     player2.tiempo_gorrino = this.timestamp()+400;
                     player2.gorrino_left = false;
@@ -680,15 +683,27 @@ var Game = function() {
     };
 
     this.game_over = function(ctx) {
-        //TODO: Hacer game over
+        //TODO: Hacer algo más guay si ganas
+        var game_over;
+        if(this.ganador === 1){
+            game_over =  [
+                            [ 1, 1,  , 1, 1,  , 1, 1, 1, 1,  , 1, 1,  , 1,  ,  ,  , 1, 1,  , 1,  , 1,  , 1, 1,  , 1, 1,  , 1,  ,  , 1,  , 1,  , 1,  , 1],
+                            [  , 1, 1, 1,  ,  , 1, 1,  , 1,  , 1, 1,  , 1,  ,  ,  , 1, 1,  , 1,  , 1,  ,  ,  ,  , 1, 1,  , 1,  ,  , 1,  , 1,  , 1,  , 1],
+                            [  , 1, 1, 1,  ,  , 1, 1,  , 1,  , 1, 1,  , 1,  ,  ,  , 1, 1,  , 1,  , 1,  , 1, 1,  , 1, 1,  , 1,  ,  , 1,  , 1,  , 1,  , 1],
+                            [  , 1, 1, 1,  ,  , 1, 1,  , 1,  , 1, 1,  , 1,  ,  ,  ,  , 1,  , 1,  , 1,  , 1, 1,  , 1, 1, 1, 1,  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                            [  , 1, 1, 1,  ,  , 1, 1, 1, 1,  , 1, 1, 1, 1,  ,  ,  ,  ,  , 1,  , 1,  ,  , 1, 1,  , 1, 1,  , 1,  ,  , 1,  , 1,  , 1,  , 1]
+                        ];
+        }
+        else{
 
-        var game_over =  [
-                        [ 1, 1, 1, 1,  , 1, 1, 1, 1,  , 1, 1,  , 1,  , 1, 1, 1, 1,  ,  ,  ,  1, 1, 1, 1,  , 1, 1,  , 1,  , 1, 1, 1, 1,  ,  1, 1, 1, 1,   ],
-                        [ 1, 1,  ,  ,  , 1, 1,  , 1,  , 1, 1, 1, 1,  , 1, 1,  ,  ,  ,  ,  ,  1, 1,  , 1,  , 1, 1,  , 1,  , 1, 1,  ,  ,  ,  1, 1,  , 1,   ],
-                        [ 1, 1,  ,  ,  , 1, 1, 1, 1,  , 1, 1,  , 1,  , 1, 1, 1,  ,  ,  ,  ,  1, 1,  , 1,  , 1, 1,  , 1,  , 1, 1, 1, 1,  ,  1, 1, 1, 1,   ],
-                        [ 1, 1,  , 1,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1, 1,  ,  ,  ,  ,  ,  1, 1,  , 1,  ,  , 1,  , 1,  , 1, 1,  ,  ,  ,  1, 1, 1,  ,   ],
-                        [ 1, 1, 1, 1,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1, 1, 1, 1,  ,  ,  ,  1, 1, 1, 1,  ,  ,  , 1,  ,  , 1, 1, 1, 1,  ,  1, 1,  , 1,   ]
-                    ];
+            game_over =  [
+                            [ 1, 1, 1, 1,  , 1, 1, 1, 1,  , 1, 1,  , 1,  , 1, 1, 1, 1,  ,  ,  , 1, 1, 1, 1,  , 1, 1,  , 1,  , 1, 1, 1, 1,  , 1, 1, 1, 1],
+                            [ 1, 1,  ,  ,  , 1, 1,  , 1,  , 1, 1, 1, 1,  , 1, 1,  ,  ,  ,  ,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1, 1,  ,  ,  , 1, 1,  , 1],
+                            [ 1, 1,  ,  ,  , 1, 1, 1, 1,  , 1, 1,  , 1,  , 1, 1, 1,  ,  ,  ,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1, 1, 1, 1,  , 1, 1, 1, 1],
+                            [ 1, 1,  , 1,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1, 1,  ,  ,  ,  ,  , 1, 1,  , 1,  ,  , 1,  , 1,  , 1, 1,  ,  ,  , 1, 1, 1,  ],
+                            [ 1, 1, 1, 1,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1, 1, 1, 1,  ,  ,  , 1, 1, 1, 1,  ,  ,  , 1,  ,  , 1, 1, 1, 1,  , 1, 1,  , 1]
+                        ];
+        }
 
         var self = this;
         
@@ -864,13 +879,13 @@ var Game = function() {
 
 
     this.muestra_menu = function(ctx) {
-    	//TODO mobile
-    	if(this.is_touch_device()){
-    		this.setup();
-    		this.empieza(true);
-    		this.empezado = true;
-    		return
-    	}
+        //TODO mobile
+        if(this.is_touch_device()){
+            this.setup();
+            this.empieza(true);
+            this.empezado = true;
+            return
+        }
 
         
         //TODO: Aquí muestro el menu: 1 player / 2 player?
@@ -1028,19 +1043,19 @@ var Game = function() {
     };
 
     this.mueve_menu = function (abajo) {
-    	if(abajo){
-    		this.modo = 2;
-    	}
-    	else{
-    		this.modo = 1;
-    	}
-    	this.muestra_menu(this.ctx);
+        if(abajo){
+            this.modo = 2;
+        }
+        else{
+            this.modo = 1;
+        }
+        this.muestra_menu(this.ctx);
     }
 
     this.selecciona_menu = function () {
-    	this.setup();
-		this.empieza(true);
-    	this.empezado = true;
+        this.setup();
+        this.empieza(true);
+        this.empezado = true;
     }
     
 
@@ -1051,7 +1066,7 @@ var Game = function() {
         player = new Player(this, 96, 1107, 800, 60000, 1, false);
         var cpu = true;
         if(this.modo == 2){
-        	cpu = false;
+            cpu = false;
         }
         player2 = new Player(this, 1850, 1107, 800, 60000, 2, cpu);
         ball = new Ball(this);
@@ -1134,21 +1149,21 @@ var Game = function() {
     this.LEVEL_COLORS[9] = '#3e1212',
     this.KEY      = { ENTER: 13, SPACE: 32, LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40, Z: 90, R: 82, D: 68, F: 70, G: 71 },
       
-    this.fps      		= 60,
-	this.step     		= 1/this.fps,
-	this.canvas   		= document.getElementById('canvas'),
-	this.ctx      		= this.canvas.getContext('2d'),
-	this.width    		= this.canvas.width  = this.ancho_total,
-	this.height   		= this.canvas.height = this.alto_total,
-	this.player   		= {},
-	this.player2  		= {},
-	this.ball     		= {},
-	this.net   	  		= {},
+    this.fps            = 60,
+    this.step           = 1/this.fps,
+    this.canvas         = document.getElementById('canvas'),
+    this.ctx            = this.canvas.getContext('2d'),
+    this.width          = this.canvas.width  = this.ancho_total,
+    this.height         = this.canvas.height = this.alto_total,
+    this.player         = {},
+    this.player2        = {},
+    this.ball           = {},
+    this.net            = {},
     this.tiempo_punto   = this.timestamp(),
-	this.tiempo_level_up 	= this.timestamp(),
-	this.hay_punto 		= false,
-	this.puntos1 		= 0,
-	this.puntos2 		= 0,
+    this.tiempo_level_up    = this.timestamp(),
+    this.hay_punto      = false,
+    this.puntos1        = 0,
+    this.puntos2        = 0,
 
     this.explosions            = [],
 
@@ -1420,21 +1435,21 @@ var Game = function() {
 };
 
 (function() { // module pattern
-	var juego = new Game();
+    var juego = new Game();
 
     juego.controla_orientacion();
-	juego.counter = 0; 
+    juego.counter = 0; 
 
-    var 	dt = 0, 
-    	now,
+    var     dt = 0, 
+        now,
         last = juego.timestamp();
         fpsmeter = new FPSMeter({ decimals: 0, graph: true, theme: 'dark', left: '5px' });
   
     function frame() {
-    	if(!juego.empezado){
-        	requestAnimationFrame(frame, canvas);
-    		return;
-    	}
+        if(!juego.empezado){
+            requestAnimationFrame(frame, canvas);
+            return;
+        }
         fpsmeter.tickStart();
         now = juego.timestamp();
         dt = dt + Math.min(1, (now - last) / 1000);
