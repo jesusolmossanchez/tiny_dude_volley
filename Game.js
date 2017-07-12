@@ -886,7 +886,7 @@ var Game = function() {
                             [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
                         ];
 
-        this.pinta_filas_columnas(ctx, this.ancho_total/2 - 330, 250, game_over, this.marcador_size * 4);
+        this.pinta_filas_columnas(ctx, this.ancho_total/2 - 330, 250, play, this.marcador_size * 4);
         
     };
 
