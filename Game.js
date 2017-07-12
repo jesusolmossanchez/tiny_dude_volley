@@ -268,6 +268,7 @@ var Game = function() {
                  this.timestamp() > player.no_rebota_time)){
                     rebota = true;
                     jugador_rebota = player;
+                    this.ultimo_rebote = 1;
             }
 
         }
@@ -276,6 +277,7 @@ var Game = function() {
                  this.timestamp() > player.no_rebota_time)){
                     rebota = true;
                     jugador_rebota = player;
+                    this.ultimo_rebote = 1;
             }
         }
 
@@ -291,6 +293,7 @@ var Game = function() {
                  this.timestamp() > player2.no_rebota_time)){
                     rebota = true;
                     jugador_rebota = player2;
+                    this.ultimo_rebote = 2;
             }
 
         }
@@ -299,6 +302,7 @@ var Game = function() {
                  this.timestamp() > player2.no_rebota_time)){
                     rebota = true;
                     jugador_rebota = player2;
+                    this.ultimo_rebote = 2;
             }
         }
 
@@ -461,7 +465,7 @@ var Game = function() {
                     var level_factor_x = 0.5 + this.level/15;
                     var level_factor_y = 0.5 + this.level/15;
                     ball.dx = ball.dx * level_factor_x;
-                    if(ball.dy < -600){
+                    if(ball.dy < -600 || ball.dy > 600){
                         ball.dy = ball.dy * level_factor_y;
                     }
                     else{
@@ -576,9 +580,9 @@ var Game = function() {
         if(player2.haciendo_gorrino){
             //nada
         }
-        else if(dondecae > (this.ancho_total/2 - 50) ||
-                (dondecae > (this.ancho_total/2 - 350) && Vy < (-100))){
-            
+        else if( ( (dondecae > (this.ancho_total/2 - 50)) || (dondecae > (this.ancho_total/2 - 350) && Vy < (-100)) )  &&
+                (this.ultimo_rebote === 2 && this.counter || factor_tontuna === 0)){
+               
             //si cae a mi izquierda, me muevo pallá
             //TODO: revisar el valor a la derecha 'factor_derecha'
             var factor_derecha = 20;
@@ -602,22 +606,6 @@ var Game = function() {
             }
             */
 
-            if(Math.abs(dondecae - player2_x) < 110 && 
-                x>this.ancho_total/2 && 
-                (player2_y > this.alto_total-200) && 
-                (Vx<100 && Vx>-100) && 
-                (ball_y < this.alto_total - 300) &&
-                player2.tiempo_enfadado < this.timestamp() &&
-                this.counter % factor_tontuna === 0){
-
-                player2.jump = true;
-
-                player2.tiempo_enfadado = this.timestamp()+700;
-
-            }
-            else{
-                player2.jump = false;
-            }
 
         }
         else{
@@ -651,6 +639,25 @@ var Game = function() {
                 }
             }
             
+        }
+
+
+
+        if(Math.abs(dondecae - player2_x) < 110 && 
+            x>this.ancho_total/2 && 
+            (player2_y > this.alto_total-200) && 
+            (Vx<100 && Vx>-100) && 
+            (ball_y < this.alto_total - 300) &&
+            player2.tiempo_enfadado < this.timestamp() &&
+            this.counter % factor_tontuna === 0){
+
+            player2.jump = true;
+
+            player2.tiempo_enfadado = this.timestamp()+700;
+
+        }
+        else{
+            player2.jump = false;
         }
 
         var limite_gorrino_x = 100;
@@ -1088,6 +1095,8 @@ var Game = function() {
     this.level = 1;
     this.empezado = false;
     this.is_game_over = false;
+
+    this.ultimo_rebote = 1;
 
     this.ancho_total = 840,
     this.alto_total  = 600,
