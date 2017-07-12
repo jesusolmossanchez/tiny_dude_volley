@@ -1629,7 +1629,7 @@ var Game = function() {
 
 
     if(juego.is_touch_device()){
-        this.pinta_play();
+        juego.pinta_play();
         document.addEventListener("touchstart", lanza_musica, false);
     }
     else{
