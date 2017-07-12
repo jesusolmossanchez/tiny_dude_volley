@@ -711,10 +711,8 @@ var Game = function() {
                             [ 1, 1, 1, 1,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1, 1, 1, 1,  ,  ,  , 1, 1, 1, 1,  ,  ,  , 1,  ,  , 1, 1, 1, 1,  , 1, 1,  , 1]
                         ];
         }
-
-        var self = this;
         
-        self.pinta_filas_columnas(ctx, this.ancho_total/2 - 330, 250, game_over, this.marcador_size * 4);
+        this.pinta_filas_columnas(ctx, this.ancho_total/2 - 330, 250, game_over, this.marcador_size * 4);
         
         this.is_game_over = true;
 
@@ -870,6 +868,25 @@ var Game = function() {
         var x_logo = this.ancho_total/2 - (size_logo_px * logo[0].length)/2;
 
         this.pinta_filas_columnas(ctx, x_logo, 200, logo, size_logo_px);
+        
+    };
+
+
+    this.pinta_play = function(ctx) {
+
+        var play =  [
+                            [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                            [ 1,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  , 1],
+                            [ 1,  , 1, 1, 1, 1,  , 1, 1,  ,  ,  , 1, 1, 1, 1,  , 1,  ,  , 1,  ,  , 1],
+                            [ 1,  , 1, 1,  , 1,  , 1, 1,  ,  ,  , 1, 1,  , 1,  ,  , 1, 1,  ,  ,  , 1],
+                            [ 1,  , 1, 1, 1, 1,  , 1, 1,  ,  ,  , 1, 1, 1, 1,  ,  , 1, 1,  ,  ,  , 1],
+                            [ 1,  , 1, 1,  ,  ,  , 1, 1,  ,  ,  , 1, 1,  , 1,  ,  , 1, 1,  ,  ,  , 1],
+                            [ 1,  , 1, 1,  ,  ,  , 1, 1, 1, 1,  , 1, 1,  , 1,  ,  , 1, 1,  ,  ,  , 1],
+                            [ 1,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  , 1],
+                            [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+                        ];
+
+        this.pinta_filas_columnas(ctx, this.ancho_total/2 - 330, 250, game_over, this.marcador_size * 4);
         
     };
 
@@ -1443,13 +1460,17 @@ var Game = function() {
 
 };
 
+
+
+
+
 (function() { // module pattern
     var juego = new Game();
 
     juego.controla_orientacion();
     juego.counter = 0; 
 
-    var     dt = 0, 
+    var dt = 0, 
         now,
         last = juego.timestamp();
         fpsmeter = new FPSMeter({ decimals: 0, graph: true, theme: 'dark', left: '5px' });
@@ -1476,7 +1497,7 @@ var Game = function() {
     document.addEventListener('keydown', function(ev) { return juego.onkey(ev, ev.keyCode, true);  }, false);
     document.addEventListener('keyup',   function(ev) { return juego.onkey(ev, ev.keyCode, false); }, false);
 
-    function handleVisibilityChange() {
+    function handle_visibility_change() {
         if (document.hidden) {
             juego.empezado = false;
         } else  {
@@ -1485,121 +1506,138 @@ var Game = function() {
         }
     }
 
-    document.addEventListener("visibilitychange", handleVisibilityChange, false);
-
-    var music_player = new CPlayer();
-    var flag_song = false;
-    music_player.init(song);
-
-    var croqueta_player = new CPlayer();
-    croqueta_player.init(croqueta);
-    var flag_croqueta = false;
-    window.croqueta_audio;
-
-    var golpe_player = new CPlayer();
-    golpe_player.init(golpe);
-    var flag_golpe = false;
-    window.golpe_audio;
-
-    var golpe_player2 = new CPlayer();
-    golpe_player2.init(golpe2);
-    var flag_golpe2 = false;
-    window.golpe_audio2;
-
-    var punto_player = new CPlayer();
-    punto_player.init(punto);
-    var flag_punto = false;
-    window.punto_audio;
-
-    var levelup_player = new CPlayer();
-    levelup_player.init(levelup);
-    var flag_levelup = false;
-    window.levelup_audio2;
+    document.addEventListener("visibilitychange", handle_visibility_change, false);
 
 
-    var done = false;
-    var intervalo_cancion = setInterval(function () {
-        if (done) {
-            juego.controla_orientacion();
-            juego.muestra_menu(juego.ctx);
-            frame();
-            clearInterval(intervalo_cancion);
-            return;
-        }
+    function lanza_musica() {
 
-        if(!flag_song){
-            var music_percent = music_player.generate();
-            juego.pinta_cargador(music_percent, juego.ctx);
-            if(music_percent >= 1){
-                flag_song = true;
+        var music_player = new CPlayer();
+        var flag_song = false;
+        music_player.init(song);
+
+        var croqueta_player = new CPlayer();
+        croqueta_player.init(croqueta);
+        var flag_croqueta = false;
+        window.croqueta_audio;
+
+        var golpe_player = new CPlayer();
+        golpe_player.init(golpe);
+        var flag_golpe = false;
+        window.golpe_audio;
+
+        var golpe_player2 = new CPlayer();
+        golpe_player2.init(golpe2);
+        var flag_golpe2 = false;
+        window.golpe_audio2;
+
+        var punto_player = new CPlayer();
+        punto_player.init(punto);
+        var flag_punto = false;
+        window.punto_audio;
+
+        var levelup_player = new CPlayer();
+        levelup_player.init(levelup);
+        var flag_levelup = false;
+        window.levelup_audio2;
+
+
+        var done = false;
+        var intervalo_cancion = setInterval(function () {
+            if (done) {
+                juego.controla_orientacion();
+                juego.muestra_menu(juego.ctx);
+                frame();
+                clearInterval(intervalo_cancion);
+                return;
             }
-        }
 
-        if(!flag_croqueta){
-            if(croqueta_player.generate() >= 1){
-                flag_croqueta = true;
+            if(!flag_song){
+                var music_percent = music_player.generate();
+                juego.pinta_cargador(music_percent, juego.ctx);
+                if(music_percent >= 1){
+                    flag_song = true;
+                }
             }
-        }
-        
-        if(!flag_golpe){
-            if(golpe_player.generate() >= 1){
-                flag_golpe = true;
-            }
-        }
-        
-        if(!flag_golpe2){
-            if(golpe_player2.generate() >= 1){
-                flag_golpe2 = true;
-            }
-        }
-        
-        if(!flag_levelup){
-            if(levelup_player.generate() >= 1){
-                flag_levelup = true;
-            }
-        }
-        
-        if(!flag_punto){
-            if(punto_player.generate() >= 1){
-                flag_punto = true;
-            }
-        }
-        
 
-        done = (flag_song && flag_croqueta && flag_golpe && flag_golpe2);
+            if(!flag_croqueta){
+                if(croqueta_player.generate() >= 1){
+                    flag_croqueta = true;
+                }
+            }
+            
+            if(!flag_golpe){
+                if(golpe_player.generate() >= 1){
+                    flag_golpe = true;
+                }
+            }
+            
+            if(!flag_golpe2){
+                if(golpe_player2.generate() >= 1){
+                    flag_golpe2 = true;
+                }
+            }
+            
+            if(!flag_levelup){
+                if(levelup_player.generate() >= 1){
+                    flag_levelup = true;
+                }
+            }
+            
+            if(!flag_punto){
+                if(punto_player.generate() >= 1){
+                    flag_punto = true;
+                }
+            }
+            
 
-        if (done) {
-          // Put the generated song in an Audio element.
-          var wave = music_player.createWave();
-          var audio = document.createElement("audio");
-          audio.src = URL.createObjectURL(new Blob([wave], {type: "audio/wav"}));
-          audio.loop=true;
-          audio.play();
-          audio.volume = 0.3;
+            done = (flag_song && flag_croqueta && flag_golpe && flag_golpe2);
+
+            if (done) {
+              // Put the generated song in an Audio element.
+              var wave = music_player.createWave();
+              var audio = document.createElement("audio");
+              audio.src = URL.createObjectURL(new Blob([wave], {type: "audio/wav"}));
+              audio.loop=true;
+              audio.play();
+              audio.volume = 0.3;
 
 
-          var wave2 = croqueta_player.createWave();
-          window.croqueta_audio = document.createElement("audio");
-          window.croqueta_audio.src = URL.createObjectURL(new Blob([wave2], {type: "audio/wav"}));
-          
-          var wave3 = golpe_player.createWave();
-          window.golpe_audio = document.createElement("audio");
-          window.golpe_audio.src = URL.createObjectURL(new Blob([wave3], {type: "audio/wav"}));
-          
-          var wave4 = golpe_player2.createWave();
-          window.golpe_audio2 = document.createElement("audio");
-          window.golpe_audio2.src = URL.createObjectURL(new Blob([wave4], {type: "audio/wav"}));
-          
-          var wave5 = levelup_player.createWave();
-          window.levelup_audio2 = document.createElement("audio");
-          window.levelup_audio2.src = URL.createObjectURL(new Blob([wave5], {type: "audio/wav"}));
-          
-          var wave6 = punto_player.createWave();
-          window.punto_audio = document.createElement("audio");
-          window.punto_audio.src = URL.createObjectURL(new Blob([wave6], {type: "audio/wav"}));
-        
-        }
-    }, 100);
+              var wave2 = croqueta_player.createWave();
+              window.croqueta_audio = document.createElement("audio");
+              window.croqueta_audio.src = URL.createObjectURL(new Blob([wave2], {type: "audio/wav"}));
+              
+              var wave3 = golpe_player.createWave();
+              window.golpe_audio = document.createElement("audio");
+              window.golpe_audio.src = URL.createObjectURL(new Blob([wave3], {type: "audio/wav"}));
+              
+              var wave4 = golpe_player2.createWave();
+              window.golpe_audio2 = document.createElement("audio");
+              window.golpe_audio2.src = URL.createObjectURL(new Blob([wave4], {type: "audio/wav"}));
+              
+              var wave5 = levelup_player.createWave();
+              window.levelup_audio2 = document.createElement("audio");
+              window.levelup_audio2.src = URL.createObjectURL(new Blob([wave5], {type: "audio/wav"}));
+              
+              var wave6 = punto_player.createWave();
+              window.punto_audio = document.createElement("audio");
+              window.punto_audio.src = URL.createObjectURL(new Blob([wave6], {type: "audio/wav"}));
+            
+            }
+        }, 40);
+  
+    }
+
+
+    if(juego.is_touch_device()){
+        this.pinta_play();
+        document.addEventListener("touchstart", lanza_musica, false);
+    }
+    else{
+        lanza_musica();
+    }
+
+
+
 
 
 })();
