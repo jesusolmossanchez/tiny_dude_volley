@@ -1094,6 +1094,7 @@ var Game = function() {
     this.modo = 1; // modo=1 -> 1player + modo=2 -> 2 players
     this.level = 1;
     this.empezado = false;
+    this.pausa = false;
     this.is_game_over = false;
 
     this.ultimo_rebote = 1;
@@ -1455,10 +1456,11 @@ var Game = function() {
         fpsmeter = new FPSMeter({ decimals: 0, graph: true, theme: 'dark', left: '5px' });
   
     function frame() {
-        if(!juego.empezado){
+        if(!juego.empezado || juego.pausa){
             requestAnimationFrame(frame, canvas);
             return;
         }
+        console.log("no");
         fpsmeter.tickStart();
         now = juego.timestamp();
         dt = dt + Math.min(1, (now - last) / 1000);
@@ -1478,9 +1480,9 @@ var Game = function() {
 
     function handleVisibilityChange() {
         if (document.hidden) {
-            juego.empezado = false;
+            juego.pausa = true;
         } else  {
-            juego.empezado = true;
+            juego.pausa = false;
             juego.controla_orientacion();
         }
     }
