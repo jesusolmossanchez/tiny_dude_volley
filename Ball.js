@@ -5,7 +5,7 @@
 **************************************************/
 var Ball = function(juego, x, y, gravedad, impulso) {
 
-	this.x                = 96;
+    this.x                = 96;
     this.y                = 0;
     this.alto             = 50;
     this.ancho            = 50;
@@ -27,9 +27,9 @@ var Ball = function(juego, x, y, gravedad, impulso) {
 
     this.update = function(dt){
 
-    	//this.calcula_centro(dt);
+        //this.calcula_centro(dt);
 
-    	//reseteo las aceleraciones
+        //reseteo las aceleraciones
         this.ddx = 0;
         this.ddy = this.gravity;
   
@@ -63,6 +63,7 @@ var Ball = function(juego, x, y, gravedad, impulso) {
                     juego.tiempo_punto = juego.timestamp() + 3000;
                     
                     if(this.center_x < juego.ancho_total/2){
+                        juego.ultimo_rebote = 2;
                         if(juego.puntos2 >= 9){
                             juego.ganador = 2;
                             juego.game_over(juego.ctx);
@@ -118,9 +119,9 @@ var Ball = function(juego, x, y, gravedad, impulso) {
 
 
         if(juego.hay_punto){
-	        this.dy = juego.bound(this.dy/1.05, -500, 500);
-	        this.dx = juego.bound(this.dx/1.05, -600, 600);
-	        //this.ddy = juego.bound(this.ddy/1.05, -100, 100);
+            this.dy = juego.bound(this.dy/1.05, -500, 500);
+            this.dx = juego.bound(this.dx/1.05, -600, 600);
+            //this.ddy = juego.bound(this.ddy/1.05, -100, 100);
         }
 
 
@@ -134,7 +135,7 @@ var Ball = function(juego, x, y, gravedad, impulso) {
     };
 
     this.calcula_rotacion = function (x, y, doble, dt) {
-    	this.calcula_centro(dt);
+        this.calcula_centro(dt);
         var mas = 0;
         if(doble){
             mas = Math.PI/4;
