@@ -462,8 +462,8 @@ var Game = function() {
                     }
 
                     //FACTOR DE FUERZA PARA NIVELES
-                    var level_factor_x = 0.5 + this.level/15;
-                    var level_factor_y = 0.5 + this.level/15;
+                    var level_factor_x = 0.5 + this.level/9;
+                    var level_factor_y = 0.5 + this.level/9;
                     ball.dx = ball.dx * level_factor_x;
                     if(ball.dy < -600 || ball.dy > 600){
                         ball.dy = ball.dy * level_factor_y;
@@ -574,15 +574,19 @@ var Game = function() {
 
 
         //TODO: REVISAR FACTOR DE TONTUNA--NIVEL
-        var factor_tontuna = Math.floor((10 - this.level)/4) + 1;
+        //var factor_tontuna = Math.floor((10 - this.level)/4.5) + 1;
+        var factor_tontuna = this.level + 1;
+
+
 
         //si cae en mi campo
         if(player2.haciendo_gorrino){
             //nada
         }
         else if( ( (dondecae > (this.ancho_total/2 - 50)) || (dondecae > (this.ancho_total/2 - 350) && Vy < (-100)) )  &&
-                (this.ultimo_rebote === 2 && this.counter || factor_tontuna === 0)){
+                (this.ultimo_rebote === 2 || this.counter % factor_tontuna !== 0)){
                
+               console.log("busco");
             //si cae a mi izquierda, me muevo pallá
             //TODO: revisar el valor a la derecha 'factor_derecha'
             var factor_derecha = 20;
@@ -649,7 +653,7 @@ var Game = function() {
             (Vx<100 && Vx>-100) && 
             (ball_y < this.alto_total - 300) &&
             player2.tiempo_enfadado < this.timestamp() &&
-            this.counter % factor_tontuna === 0){
+            this.counter % factor_tontuna !== 0){
 
             player2.jump = true;
 
@@ -667,7 +671,7 @@ var Game = function() {
                 if(player2_x - dondecae > limite_gorrino_x && 
                     x > (this.ancho_total/2 - 50) && 
                     !player2.haciendo_gorrino &&
-                    this.counter % factor_tontuna === 0){
+                    this.counter % factor_tontuna !== 0){
 
                     player2.tiempo_gorrino = this.timestamp()+400;
                     player2.gorrino_left = true;
@@ -678,7 +682,7 @@ var Game = function() {
                 if(dondecae - player2_x > limite_gorrino_x && 
                     x > this.ancho_total/2 && 
                     !player2.haciendo_gorrino &&
-                    this.counter % factor_tontuna === 0){
+                    this.counter % factor_tontuna !== 0){
                     
                     player2.tiempo_gorrino = this.timestamp()+400;
                     player2.gorrino_left = false;
@@ -1460,7 +1464,6 @@ var Game = function() {
             requestAnimationFrame(frame, canvas);
             return;
         }
-        console.log("no");
         fpsmeter.tickStart();
         now = juego.timestamp();
         dt = dt + Math.min(1, (now - last) / 1000);
