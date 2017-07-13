@@ -19,6 +19,7 @@
     "gulp-htmlmin": "^3.0.0",
     "gulp-minify": "0.0.14",
     "gulp-rename": "^1.2.2",
+    "gulp-replace": "^0.6.1",
     "gulp-sass": "^2.3.2",
     "gulp-uglify": "^2.0.0",
     "gulp-watch": "^4.3.10"
