@@ -16,8 +16,8 @@ para probar, aquí: https://jesusolmossanchez.github.io/tiny_dude_volley/
 - Manejas cambio de orientación en mobile -> hecho, hacer pausa vvv
 - Implementar pausa (y ponerla en orientación incorrecta, portarit)
 - Música -> añadida (revisar pistas)
-- Crear menu
-- Mas de una pantalla (playerCPU parametrizado y dificultad)
-- Parametrizar velocidades
-- Ajustar juego a mobile simplificado
+- Crear menu -> hecho
+- Mas de una pantalla (playerCPU parametrizado y dificultad) -> hecho
+- Parametrizar velocidades -> hecho
+- Ajustar juego a mobile simplificado -> hecho
 - Optimizar y simplificar JS
