@@ -7,33 +7,34 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
 
     this.x                 = x;
     this.y                 = y;
-    this.alto              = 110;
-    this.ancho             = 80;
+    this.alto_              = 110;
+    this.ancho_             = 80;
     this.dx                = 0;
     this.dy                = 0;
+    //TODO: quitar los was...
     this.wasleft           = false;
     this.wasright          = false;
-    this.gravity           = gravedad;
-    this.maxdx             = 150;
-    this.maxdy             = 600;
-    this.impulse           = impulso;
-    this.accel             = this.maxdx / (juego.ACCEL);
-    this.friction          = this.maxdx / (juego.FRICTION);
-    this.player            = true;
-    this.tiempo_enfadado   = juego.timestamp();
-    this.tiempo_gorrino    = juego.timestamp();
-    this.no_rebota_time    = juego.timestamp();
+    this.gravity_           = gravedad;
+    this.maxdx_             = 150;
+    this.maxdy_             = 600;
+    this.impulse_           = impulso;
+    this.accel_             = this.maxdx_ / (juego.ACCEL_);
+    this.friction_          = this.maxdx_ / (juego.FRICTION_);
+    this.tiempo_enfadado_   = juego.timestamp_();
+    this.tiempo_gorrino_    = juego.timestamp_();
+    this.no_rebota_time_    = juego.timestamp_();
+    //TODO: hacer que empiece donde se le dice
     this.start             = { x: this.x, y: this.y };
-    this.velocidad_gorrino = 450;
-    this.CPU = cpu;    
+    this.velocidad_gorrino_ = 450;
+    this.CPU_ = cpu;    
 
     if(posicion == 1){
-        this.limite_derecha    = juego.ancho_total/2;
-        this.limite_izquierda  = 0; 
+        this.limite_derecha_    = juego.ancho_total_/2;
+        this.limite_izquierda_  = 0; 
     }
     else{
-        this.limite_derecha    = juego.ancho_total;
-        this.limite_izquierda  = juego.ancho_total/2 + juego.net.width;   
+        this.limite_derecha_    = juego.ancho_total_;
+        this.limite_izquierda_  = juego.ancho_total_/2 + juego.net_.width;   
     } 
 
     this.update = function(dt) {
@@ -43,28 +44,28 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
       
         //reseteo las aceleraciones
         this.ddx = 0;
-        this.ddy = this.gravity;
+        this.ddy = this.gravity_;
 
         //movimientos
-        if(!juego.hay_punto){
+        if(!juego.hay_punto_){
             if (this.left){
-                this.ddx = this.ddx - this.accel;
+                this.ddx = this.ddx - this.accel_;
             }
             else if (this.wasleft){
-                this.ddx = this.ddx + this.friction;
+                this.ddx = this.ddx + this.friction_;
             }
           
             if (this.right){
-                this.ddx = this.ddx + this.accel;
+                this.ddx = this.ddx + this.accel_;
             }
             else if (this.wasright){
-                this.ddx = this.ddx - this.friction;
+                this.ddx = this.ddx - this.friction_;
             }
 
             //Salto
             if (this.jump && !this.jumping){
-                if(this.tiempo_gorrino < juego.timestamp() - 50 || this.CPU) {
-                    this.ddy = this.ddy - this.impulse; // an instant big force impulse
+                if(this.tiempo_gorrino_ < juego.timestamp_() - 50 || this.CPU_) {
+                    this.ddy = this.ddy - this.impulse_; // an instant big force impulse
                     this.jumping = true;
                 }
             }
@@ -73,11 +74,11 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
 
             //Si se pulsa acción
             if(this.accion){
-                if (this.jumping && juego.timestamp() > this.tiempo_enfadado + 300){
-                    this.tiempo_enfadado = juego.timestamp()+400;
+                if (this.jumping && juego.timestamp_() > this.tiempo_enfadado_ + 300){
+                    this.tiempo_enfadado_ = juego.timestamp_()+400;
                 }
-                if(!this.jumping && juego.timestamp() > this.tiempo_gorrino + 300){
-                    this.tiempo_gorrino = juego.timestamp()+400;
+                if(!this.jumping && juego.timestamp_() > this.tiempo_gorrino_ + 300){
+                    this.tiempo_gorrino_ = juego.timestamp_()+400;
                 }
             }
         }
@@ -87,51 +88,51 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
         this.y  = this.y  + (dt * this.dy);
 
         //velocidades
-        this.dx = juego.bound(this.dx + (dt * this.ddx), -this.maxdx, this.maxdx);
-        this.dy = juego.bound(this.dy + (dt * this.ddy), -this.maxdy, this.maxdy);
+        this.dx = juego.bound_(this.dx + (dt * this.ddx), -this.maxdx_, this.maxdx_);
+        this.dy = juego.bound_(this.dy + (dt * this.ddy), -this.maxdy_, this.maxdy_);
 
         //Cambiando la velocidad con el level, andando
         var multiplica = -1;
-        if(this.CPU){
+        if(this.CPU_){
             if(this.dx > 0){
                 multiplica = 1;
             }
-            this.dx = this.dx - (10 - juego.level) * 7 * multiplica;
+            this.dx = this.dx - (10 - juego.level_) * 7 * multiplica;
         }
 
-        if(!this.jumping && this.tiempo_gorrino > juego.timestamp()){
+        if(!this.jumping && this.tiempo_gorrino_ > juego.timestamp_()){
             if(!this.haciendo_gorrino){
                 if(this.left){
-                    this.dx = -this.velocidad_gorrino;
+                    this.dx = -this.velocidad_gorrino_;
                     this.haciendo_gorrino = true;
                     this.gorrino_left = true;
                     window.croqueta_audio.play();
                 }
                 if(this.right){
-                    this.dx = this.velocidad_gorrino;
+                    this.dx = this.velocidad_gorrino_;
                     this.haciendo_gorrino = true;
                     this.gorrino_left = false;
                     window.croqueta_audio.play();
                 }
             }
-            else if(this.tiempo_gorrino > juego.timestamp() + 150){
+            else if(this.tiempo_gorrino_ > juego.timestamp_() + 150){
                 if(this.gorrino_left){
-                    this.dx = -this.velocidad_gorrino;
+                    this.dx = -this.velocidad_gorrino_;
                 }
                 else{
-                    this.dx = this.velocidad_gorrino;
+                    this.dx = this.velocidad_gorrino_;
                 }
 
             }
 
             //Cambiando la velocidad con el level, gorrino
-            if(this.CPU){
-                this.dx = this.dx - (10 - juego.level) * 25 * multiplica;
+            if(this.CPU_){
+                this.dx = this.dx - (10 - juego.level_) * 25 * multiplica;
             }
 
         }
 
-        if(this.tiempo_gorrino < juego.timestamp()){
+        if(this.tiempo_gorrino_ < juego.timestamp_()){
             this.haciendo_gorrino = false;
         }
       
@@ -144,8 +145,8 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
 
         //SI va pabajo
         if (this.dy >= 0) {
-            if(this.y + this.alto > juego.alto_total){
-                this.y = juego.alto_total - this.alto;
+            if(this.y + this.alto_ > juego.alto_total_){
+                this.y = juego.alto_total_ - this.alto_;
                 this.dy = 0;
                 this.jumping = false;
             }
@@ -162,14 +163,14 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
 
             //Choco con la red
             if(this.haciendo_gorrino){
-                if(this.x + this.alto + this.ancho/2 >= this.limite_derecha){
-                    this.x = this.limite_derecha - this.alto - this.ancho/2;
+                if(this.x + this.alto_ + this.ancho_/2 >= this.limite_derecha_){
+                    this.x = this.limite_derecha_ - this.alto_ - this.ancho_/2;
                     this.dx = 0;
 
                 } 
             }
-            else if(this.x + this.ancho >= this.limite_derecha){
-                this.x = this.limite_derecha - this.ancho;
+            else if(this.x + this.ancho_ >= this.limite_derecha_){
+                this.x = this.limite_derecha_ - this.ancho_;
                 this.dx = 0;
             }
         }
@@ -178,25 +179,25 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
 
             //Choco con la pared
             if(this.haciendo_gorrino){
-                if(this.x - this.alto + this.ancho/2 <= this.limite_izquierda){
-                    this.x = this.limite_izquierda + this.alto - this.ancho/2;
+                if(this.x - this.alto_ + this.ancho_/2 <= this.limite_izquierda_){
+                    this.x = this.limite_izquierda_ + this.alto_ - this.ancho_/2;
                     this.dx = 0;
                 } 
 
             }
-            else if(this.x <= this.limite_izquierda){
-                this.x = this.limite_izquierda;
+            else if(this.x <= this.limite_izquierda_){
+                this.x = this.limite_izquierda_;
                 this.dx = 0;
             }
         }
     };
 
-    this.pinta_player = function(gorrino, dt, ball, ctx, counter) {
+    this.pinta_player_ = function(gorrino, dt, ball, ctx, counter) {
 
         var x_player = this.x + (this.dx * dt);
         var y_player = this.y + (this.dy * dt);
-        var ancho_player = this.ancho;
-        var alto_player = this.alto;
+        var ancho_player = this.ancho_;
+        var alto_player = this.alto_;
 
 
         var alto_pies = 12;
@@ -207,7 +208,7 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
         var boca_largo = ancho_player/3;
         var boca_ancho = 4;
         
-        var diff_player_ball = (x_player + ancho_player/2) - (ball.x - ball.ancho/2);
+        var diff_player_ball = (x_player + ancho_player/2) - (ball.x - ball.ancho_/2);
         
         if(!gorrino){
 
@@ -218,10 +219,10 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
             //pies
             var posicion_pie1 = 15;
             var posicion_pie2 = 50;
-            if(this.tween_frames(counter, 40) < 0.5 && (this.left || this.right)){
+            if(this.tween_frames_(counter, 40) < 0.5 && (this.left || this.right)){
                 posicion_pie2 = 55;
             }
-            if(this.tween_frames(counter, 50) < 0.5 && (this.left || this.right)){
+            if(this.tween_frames_(counter, 50) < 0.5 && (this.left || this.right)){
                 posicion_pie1 = 20;
             }
 
@@ -238,10 +239,10 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
             //ojos
             ctx.fillStyle = "#ffffff";
             var posicion_ojo1 = x_player + ancho_player/4 - diff_player_ball/15;
-            posicion_ojo1 = juego.bound(posicion_ojo1, x_player - 5, x_player + ancho_player/4);
+            posicion_ojo1 = juego.bound_(posicion_ojo1, x_player - 5, x_player + ancho_player/4);
 
             var posicion_ojo2 = x_player + ancho_player - ancho_player/8 - diff_player_ball/15;
-            posicion_ojo2 = juego.bound(posicion_ojo2, x_player + ancho_player/2, x_player + ancho_player - ancho_player/8);
+            posicion_ojo2 = juego.bound_(posicion_ojo2, x_player + ancho_player/2, x_player + ancho_player - ancho_player/8);
 
             var ojos_jumping = 0;
             if(this.jumping){
@@ -254,7 +255,7 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
             //boca
             ctx.fillStyle = "#ba001f";
             var posicion_boca = x_player + ancho_player/2 - diff_player_ball/25;
-            posicion_boca = juego.bound(posicion_boca, x_player + ancho_player/8, x_player + ancho_player/2 );
+            posicion_boca = juego.bound_(posicion_boca, x_player + ancho_player/8, x_player + ancho_player/2 );
 
             if(this.jumping){
                 boca_ancho = 12;
@@ -278,17 +279,17 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
             }
 
             //cuerpo
-            ctx.fillRect(x_player + this.ancho/2, y_player + this.ancho/4, izq_gorrino * this.alto, this.ancho);
+            ctx.fillRect(x_player + this.ancho_/2, y_player + this.ancho_/4, izq_gorrino * this.alto_, this.ancho_);
 
             //pies
-            ctx.fillRect(x_player + this.ancho/2 - pies_izq, y_player + this.ancho/2, alto_pies, ancho_pies);
-            ctx.fillRect(x_player + this.ancho/2 - pies_izq, y_player + this.ancho/2 + 30, alto_pies, ancho_pies);
+            ctx.fillRect(x_player + this.ancho_/2 - pies_izq, y_player + this.ancho_/2, alto_pies, ancho_pies);
+            ctx.fillRect(x_player + this.ancho_/2 - pies_izq, y_player + this.ancho_/2 + 30, alto_pies, ancho_pies);
 
 
             //ojos
             ctx.fillStyle = "#ffffff";
-            ctx.fillRect(x_player + this.ancho/2 + izq_gorrino * (alto_player - ancho_player/8) - ojos_izq, y_player + this.ancho/2 - 10, ojo_size, ojo_size);
-            ctx.fillRect(x_player + this.ancho/2 + izq_gorrino * (alto_player - ancho_player/8) - ojos_izq, y_player + this.ancho/2 + 20, ojo_size, ojo_size);
+            ctx.fillRect(x_player + this.ancho_/2 + izq_gorrino * (alto_player - ancho_player/8) - ojos_izq, y_player + this.ancho_/2 - 10, ojo_size, ojo_size);
+            ctx.fillRect(x_player + this.ancho_/2 + izq_gorrino * (alto_player - ancho_player/8) - ojos_izq, y_player + this.ancho_/2 + 20, ojo_size, ojo_size);
 
 
             //boca
@@ -305,7 +306,8 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
 
     };
 
-    this.tween_frames = function(frame, duration) {
+    //TODO: igual lo suyo es usar esto para otras cosas y meterlo en el Game.js
+    this.tween_frames_ = function(frame, duration) {
         var half  = duration/2,
             pulse = frame%duration;
         return pulse < half ? (pulse/half) : 1-(pulse-half)/half;
