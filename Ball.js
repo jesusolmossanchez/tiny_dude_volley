@@ -60,31 +60,42 @@ var Ball = function(juego, x, y, gravedad, impulso) {
                         new Explosion(x_explosion, y_explosion, true, true, this)
                     );
 
-                    juego.tiempo_punto_ = juego.timestamp_() + 4000;
+                    juego.tiempo_punto_ = juego.timestamp_() + 3000;
                     
                     if(this.center_x_ < juego.ancho_total_/2){
                         juego.ultimo_rebote = 2;
+                        juego.empieza1_ = false;
                         if(juego.puntos2_ >= 9){
-                            juego.ganador_ = 2;
+                            if(juego.modo_ === 1){
+                                juego.ganador_ = "cpu";
+                            }
+                            else{
+                                juego.ganador_ = "2";
+                            }
                             juego.game_over_(juego.ctx);
                         }
                         else{
                             juego.puntos2_++;
-                            juego.empieza1_ = false;
                             
                         }
                     }
                     else{
+                        juego.empieza1_ = true;
                         if(juego.puntos1_ >= 9){
-                            juego.ganador_ = 1;
+                            if(juego.modo_ === 1){
+                                juego.ganador_ = "1_cpu";
+                            }
+                            else{
+                                juego.ganador_ = "1";
+                            }
                             juego.game_over_(juego.ctx);
                         }
-                        if(juego.puntos1_ >= 4 && juego.level_ < 9){
+                        if(juego.puntos1_ >= 4 && juego.level_ < 9 && juego.modo_ === 1){
+                            juego.tiempo_punto_ =  juego.tiempo_punto_ + 1000;
                             juego.siguiente_level_();
                         }
                         else{
                             juego.puntos1_++;
-                            juego.empieza1_ = true;
                         }
 
                     }
