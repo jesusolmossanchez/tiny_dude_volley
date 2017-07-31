@@ -18,26 +18,51 @@ var Game = function() {
         switch(key) {
             case this.KEY.LEFT:  
                 ev.preventDefault(); 
-                if(this.modo_ === 1){
-                    player.left  = down; 
+                if(!this.empezado_){
+                    if(down){
+                        if(this.numero_jugadores_ && !this.player1_selected_){
+                            this.mueve_selec_player_(true, "left");
+                        }
+                    }
                 }
                 else{
-                    player2.left  = down; 
+                    if(this.modo_ === 1){
+                        player.left  = down; 
+                    }
+                    else{
+                        player2.left  = down; 
+                    }
                 }
                 return false;
             case this.KEY.RIGHT: 
                 ev.preventDefault(); 
-                if(this.modo_ === 1){
-                    player.right  = down; 
+                if(!this.empezado_){
+                    if(down){
+                        if(this.numero_jugadores_ && !this.player1_selected_){
+                            this.mueve_selec_player_(true, "right");
+                        }
+                    }
                 }
                 else{
-                    player2.right  = down; 
+                    if(this.modo_ === 1){
+                        player.right  = down; 
+                    }
+                    else{
+                        player2.right  = down; 
+                    } 
                 } 
                 return false;
             case this.KEY.UP: 
                 ev.preventDefault(); 
                 if(!this.empezado_){
-                    this.mueve_menu_(false);
+                    if(down){
+                        if(!this.numero_jugadores_){
+                            this.mueve_menu_(false);
+                        }
+                        else if(!this.player1_selected_){
+                            this.mueve_selec_player_(true, "up");
+                        }
+                    }
                 }
                 else{
                     if(this.modo_ === 1){
@@ -51,7 +76,14 @@ var Game = function() {
             case this.KEY.DOWN: 
                 ev.preventDefault(); 
                 if(!this.empezado_){
-                    this.mueve_menu_(true);
+                    if(down){
+                        if(!this.numero_jugadores_){
+                            this.mueve_menu_(true);
+                        }
+                        else if(!this.player1_selected_){
+                            this.mueve_selec_player_(true, "down");
+                        }
+                    }
                 }
                 else{
                     if(this.modo_ === 1){
@@ -62,19 +94,17 @@ var Game = function() {
                     }
                 }
                 return false;
-            case this.KEY.Z: 
-                ev.preventDefault(); 
-                if(!this.empezado_){
-                    this.selecciona_menu_();
-                }
-                else{
-                    player.accion  = down; 
-                }
-                return false;
             case this.KEY.ENTER: 
                 ev.preventDefault(); 
                 if(!this.empezado_){
-                    this.selecciona_menu_();
+                    if(down){
+                        if(!this.numero_jugadores_){
+                            this.selecciona_menu_();
+                        }
+                        else{
+                            this.selec_player_(true);
+                        }
+                    }
                 }
                 else{
                     if(this.modo_ === 1){
@@ -85,28 +115,86 @@ var Game = function() {
                     }
                 }
                 return false;
+            case this.KEY.Z: 
+                ev.preventDefault(); 
+                if(!this.empezado_){
+                    if(down){
+                        if(!this.numero_jugadores_){
+                            this.selecciona_menu_();
+                        }
+                        else{
+                            this.selec_player_(false);
+                        }
+                    }
+                }
+                else{
+                    player.accion  = down; 
+                }
+                return false;
             case this.KEY.R: 
                 ev.preventDefault(); 
-                if(this.modo_ === 2){
-                    player.jump  = down; 
+                if(!this.empezado_){
+                    if(down){
+                        if(!this.numero_jugadores_){
+                            this.mueve_menu_(false);
+                        }
+                        else if(!this.player2_selected_){
+                            this.mueve_selec_player_(false, "up");
+                        }
+                    }
+                }
+                else{
+                    if(this.modo_ === 2){
+                        player.jump  = down; 
+                    }
                 }
                 return false;
             case this.KEY.D: 
                 ev.preventDefault(); 
-                if(this.modo_ === 2){
-                    player.left  = down; 
+                if(!this.empezado_){
+                    if(down){
+                        if(this.numero_jugadores_ && !this.player2_selected_){
+                            this.mueve_selec_player_(false, "left");
+                        }
+                    }
+                }
+                else{
+                    if(this.modo_ === 2){
+                        player.left  = down; 
+                    }
                 }
                 return false;
             case this.KEY.F: 
-                ev.preventDefault();
-                if(this.modo_ === 2){
-                    player.down  = down; 
+                ev.preventDefault(); 
+                if(!this.empezado_){
+                    if(down){
+                        if(!this.numero_jugadores_){
+                            this.mueve_menu_(true);
+                        }
+                        else if(!this.player2_selected_){
+                            this.mueve_selec_player_(false, "down");
+                        }
+                    }
+                }
+                else{
+                    if(this.modo_ === 2){
+                        player.down  = down; 
+                    }
                 }
                 return false;
             case this.KEY.G: 
-                ev.preventDefault(); 
-                if(this.modo_ === 2){
-                    player.right  = down; 
+                ev.preventDefault();  
+                if(!this.empezado_){
+                    if(down){
+                        if(this.numero_jugadores_ && !this.player2_selected_){
+                            this.mueve_selec_player_(false, "right");
+                        }
+                    }
+                }
+                else{
+                    if(this.modo_ === 2){
+                        player.right  = down; 
+                    }
                 }
                 return false;
         }
@@ -173,8 +261,13 @@ var Game = function() {
     };
 
 
-    this.pinta_filas_columnas_ = function(ctx, x, y, letra, size){
-        ctx.fillStyle = "#ffffff";
+    this.pinta_filas_columnas_ = function(ctx, x, y, letra, size, color){
+        if(!color){
+            ctx.fillStyle = "#ffffff";
+        }
+        else{
+            ctx.fillStyle = color;
+        }
         var currX = x;
         var currY = y;
         var addX = 0;
@@ -408,6 +501,26 @@ var Game = function() {
                         ball.dx = nega_player * velocidad_lateral3;
                         ball.gravity_ = gravedad_mate2;
                     }
+
+                    switch (jugador_rebota.tipo){
+                        case 2:
+                            ball.dy = ball.dy * 0.7;
+                            ball.dx = ball.dx * 0.5;
+                            ball.gravity_ = ball.gravity_ * 0.7;
+                            break;
+                        case 3:
+                            ball.dy = ball.dy * 0.8;
+                            ball.dx = ball.dx * 0.8;
+                            ball.gravity_ = ball.gravity_ * 0.8;
+                            break;
+                        case 4:
+                            ball.dy = ball.dy * 1.3;
+                            ball.dx = ball.dx * 1.3;
+                            ball.gravity_ = ball.gravity_ * 1.3;
+                            break;
+                    }
+
+
                 }
                 else{
                     
@@ -877,7 +990,7 @@ var Game = function() {
     };
 
 
-    this.muestra_menu_ = function(ctx) {
+    this.muestra_menu_ = function(ctx, select_player) {
         //TODO mobile
         if(this.is_touch_device_()){
             this.setup_();
@@ -885,29 +998,32 @@ var Game = function() {
             this.empezado_ = true;
             return
         }
+        ctx.clearRect(0, 0, this.ancho_total_, this.alto_total_);
 
         
-        //TODO: Aquí muestro el menu: 1 player / 2 player?
-        var menu =  [
-                        [  , 1, 1,  ,  ,  , 1, 1, 1, 1,  , 1, 1,  ,  ,  , 1, 1, 1, 1,  , 1,  ,  , 1,  , 1, 1, 1, 1,  , 1, 1, 1, 1,  ,  ,  ,  ,  ],
-                        [ 1, 1, 1,  ,  ,  , 1, 1,  , 1,  , 1, 1,  ,  ,  , 1, 1,  , 1,  ,  , 1, 1,  ,  , 1, 1,  ,  ,  , 1, 1,  , 1,  ,  ,  ,  ,  ],
-                        [  , 1, 1,  ,  ,  , 1, 1, 1, 1,  , 1, 1,  ,  ,  , 1, 1, 1, 1,  ,  , 1, 1,  ,  , 1, 1, 1,  ,  , 1, 1,  , 1,  ,  ,  ,  ,  ],
-                        [  , 1, 1,  ,  ,  , 1, 1,  ,  ,  , 1, 1,  ,  ,  , 1, 1,  , 1,  ,  , 1, 1,  ,  , 1, 1,  ,  ,  , 1, 1, 1,  ,  ,  ,  ,  ,  ],
-                        [ 1, 1, 1, 1,  ,  , 1, 1,  ,  ,  , 1, 1, 1, 1,  , 1, 1,  , 1,  ,  , 1, 1,  ,  , 1, 1, 1, 1,  , 1, 1,  , 1,  ,  ,  ,  ,  ],
-                        [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
-                        [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
-                        [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
-                        [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
-                        [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
-                        [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
-                        [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
-                        [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
-                        [ 1, 1, 1, 1,  ,  , 1, 1, 1, 1,  , 1, 1,  ,  ,  , 1, 1, 1, 1,  , 1,  ,  , 1,  , 1, 1, 1, 1,  , 1, 1, 1, 1,  , 1, 1, 1, 1],
-                        [  ,  , 1, 1,  ,  , 1, 1,  , 1,  , 1, 1,  ,  ,  , 1, 1,  , 1,  ,  , 1, 1,  ,  , 1, 1,  ,  ,  , 1, 1,  , 1,  , 1, 1,  ,  ],
-                        [ 1, 1, 1, 1,  ,  , 1, 1, 1, 1,  , 1, 1,  ,  ,  , 1, 1, 1, 1,  ,  , 1, 1,  ,  , 1, 1, 1,  ,  , 1, 1,  , 1,  , 1, 1, 1, 1],
-                        [ 1, 1,  ,  ,  ,  , 1, 1,  ,  ,  , 1, 1,  ,  ,  , 1, 1,  , 1,  ,  , 1, 1,  ,  , 1, 1,  ,  ,  , 1, 1, 1,  ,  ,  ,  , 1, 1],
-                        [ 1, 1, 1, 1,  ,  , 1, 1,  ,  ,  , 1, 1, 1, 1,  , 1, 1,  , 1,  ,  , 1, 1,  ,  , 1, 1, 1, 1,  , 1, 1,  , 1,  , 1, 1, 1, 1]
-                ];
+        //TODO: muestro el menu de 1 player / 2 player
+        menu =  [
+                    [  , 1, 1,  ,  ,  , 1, 1, 1, 1,  , 1, 1,  ,  ,  , 1, 1, 1, 1,  , 1,  ,  , 1,  , 1, 1, 1, 1,  , 1, 1, 1, 1,  ,  ,  ,  ,  ],
+                    [ 1, 1, 1,  ,  ,  , 1, 1,  , 1,  , 1, 1,  ,  ,  , 1, 1,  , 1,  ,  , 1, 1,  ,  , 1, 1,  ,  ,  , 1, 1,  , 1,  ,  ,  ,  ,  ],
+                    [  , 1, 1,  ,  ,  , 1, 1, 1, 1,  , 1, 1,  ,  ,  , 1, 1, 1, 1,  ,  , 1, 1,  ,  , 1, 1, 1,  ,  , 1, 1,  , 1,  ,  ,  ,  ,  ],
+                    [  , 1, 1,  ,  ,  , 1, 1,  ,  ,  , 1, 1,  ,  ,  , 1, 1,  , 1,  ,  , 1, 1,  ,  , 1, 1,  ,  ,  , 1, 1, 1,  ,  ,  ,  ,  ,  ],
+                    [ 1, 1, 1, 1,  ,  , 1, 1,  ,  ,  , 1, 1, 1, 1,  , 1, 1,  , 1,  ,  , 1, 1,  ,  , 1, 1, 1, 1,  , 1, 1,  , 1,  ,  ,  ,  ,  ],
+                    [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                    [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                    [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                    [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                    [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                    [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                    [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                    [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                    [ 1, 1, 1, 1,  ,  , 1, 1, 1, 1,  , 1, 1,  ,  ,  , 1, 1, 1, 1,  , 1,  ,  , 1,  , 1, 1, 1, 1,  , 1, 1, 1, 1,  , 1, 1, 1, 1],
+                    [  ,  , 1, 1,  ,  , 1, 1,  , 1,  , 1, 1,  ,  ,  , 1, 1,  , 1,  ,  , 1, 1,  ,  , 1, 1,  ,  ,  , 1, 1,  , 1,  , 1, 1,  ,  ],
+                    [ 1, 1, 1, 1,  ,  , 1, 1, 1, 1,  , 1, 1,  ,  ,  , 1, 1, 1, 1,  ,  , 1, 1,  ,  , 1, 1, 1,  ,  , 1, 1,  , 1,  , 1, 1, 1, 1],
+                    [ 1, 1,  ,  ,  ,  , 1, 1,  ,  ,  , 1, 1,  ,  ,  , 1, 1,  , 1,  ,  , 1, 1,  ,  , 1, 1,  ,  ,  , 1, 1, 1,  ,  ,  ,  , 1, 1],
+                    [ 1, 1, 1, 1,  ,  , 1, 1,  ,  ,  , 1, 1, 1, 1,  , 1, 1,  , 1,  ,  , 1, 1,  ,  , 1, 1, 1, 1,  , 1, 1,  , 1,  , 1, 1, 1, 1]
+            ];
+
+        
 
         // Cuando está todo seleccionado, cambio el empieza y debería rular
         var size_menu_px = 8;
@@ -916,7 +1032,123 @@ var Game = function() {
         var x_menu = this.ancho_total_/2 - largo_menu/2;
         var y_menu = 200;
 
-        ctx.clearRect(0, 0, this.ancho_total_, this.alto_total_);
+
+
+        if(select_player){
+            fake_ball = new Ball(this);
+            var size_caract = 6;
+
+            fake_player = new Player(this, 60, 100, 0, 60000, 1, false, 1);
+            fake_player.pinta_player_(false, 0, fake_ball, ctx, this.counter);
+
+            caracteristicas1 =  [
+                        [ 1, 1, 1, 1,  , 1, 1, 1, 1,  , 1, 1,  , 1,  , 1,  ,  ,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                        [ 1, 1,  , 1,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1,  , 1,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  ,  ,  ,  ,  ,  ,  ,  , 1],
+                        [ 1, 1, 1, 1,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1,  ,  ,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  ,  ,  ,  ,  ,  ,  ,  , 1],
+                        [ 1, 1,  ,  ,  , 1, 1,  , 1,  ,  , 1, 1, 1, 1,  ,  , 1,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  ,  ,  ,  ,  ,  ,  ,  , 1],
+                        [ 1, 1,  ,  ,  , 1, 1, 1, 1,  ,  ,  ,  , 1,  ,  ,  ,  ,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                        [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                        [ 1, 1, 1, 1,  , 1, 1, 1, 1,  , 1, 1, 1, 1,  ,  ,  ,  ,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                        [ 1, 1,  ,  ,  , 1, 1,  , 1,  , 1, 1,  , 1, 1,  ,  , 1,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  ,  ,  ,  ,  ,  ,  ,  , 1],
+                        [ 1, 1, 1, 1,  , 1, 1, 1, 1,  , 1, 1,  , 1, 1,  ,  ,  ,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  ,  ,  ,  ,  ,  ,  ,  , 1],
+                        [  ,  ,  , 1,  , 1, 1,  ,  ,  , 1, 1,  , 1, 1,  ,  , 1,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  ,  ,  ,  ,  ,  ,  ,  , 1],
+                        [ 1, 1, 1, 1,  , 1, 1,  ,  ,  , 1, 1, 1, 1,  ,  ,  ,  ,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                        [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                        [ 1, 1, 1, 1,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1,  ,  ,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                        [  ,  , 1, 1,  , 1, 1,  , 1,  , 1, 1, 1, 1, 1, 1,  , 1,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  ,  ,  ,  ,  ,  ,  ,  , 1],
+                        [  ,  , 1, 1,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1,  ,  ,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  ,  ,  ,  ,  ,  ,  ,  , 1],
+                        [ 1,  , 1, 1,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1,  , 1,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  ,  ,  ,  ,  ,  ,  ,  , 1],
+                        [ 1, 1, 1, 1,  , 1, 1, 1, 1,  , 1, 1,  , 1,  , 1,  ,  ,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                        [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                ];
+            this.pinta_filas_columnas_(ctx, 160, 100, caracteristicas1, size_caract);
+
+
+            
+            fake_player2 = new Player(this, 60, 300, 0, 60000, 1, false, 3);
+            fake_player2.pinta_player_(false, 0, fake_ball, ctx, this.counter);
+
+            caracteristicas2 =  [
+                        [ 1, 1, 1, 1,  , 1, 1, 1, 1,  , 1, 1,  , 1,  , 1,  ,  ,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                        [ 1, 1,  , 1,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1,  , 1,  ,  , 1, 1, 1, 1, 1,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  , 1],
+                        [ 1, 1, 1, 1,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1,  ,  ,  ,  , 1, 1, 1, 1, 1,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  , 1],
+                        [ 1, 1,  ,  ,  , 1, 1,  , 1,  ,  , 1, 1, 1, 1,  ,  , 1,  ,  , 1, 1, 1, 1, 1,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  , 1],
+                        [ 1, 1,  ,  ,  , 1, 1, 1, 1,  ,  ,  ,  , 1,  ,  ,  ,  ,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                        [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                        [ 1, 1, 1, 1,  , 1, 1, 1, 1,  , 1, 1, 1, 1,  ,  ,  ,  ,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                        [ 1, 1,  ,  ,  , 1, 1,  , 1,  , 1, 1,  , 1, 1,  ,  , 1,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                        [ 1, 1, 1, 1,  , 1, 1, 1, 1,  , 1, 1,  , 1, 1,  ,  ,  ,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                        [  ,  ,  , 1,  , 1, 1,  ,  ,  , 1, 1,  , 1, 1,  ,  , 1,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                        [ 1, 1, 1, 1,  , 1, 1,  ,  ,  , 1, 1, 1, 1,  ,  ,  ,  ,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                        [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                        [ 1, 1, 1, 1,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1,  ,  ,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                        [  ,  , 1, 1,  , 1, 1,  , 1,  , 1, 1, 1, 1, 1, 1,  , 1,  ,  , 1, 1, 1, 1, 1,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  , 1],
+                        [  ,  , 1, 1,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1,  ,  ,  ,  , 1, 1, 1, 1, 1,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  , 1],
+                        [ 1,  , 1, 1,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1,  , 1,  ,  , 1, 1, 1, 1, 1,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  , 1],
+                        [ 1, 1, 1, 1,  , 1, 1, 1, 1,  , 1, 1,  , 1,  , 1,  ,  ,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                        [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                ];
+            this.pinta_filas_columnas_(ctx, 160, 300, caracteristicas2, size_caract);
+
+            fake_ball.x = 480;
+            
+            fake_player3 = new Player(this, 440, 100, 0, 60000, 1, false, 2);
+            fake_player3.pinta_player_(false, 0, fake_ball, ctx, this.counter);
+
+            caracteristicas3 =  [
+                        [ 1, 1, 1, 1,  , 1, 1, 1, 1,  , 1, 1,  , 1,  , 1,  ,  ,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                        [ 1, 1,  , 1,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1,  , 1,  ,  , 1, 1,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  , 1],
+                        [ 1, 1, 1, 1,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1,  ,  ,  ,  , 1, 1,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  , 1],
+                        [ 1, 1,  ,  ,  , 1, 1,  , 1,  ,  , 1, 1, 1, 1,  ,  , 1,  ,  , 1, 1,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  , 1],
+                        [ 1, 1,  ,  ,  , 1, 1, 1, 1,  ,  ,  ,  , 1,  ,  ,  ,  ,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                        [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                        [ 1, 1, 1, 1,  , 1, 1, 1, 1,  , 1, 1, 1, 1,  ,  ,  ,  ,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                        [ 1, 1,  ,  ,  , 1, 1,  , 1,  , 1, 1,  , 1, 1,  ,  , 1,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  ,  ,  , 1],
+                        [ 1, 1, 1, 1,  , 1, 1, 1, 1,  , 1, 1,  , 1, 1,  ,  ,  ,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  ,  ,  , 1],
+                        [  ,  ,  , 1,  , 1, 1,  ,  ,  , 1, 1,  , 1, 1,  ,  , 1,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  ,  ,  , 1],
+                        [ 1, 1, 1, 1,  , 1, 1,  ,  ,  , 1, 1, 1, 1,  ,  ,  ,  ,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                        [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                        [ 1, 1, 1, 1,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1,  ,  ,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                        [  ,  , 1, 1,  , 1, 1,  , 1,  , 1, 1, 1, 1, 1, 1,  , 1,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  ,  ,  , 1],
+                        [  ,  , 1, 1,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1,  ,  ,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  ,  ,  , 1],
+                        [ 1,  , 1, 1,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1,  , 1,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  ,  ,  , 1],
+                        [ 1, 1, 1, 1,  , 1, 1, 1, 1,  , 1, 1,  , 1,  , 1,  ,  ,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                        [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                ];
+            this.pinta_filas_columnas_(ctx, 540, 100, caracteristicas3, size_caract);
+
+
+            
+            fake_player4 = new Player(this, 440, 300, 0, 60000, 1, false, 4);
+            fake_player4.pinta_player_(false, 0, fake_ball, ctx, this.counter);
+
+            caracteristicas4 =  [
+                        [ 1, 1, 1, 1,  , 1, 1, 1, 1,  , 1, 1,  , 1,  , 1,  ,  ,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                        [ 1, 1,  , 1,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1,  , 1,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                        [ 1, 1, 1, 1,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1,  ,  ,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                        [ 1, 1,  ,  ,  , 1, 1,  , 1,  ,  , 1, 1, 1, 1,  ,  , 1,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                        [ 1, 1,  ,  ,  , 1, 1, 1, 1,  ,  ,  ,  , 1,  ,  ,  ,  ,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                        [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                        [ 1, 1, 1, 1,  , 1, 1, 1, 1,  , 1, 1, 1, 1,  ,  ,  ,  ,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                        [ 1, 1,  ,  ,  , 1, 1,  , 1,  , 1, 1,  , 1, 1,  ,  , 1,  ,  , 1, 1, 1, 1,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  , 1],
+                        [ 1, 1, 1, 1,  , 1, 1, 1, 1,  , 1, 1,  , 1, 1,  ,  ,  ,  ,  , 1, 1, 1, 1,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  , 1],
+                        [  ,  ,  , 1,  , 1, 1,  ,  ,  , 1, 1,  , 1, 1,  ,  , 1,  ,  , 1, 1, 1, 1,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  , 1],
+                        [ 1, 1, 1, 1,  , 1, 1,  ,  ,  , 1, 1, 1, 1,  ,  ,  ,  ,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                        [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                        [ 1, 1, 1, 1,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1,  ,  ,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                        [  ,  , 1, 1,  , 1, 1,  , 1,  , 1, 1, 1, 1, 1, 1,  , 1,  ,  , 1, 1, 1, 1,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  , 1],
+                        [  ,  , 1, 1,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1,  ,  ,  ,  , 1, 1, 1, 1,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  , 1],
+                        [ 1,  , 1, 1,  , 1, 1,  , 1,  , 1, 1,  , 1,  , 1,  , 1,  ,  , 1, 1, 1, 1,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  , 1],
+                        [ 1, 1, 1, 1,  , 1, 1, 1, 1,  , 1, 1,  , 1,  , 1,  ,  ,  ,  , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                        [  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ],
+                ];
+            this.pinta_filas_columnas_(ctx, 540, 300, caracteristicas4, size_caract);
+
+
+        }
+        
+
+
 
         var usa_keys  =  [
                     [  1, 1,  , 1,  ,  1, 1, 1,  , 1,  , 1,  , 1, 1, 1,  ,  ],
@@ -1035,8 +1267,118 @@ var Game = function() {
         }
 
 
-        ctx.strokeRect(x_menu - (size_menu_px * 4), y_select, largo_menu + (size_menu_px * 8), 12 * size_menu_px);
-        this.pinta_filas_columnas_(ctx, x_menu, y_menu, menu, size_menu_px);
+        if(!select_player){
+            ctx.strokeRect(x_menu - (size_menu_px * 4), y_select, largo_menu + (size_menu_px * 8), 12 * size_menu_px);
+            this.pinta_filas_columnas_(ctx, x_menu, y_menu, menu, size_menu_px);
+        }
+        else{
+
+
+
+
+
+            if(this.modo_ === 2){
+                p2 =  [
+                            [ 1, 1, 1, 1,  ,  , 1, 1, 1],
+                            [ 1, 1,  , 1,  ,  ,  ,  , 1],
+                            [ 1, 1, 1, 1,  ,  , 1, 1, 1],
+                            [ 1, 1,  ,  ,  ,  , 1,  ,  ],
+                            [ 1, 1,  ,  ,  ,  , 1, 1, 1]
+                        ];
+
+                var x_p2 = 340;
+                var y_p2 = 52;
+
+                var x_selec_player = 40;
+                var y_selec_player = 80;
+                var ancho_selec_player = 370;
+                var alto_selec_player = 140;
+                switch(this.player2_tipo_) {
+                
+                    case 2: 
+                        x_selec_player = 420;
+                        y_selec_player = 80;
+                        x_p2 = 720;
+                        y_p2 = 52;
+                        break;
+                    case 3: 
+                        x_selec_player = 40;
+                        y_selec_player = 280;
+                        x_p2 = 340;
+                        y_p2 = 252;
+
+                        break;
+                    case 4: 
+                        x_selec_player = 420;
+                        y_selec_player = 280;
+                        x_p2 = 720;
+                        y_p2 = 252;
+
+                        break;
+                }
+                this.pinta_filas_columnas_(ctx, x_p2, y_p2, p2, 4, this.COLOR_.PURPLE);
+                ctx.strokeStyle = this.COLOR_.PURPLE;
+                ctx.strokeRect(x_selec_player, y_selec_player, ancho_selec_player, alto_selec_player);
+                if(this.player2_selected_){
+                    this.ctx.globalAlpha = 0.5;
+                    this.ctx.fillStyle = this.COLOR_.YELLOW;
+                    this.ctx.fillRect(x_selec_player, y_selec_player, ancho_selec_player, alto_selec_player);
+                    this.ctx.globalAlpha = 1.0;
+                }
+            }
+
+
+
+            p1 =  [
+                        [ 1, 1, 1, 1,  ,  ,  , 1, 1],
+                        [ 1, 1,  , 1,  ,  , 1, 1, 1],
+                        [ 1, 1, 1, 1,  ,  ,  , 1, 1],
+                        [ 1, 1,  ,  ,  ,  ,  , 1, 1],
+                        [ 1, 1,  ,  ,  ,  ,  , 1, 1]
+                    ];
+
+            var x_p1 = 70;
+            var y_p1 = 52;
+
+            var x_selec_player = 40;
+            var y_selec_player = 80;
+            var ancho_selec_player = 370;
+            var alto_selec_player = 140;
+            switch(this.player1_tipo_) {
+            
+                case 2: 
+                    x_selec_player = 420;
+                    y_selec_player = 80;
+                    x_p1 = 450;
+                    y_p1 = 52;
+                    break;
+                case 3: 
+                    x_selec_player = 40;
+                    y_selec_player = 280;
+                    x_p1 = 70;
+                    y_p1 = 252;
+
+                    break;
+                case 4: 
+                    x_selec_player = 420;
+                    y_selec_player = 280;
+                    x_p1 = 450;
+                    y_p1 = 252;
+
+                    break;
+            }
+            this.pinta_filas_columnas_(ctx, x_p1, y_p1, p1, 4, this.COLOR_.YELLOW);
+            ctx.strokeStyle = this.COLOR_.YELLOW;
+            ctx.strokeRect(x_selec_player, y_selec_player, ancho_selec_player, alto_selec_player);
+            if(this.player1_selected_){
+                this.ctx.globalAlpha = 0.5;
+                this.ctx.fillStyle = this.COLOR_.YELLOW;
+                this.ctx.fillRect(x_selec_player, y_selec_player, ancho_selec_player, alto_selec_player);
+                this.ctx.globalAlpha = 1.0;
+            }
+
+
+        }
 
 
     };
@@ -1050,14 +1392,124 @@ var Game = function() {
         else{
             this.modo_ = 1;
         }
-        this.muestra_menu_(this.ctx);
+        this.muestra_menu_(this.ctx, false);
+    }
+
+    this.mueve_selec_player_ = function (player1, dir) {
+
+        window.croqueta_audio.play();
+
+        var player_mover = this.player1_tipo_;
+        if(player1){
+            switch(dir) {
+                case "up":  
+                    if(this.player1_tipo_ > 2){
+                        this.player1_tipo_ = this.player1_tipo_ - 2;
+                    }
+                    break;
+                case "down":  
+                    if(this.player1_tipo_ < 3){
+                        this.player1_tipo_ = this.player1_tipo_ + 2;
+                    }
+                    break;
+                case "left":  
+                    if(this.player1_tipo_ === 2 || this.player1_tipo_ === 4){
+                        this.player1_tipo_ = this.player1_tipo_ - 1;
+                    }
+                    break;
+                case "right":  
+                    if(this.player1_tipo_ === 1 || this.player1_tipo_ === 3){
+                        this.player1_tipo_ = this.player1_tipo_ + 1;
+                    }
+                    break;
+            }
+        }
+        else{
+            switch(dir) {
+                case "up":  
+                    if(this.player2_tipo_ > 2){
+                        this.player2_tipo_ = this.player2_tipo_ - 2;
+                    }
+                    break;
+                case "down":  
+                    if(this.player2_tipo_ < 3){
+                        this.player2_tipo_ = this.player2_tipo_ + 2;
+                    }
+                    break;
+                case "left":  
+                    if(this.player2_tipo_ === 2 || this.player2_tipo_ === 4){
+                        this.player2_tipo_ = this.player2_tipo_ - 1;
+                    }
+                    break;
+                case "right":  
+                    if(this.player2_tipo_ === 1 || this.player2_tipo_ === 3){
+                        this.player2_tipo_ = this.player2_tipo_ + 1;
+                    }
+                    break;
+            }
+
+        }
+
+        this.muestra_menu_(this.ctx, true);
     }
 
     this.selecciona_menu_ = function () {
         window.golpe_audio2.play();
-        this.setup_();
-        this.empieza_(true);
-        this.empezado_ = true;
+        this.muestra_menu_(this.ctx, true);
+        this.numero_jugadores_ = this.modo_;
+
+        //this.setup_();
+        //this.empieza_(true);
+        //this.empezado_ = true;
+    }
+
+    this.selec_player_ = function (player1) {
+
+        var x_selec_player = 40;
+        var y_selec_player = 80;
+        var ancho_selec_player = 370;
+        var alto_selec_player = 140;
+
+        var player_pinta = this.player1_tipo_;
+        var color = this.COLOR_.YELLOW;
+        if(!player1){
+            this.player2_selected_ = true;
+            player_pinta = this.player2_tipo_;
+            color = this.COLOR_.PURPLE;
+        }
+        else{
+            this.player1_selected_ = true;
+        }
+
+        switch(player_pinta) {
+        
+            case 2: 
+                x_selec_player = 420;
+                y_selec_player = 80;
+                break;
+            case 3: 
+                x_selec_player = 40;
+                y_selec_player = 280;
+
+                break;
+            case 4: 
+                x_selec_player = 420;
+                y_selec_player = 280;
+                break;
+        }
+
+       
+        this.ctx.globalAlpha = 0.5;
+        this.ctx.fillStyle = color;
+        this.ctx.fillRect(x_selec_player, y_selec_player, ancho_selec_player, alto_selec_player);
+        this.ctx.globalAlpha = 1.0;
+
+        if(this.modo_ === 1 || this.player1_selected_ && this.player2_selected_){
+            this.setup_();
+            this.empieza_(true);
+            this.empezado_ = true;
+            
+        }
     }
     
 
@@ -1065,12 +1517,14 @@ var Game = function() {
     this.setup_ = function() {
 
         this.net_ = { "height":this.alto_red_, "width":12, "x":(this.ancho_total_)/2, "y":(this.alto_total_) - this.alto_red_};
-        player = new Player(this, 96, 1107, 800, 60000, 1, false);
+        player = new Player(this, 96, 1107, 800, 60000, 1, false, this.player1_tipo_);
         var cpu = true;
+        var tipo2 = false;
         if(this.modo_ == 2){
             cpu = false;
+            tipo2 = this.player2_tipo_;
         }
-        player2 = new Player(this, 1850, 1107, 800, 60000, 2, cpu);
+        player2 = new Player(this, 1850, 1107, 800, 60000, 2, cpu, tipo2);
         ball = new Ball(this);
 
     };
@@ -1087,6 +1541,11 @@ var Game = function() {
     this.empezado_ = false;
     this.pausa_ = false;
     this.is_game_over_ = false;
+    this.numero_jugadores_ = false;
+    this.player1_tipo_ = 1;
+    this.player2_tipo_ = 1;
+    this.player1_selected_ = false;
+    this.player2_selected_ = false;
 
     this.ultimo_rebote_ = 1;
 
@@ -1480,7 +1939,7 @@ var Game = function() {
     var intervalo_cancion = setInterval(function () {
         if (done) {
             juego.controla_orientacion_();
-            juego.muestra_menu_(juego.ctx);
+            juego.muestra_menu_(juego.ctx, false);
             frame();
             clearInterval(intervalo_cancion);
             return;
