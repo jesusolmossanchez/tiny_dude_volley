@@ -3,7 +3,7 @@
 /**************************************************
 ** GAME PLAYER CLASS
 **************************************************/
-var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
+var Player = function(juego, x, y, gravedad, impulso, posicion, cpu, tipo) {
 
     this.x                 = x;
     this.y                 = y;
@@ -15,8 +15,38 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
     this.wasleft           = false;
     this.wasright          = false;
     this.gravity_           = gravedad;
+
+
+    if(tipo){
+        this.tipo = tipo;
+    }
+    else{
+        this.tipo = 1;
+    }
+
+
     this.maxdx_             = 150;
     this.maxdy_             = 600;
+    this.velocidad_gorrino_ = 450;
+
+    switch (this.tipo){
+        case 2:
+            this.maxdx_             = 150 * 1.3;
+            this.maxdy_             = 600 * 1.3;
+            this.velocidad_gorrino_ = 450 * 1.3;
+            break;
+        case 3:
+            this.maxdx_             = 150 * 2;
+            this.maxdy_             = 600 * 0.8;
+            this.velocidad_gorrino_ = 450 * 0.8;
+            break;
+        case 4:
+            this.maxdx_             = 150 * 0.7;
+            this.maxdy_             = 600 * 0.7;
+            this.velocidad_gorrino_ = 450 * 0.7;
+            break;
+    }
+
     this.impulse_           = impulso;
     this.accel_             = this.maxdx_ / (juego.ACCEL_);
     this.friction_          = this.maxdx_ / (juego.FRICTION_);
@@ -25,8 +55,8 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
     this.no_rebota_time_    = juego.timestamp_();
     //TODO: hacer que empiece donde se le dice
     this.start             = { x: this.x, y: this.y };
-    this.velocidad_gorrino_ = 450;
     this.CPU_ = cpu;    
+
 
     if(posicion == 1){
         this.limite_derecha_    = juego.ancho_total_/2;
@@ -213,6 +243,25 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu) {
         if(!gorrino){
 
             //cuerpo
+
+            if(this.tiempo_enfadado_ <= juego.timestamp_() && !this.CPU_){
+                switch (this.tipo){
+                    case 1:
+                        ctx.fillStyle = juego.COLOR_.YELLOW;
+                        break;
+                    case 2:
+                        ctx.fillStyle = juego.COLOR_.PURPLE;
+                        break;
+                    case 3:
+                        ctx.fillStyle = juego.COLOR_.BRICK;
+                        break;
+                    case 4:
+                        ctx.fillStyle = juego.COLOR_.SLATE;
+                        break;
+                }
+            }
+
+
             ctx.fillRect(x_player, y_player, ancho_player, alto_player - alto_pies);
 
 
