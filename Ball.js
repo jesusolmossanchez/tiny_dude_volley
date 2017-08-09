@@ -46,7 +46,8 @@ var Ball = function(juego, x, y, gravedad, impulso) {
         //pelota cayendo...
         if (this.dy > 0) {
             if((this.y + this.alto_) > juego.alto_total_){
-                this.dy = -this.dy * juego.FACTOR_REBOTE_;
+                this.dy = -this.dy * juego.FACTOR_REBOTE_ * 0.7;
+                this.dx = this.dx * juego.FACTOR_REBOTE_ * 0.7;
 
                 //TOCA el suelo, procesa punto
                 if(!juego.hay_punto_){
@@ -61,7 +62,7 @@ var Ball = function(juego, x, y, gravedad, impulso) {
                     );
 
 
-                    juego.tiempo_shacke_ = juego.timestamp_() + 500;
+                    juego.tiempo_shacke_ = juego.timestamp_() + 1500;
                     
                     juego.tiempo_punto_ = juego.timestamp_() + 3000;
                     
