@@ -60,6 +60,9 @@ var Ball = function(juego, x, y, gravedad, impulso) {
                         new Explosion(x_explosion, y_explosion, true, true, this)
                     );
 
+
+                    juego.tiempo_shacke_ = juego.timestamp_() + 500;
+                    
                     juego.tiempo_punto_ = juego.timestamp_() + 3000;
                     
                     if(this.center_x_ < juego.ancho_total_/2){
@@ -130,8 +133,8 @@ var Ball = function(juego, x, y, gravedad, impulso) {
 
 
         if(juego.hay_punto_){
-            this.dy = juego.bound_(this.dy/1.05, -500, 500);
-            this.dx = juego.bound_(this.dx/1.05, -600, 600);
+            //this.dy = juego.bound_(this.dy/1.05, -500, 500);
+            //this.dx = juego.bound_(this.dx/1.05, -600, 600);
             //this.ddy = juego.bound_(this.ddy/1.05, -100, 100);
         }
 
