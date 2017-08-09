@@ -11,6 +11,7 @@ var Explosion = function(x, y, supertiro, punto, ball) {
         this.particulas_por_explosion_ = 15 * 5;
     }
 
+
     for (var i = 0; i < this.particulas_por_explosion_; i++) {
         this.particles_.push(
             new Particle(x, y, supertiro, punto, ball)
@@ -64,6 +65,11 @@ var Particle = function(x, y, supertiro, punto, ball) {
         this.g    = '255';
         this.b    = this.randInt_(0, 255);
     }
+    else if(!ball){
+        this.r    = this.randInt_(0, 255);
+        this.g    = '0';
+        this.b    = '0';
+    }
     else{
         this.r    = '255';
         this.g    = '255';
@@ -72,8 +78,17 @@ var Particle = function(x, y, supertiro, punto, ball) {
 
     this.x    = x;
     this.y    = y;
-    this.xv   = this.randInt_(this.particlesMinSpeed_, this.particlesMaxSpeed_, false) + ball.dx/300;
-    this.yv   = this.randInt_(this.particlesMinSpeed_/2, this.particlesMaxSpeed_/2, false) + ball.dy/300;
+
+    var mas_x = 0;
+    var mas_y = 0;
+    if(ball){
+        mas_x =  ball.dx/300;
+        mas_y =  ball.dy/300;
+    }
+
+
+    this.xv   = this.randInt_(this.particlesMinSpeed_, this.particlesMaxSpeed_, false) + mas_x;
+    this.yv   = this.randInt_(this.particlesMinSpeed_/2, this.particlesMaxSpeed_/2, false) + mas_y;
     this.size = this.randInt_(this.particlesMinSize_, this.max_particulas_size_, true);
     
 };
