@@ -97,11 +97,17 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu, tipo) {
                 if(this.tiempo_gorrino_ < juego.timestamp_() - 50 || this.CPU_) {
                     this.ddy = this.ddy - this.impulse_; // an instant big force impulse
                     this.jumping = true;
+                    
+                    var jump_x_explosion = this.x + this.ancho_ /2;
+                    var jump_y_explosion = this.y + this.alto_;
+                    juego.explosions_.push(
+                        new Explosion(jump_x_explosion, jump_y_explosion, false, false, false)
+                    );
+
                 }
             }
 
         
-
             //Si se pulsa acción
             if(this.accion){
                 if (this.jumping && juego.timestamp_() > this.tiempo_enfadado_ + 300){
@@ -137,12 +143,24 @@ var Player = function(juego, x, y, gravedad, impulso, posicion, cpu, tipo) {
                     this.haciendo_gorrino = true;
                     this.gorrino_left = true;
                     window.croqueta_audio.play();
+
+                    var gorrino_left_x_explosion = this.x + this.ancho_;
+                    var gorrino_left_y_explosion = this.y + this.alto_;
+                    juego.explosions_.push(
+                        new Explosion(gorrino_left_x_explosion, gorrino_left_y_explosion, false, false, false)
+                    );
                 }
                 if(this.right){
                     this.dx = this.velocidad_gorrino_;
                     this.haciendo_gorrino = true;
                     this.gorrino_left = false;
                     window.croqueta_audio.play();
+
+                    var gorrino_right_x_explosion = this.x;
+                    var gorrino_right_y_explosion = this.y + this.alto_;
+                    juego.explosions_.push(
+                        new Explosion(gorrino_right_x_explosion, gorrino_right_y_explosion, false, false, false)
+                    );
                 }
             }
             else if(this.tiempo_gorrino_ > juego.timestamp_() + 150){
