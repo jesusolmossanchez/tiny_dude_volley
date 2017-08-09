@@ -887,7 +887,7 @@ var Game = function() {
                 this.dy_shacke = this.dy_shacke * (-0.9);
                 this.dx_shacke = this.dx_shacke * (-0.9);
             }
-            console.log(this.dy_shacke);
+            
             this.ctx.translate(this.dx_shacke, this.dy_shacke); 
         }
         else{
