@@ -872,14 +872,28 @@ var Game = function() {
 
 
 
-    this.mitad = 0;
+    this.dx_shacke = 0;
+    this.dy_shacke = 0;
 
     this.pre_shake_ = function() {
-        if(this.tiempo_shacke_ > this.timestamp_() && !(this.counter % 2)){
+        if(this.tiempo_shacke_ > this.timestamp_()){
             this.ctx.save();
-            var dx = (Math.random() - 0.5) * 40;
-            var dy = (Math.random() - 0.5) * 40;
-            this.ctx.translate(dx, dy); 
+            if(!this.dx_shacke && !this.dy_shacke){
+                this.dx_shacke = (Math.random() - 0.5) * 20;
+                this.dy_shacke = (Math.random() - 0.5) * 20;
+
+            }
+            else{
+                this.dy_shacke = this.dy_shacke * (-0.9);
+                this.dx_shacke = this.dx_shacke * (-0.9);
+            }
+            console.log(this.dy_shacke);
+            this.ctx.translate(this.dx_shacke, this.dy_shacke); 
+        }
+        else{
+                this.dx_shacke = 0;
+                this.dy_shacke = 0;
+
         }
     };
 
