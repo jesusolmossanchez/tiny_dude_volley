@@ -446,6 +446,9 @@ var Game = function() {
                 window.golpe_audio2.play();
                 ball.mate = true;
 
+                //tiempo rebota para efecto shacke
+                //this.tiempo_shacke_ = this.timestamp_() + 200;
+
                 jugador_rebota.no_rebota_time_ = this.timestamp_() + 300;
 
                 if(jugador_rebota === player || this.modo_ === 2){
@@ -852,6 +855,9 @@ var Game = function() {
             return;
         }
         ctx.clearRect(0, 0, this.ancho_total_, this.alto_total_);
+
+        
+
         this.render_player_(ctx, dt);
         this.render_player2_(ctx, dt);
         
@@ -860,11 +866,26 @@ var Game = function() {
         this.draw_explosion_(ctx);
         this.pinta_marcador_(ctx);
         this.pinta_level_(ctx);
+
+        
     };
 
 
 
+    this.mitad = 0;
 
+    this.pre_shake_ = function() {
+        if(this.tiempo_shacke_ > this.timestamp_() && !(this.counter % 2)){
+            this.ctx.save();
+            var dx = (Math.random() - 0.5) * 40;
+            var dy = (Math.random() - 0.5) * 40;
+            this.ctx.translate(dx, dy); 
+        }
+    };
+
+    this.post_shake_ = function() {
+        this.ctx.restore();
+    };
 
     this.render_net_ = function(ctx) {
         ctx.fillStyle = this.COLOR_.BRICK;
@@ -1595,6 +1616,8 @@ var Game = function() {
     this.puntos1_        = 0,
     this.puntos2_        = 0,
 
+    this.tiempo_shacke_ = this.timestamp_(),
+
     this.explosions_     = [],
 
 
@@ -1873,7 +1896,10 @@ var Game = function() {
     var dt = 0, 
         now,
         last = juego.timestamp_();
-  
+
+    var fpsInterval = 1000 / 30;
+
+    var then = juego.timestamp_();
     function frame() {
         if(!juego.empezado_ || juego.pausa_){
             requestAnimationFrame(frame, canvas);
@@ -1883,9 +1909,27 @@ var Game = function() {
         dt = dt + Math.min(1, (now - last) / 1000);
         while(dt > juego.step_) {
             dt = dt - juego.step_;
-            juego.update_(juego.step_);
+            if(!juego.hay_punto_){
+                juego.update_(juego.step_);
+            }
         }
-        juego.render(juego.ctx, juego.counter, dt);
+        if(juego.hay_punto_){
+            var elapsed = now - then;
+
+            if (elapsed > fpsInterval) {
+                juego.pre_shake_();
+                juego.render(juego.ctx, juego.counter, dt);
+                juego.post_shake_();
+                juego.update_(juego.step_);
+                then = now - (elapsed % fpsInterval);
+            }
+        }
+        else{
+            juego.pre_shake_();
+            juego.render(juego.ctx, juego.counter, dt);
+            juego.post_shake_();
+        }
+
         last = now;
         juego.counter++;
         requestAnimationFrame(frame, canvas);
