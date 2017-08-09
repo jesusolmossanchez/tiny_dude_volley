@@ -7,6 +7,9 @@ var Explosion = function(x, y, supertiro, punto, ball) {
     if(supertiro){
         this.particulas_por_explosion_ = 15 * 3;
     }
+    if(punto){
+        this.particulas_por_explosion_ = 15 * 5;
+    }
 
     for (var i = 0; i < this.particulas_por_explosion_; i++) {
         this.particles_.push(
@@ -42,6 +45,13 @@ var Particle = function(x, y, supertiro, punto, ball) {
 
     if(supertiro){
         this.max_particulas_size_ = this.max_particulas_size_ * 1.5;
+    }
+
+    if(punto){
+        this.particlesMinSpeed_      =  this.particlesMinSpeed_ * 1.2;
+        this.particlesMaxSpeed_      =  this.particlesMaxSpeed_ * 1.5;
+        this.particlesMinSize_       =  this.particlesMinSize_ * 1.2;
+        this.max_particulas_size_       =  this.max_particulas_size_ * 1.5;
     }
 
     if(punto){
